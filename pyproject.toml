@@ -18,6 +18,11 @@ pre-commit = "^3.8.0"
 pytest = "^8.3.2"
 coverage = "^7.6.1"
 
+[tool.coverage.run]
+branch = true
+source = ["app"]
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
