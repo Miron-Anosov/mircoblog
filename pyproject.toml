@@ -20,7 +20,7 @@ coverage = "^7.6.1"
 
 [tool.coverage.run]
 branch = true
-source = ["app"]
+source = ["src"]
 
 
 [build-system]
