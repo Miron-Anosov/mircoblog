@@ -12,6 +12,7 @@ python = "^3.12"
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.11.1"
 black = "^24.8.0"
+isort = "^5.13.2"
 
 [build-system]
 requires = ["poetry-core"]
