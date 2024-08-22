@@ -1,0 +1,48 @@
+repos:
+-   repo: local
+    hooks:
+
+    -   id: flake8
+        name: flake8 SRC
+        entry: flake8 src/
+        files: \.py$
+        language: python
+        additional_dependencies: [flake8-docstrings]
+        exclude: ^tests/
+
+    -   id: flake8
+        name: flake8 pytest
+        entry: flake8 tests/
+        files: \.py$
+        language: python
+        additional_dependencies: [ flake8-docstrings ]
+        exclude: ^src/
+
+    -   id: black
+        name: black
+        entry: black src
+        files: \.py$
+        language: python
+
+    -   id: mypy
+        name: mypy
+        entry: mypy
+        args: [--explicit-package-bases]
+        language: python
+        types: [python]
+        require_serial: true
+
+    -   id: pytest
+        name: pytest
+        entry: ./.venv/bin/pytest tests
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true
+
+    -   id: isort
+        name: isort
+        entry: isort
+        args: ["--profile", "black", "--filter-files"]
+        language: system
+        types: [python]
