@@ -8,15 +8,23 @@ repos:
         files: \.py$
         language: python
         additional_dependencies: [flake8-docstrings]
-        exclude: ^tests/
+        exclude: ^(test|alembic)/
 
     -   id: flake8
-        name: flake8 pytest
+        name: flake8 Pytest
         entry: flake8 tests/
         files: \.py$
         language: python
         additional_dependencies: [ flake8-docstrings ]
-        exclude: ^src/
+        exclude: ^(src|alembic)/
+
+    - id: flake8
+      name: flake8 Alembic
+      entry: flake8 tests/
+      files: \.py$
+      language: python
+      additional_dependencies: [ flake8-docstrings ]
+      exclude: ^(src|tests)/
 
     -   id: black
         name: black
