@@ -3,7 +3,7 @@
 import pytest
 
 
-@pytest.mark.starting_tests
-def test_alive():
-    """Starting test."""
+@pytest.mark.test
+def test_dependencies_installed():
+    """Test."""
     assert True
