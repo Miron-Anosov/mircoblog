@@ -31,7 +31,7 @@ preparation:
 mypy:
   stage: test
   script:
-    - mypy -p api
+    - mypy -p src
 
 black:
   stage: test
@@ -42,14 +42,14 @@ black:
 isort:
   stage: test
   script:
-    - isort --profile "black" --filter-files ./api
-    - isort --profile "black" --filter-files ./test
+    - isort --profile "black" --filter-files ./src
+    - isort --profile "black" --filter-files ./tests
 
 flake8:
   stage: test
   script:
-    - flake8 ./api/
-    - flake8 ./test/
+    - flake8 ./src/
+    - flake8 ./tests/
 
 
 #
