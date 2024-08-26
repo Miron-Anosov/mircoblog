@@ -1,0 +1,63 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+image: python:3.12.4
+
+before_script:
+  - pip install poetry==1.8
+  - poetry config virtualenvs.create false
+  - poetry install
+
+
+
+stages:
+#  - build
+  - test
+#  - deploy
+
+preparation:
+  stage: test
+  script:
+    - python3 --version
+    - pip --version
+    - poetry --version
+    - poetry show --tree
+    - pytest --version
+
+
+mypy:
+  stage: test
+  script:
+    - mypy -p api
+
+black:
+  stage: test
+  script:
+    - black --check ./src
+    - black --check ./tests
+
+isort:
+  stage: test
+  script:
+    - isort --profile "black" --filter-files ./api
+    - isort --profile "black" --filter-files ./test
+
+flake8:
+  stage: test
+  script:
+    - flake8 ./api/
+    - flake8 ./test/
+
+
+#
+#production:
+#  stage: deploy
+#  script:
+#    - echo $0
+#    - echo whoami
+#  only:
+#    - main
+#    - master
