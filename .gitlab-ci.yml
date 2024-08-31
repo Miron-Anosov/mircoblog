@@ -53,10 +53,6 @@ flake8:
 
 test:
   stage: test
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - .pip-cache/
   script:
     - pytest --cov=src --cov-report=term-missing --cov-report=xml:coverage.xml --junitxml=report.xml
     - pip install coverage-badge
