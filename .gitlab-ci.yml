@@ -25,45 +25,56 @@ preparation:
     - poetry show --tree
     - pytest --version
 
-  artifacts:
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
     paths:
       - .venv/
 
 
 mypy:
-  dependencies:
-    - preparation
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .venv/
   stage: test
   script:
     - mypy -p src
 
 black:
-  dependencies:
-    - preparation
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .venv/
   stage: test
   script:
     - black --check ./src
     - black --check ./tests
 
 isort:
-  dependencies:
-    - preparation
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .venv/
   stage: test
   script:
     - isort --profile "black" --filter-files ./src
     - isort --profile "black" --filter-files ./tests
 
 flake8:
-  dependencies:
-    - preparation
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .venv/
   stage: test
   script:
     - flake8 ./src/
     - flake8 ./tests/
 
 test:
-  dependencies:
-    - preparation
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .venv/
   stage: test
   script:
     - pytest --cov=src --cov-report=term-missing --junitxml=report.xml
