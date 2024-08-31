@@ -9,75 +9,69 @@ image: python:3.12.4
 stages:
   - build
   - test
-#  - deploy
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
+  POETRY_HOME: "$CI_PROJECT_DIR/.poetry"
+
+cache:
+  paths:
+    - .pip-cache/
+    - .poetry/
+  key: ${CI_COMMIT_REF_SLUG}
+
+.install-poetry-and-deps: &install-poetry-and-deps
+  - export PATH="$POETRY_HOME/bin:$PATH"
+  - pip install poetry==1.8
+  - poetry config virtualenvs.create false
+  - poetry install --no-interaction --no-ansi
 
 preparation:
   stage: build
-  before_script:
-    - pip install poetry==1.8
-    - poetry config virtualenvs.create false
-    - poetry install
-
   script:
+    - *install-poetry-and-deps
     - python3 --version
     - pip --version
     - poetry --version
     - poetry show --tree
     - pytest --version
-
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
+  artifacts:
     paths:
-      - .venv/
-
+      - .poetry/
+    expire_in: 1 day
 
 mypy:
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - .venv/
   stage: test
   script:
+    - *install-poetry-and-deps
     - mypy -p src
 
 black:
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - .venv/
   stage: test
   script:
+    - *install-poetry-and-deps
     - black --check ./src
     - black --check ./tests
 
 isort:
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - .venv/
   stage: test
   script:
+    - *install-poetry-and-deps
     - isort --profile "black" --filter-files ./src
     - isort --profile "black" --filter-files ./tests
 
 flake8:
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - .venv/
   stage: test
   script:
+    - *install-poetry-and-deps
     - flake8 ./src/
     - flake8 ./tests/
 
 test:
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - .venv/
   stage: test
   script:
-    - pytest --cov=src --cov-report=term-missing --junitxml=report.xml
+    - *install-poetry-and-deps
+    - pytest --cov=src --cov-report=term-missing --cov-report=xml:coverage.xml --junitxml=report.xml
     - pip install coverage-badge
     - coverage-badge -o coverage.svg -f
   coverage: '/TOTAL.*\s+(\d+%)$/'
@@ -89,13 +83,3 @@ test:
       coverage_report:
         coverage_format: cobertura
         path: coverage.xml
-
-#
-#production:
-#  stage: deploy
-#  script:
-#    - echo $0
-#    - echo whoami
-#  only:
-#    - main
-#    - master
