@@ -53,16 +53,22 @@ flake8:
 
 test:
   stage: test
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .pip-cache/
   script:
     - pytest --cov=src --cov-report=term-missing --cov-report=xml:coverage.xml --junitxml=report.xml
     - pip install coverage-badge
     - coverage-badge -o coverage.svg -f
   coverage: '/TOTAL.*\s+(\d+%)$/'
   artifacts:
-    paths:
-      - coverage.svg
     reports:
-      junit: report.xml
       coverage_report:
         coverage_format: cobertura
         path: coverage.xml
+      junit: report.xml
+    paths:
+      - coverage.svg
+  after_script:
+    - grep -oP "line-rate=\"\K[^\"]*" coverage.xml | awk '{print $1*100 "%"}'
