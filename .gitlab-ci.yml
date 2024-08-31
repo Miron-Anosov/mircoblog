@@ -6,71 +6,54 @@ workflow:
 
 image: python:3.12.4
 
-stages:
-  - build
-  - test
-
-variables:
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
-  POETRY_HOME: "$CI_PROJECT_DIR/.poetry"
-
-cache:
-  paths:
-    - .pip-cache/
-    - .poetry/
-  key: ${CI_COMMIT_REF_SLUG}
-
-.install-poetry-and-deps: &install-poetry-and-deps
-  - export PATH="$POETRY_HOME/bin:$PATH"
+before_script:
   - pip install poetry==1.8
   - poetry config virtualenvs.create false
-  - poetry install --no-interaction --no-ansi
+  - poetry install
+
+
+
+stages:
+#  - build
+  - test
+#  - deploy
 
 preparation:
-  stage: build
+  stage: test
   script:
-    - *install-poetry-and-deps
     - python3 --version
     - pip --version
     - poetry --version
     - poetry show --tree
     - pytest --version
-  artifacts:
-    paths:
-      - .poetry/
-    expire_in: 1 day
+
 
 mypy:
   stage: test
   script:
-    - *install-poetry-and-deps
     - mypy -p src
 
 black:
   stage: test
   script:
-    - *install-poetry-and-deps
     - black --check ./src
     - black --check ./tests
 
 isort:
   stage: test
   script:
-    - *install-poetry-and-deps
     - isort --profile "black" --filter-files ./src
     - isort --profile "black" --filter-files ./tests
 
 flake8:
   stage: test
   script:
-    - *install-poetry-and-deps
     - flake8 ./src/
     - flake8 ./tests/
 
 test:
   stage: test
   script:
-    - *install-poetry-and-deps
     - pytest --cov=src --cov-report=term-missing --cov-report=xml:coverage.xml --junitxml=report.xml
     - pip install coverage-badge
     - coverage-badge -o coverage.svg -f
