@@ -6,6 +6,6 @@ media = APIRouter(prefix="/api", tags=["Media"])
 
 
 @media.post("/media")
-def get_status():
+def get_status() -> dict[str, str]:
     """Test route."""
     return {"message": "Hello World"}
