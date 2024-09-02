@@ -1,0 +1,52 @@
+version: '3'
+
+networks:
+  db_api_net:
+    driver: bridge
+
+services:
+
+  db:
+    image: postgres:16.3
+    container_name: api_db
+    restart: always
+    ports:
+      - '${POSTGRES_PORT}:5432'
+    volumes:
+      - postgres_storage:/var/lib/postgresql/data
+#      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    shm_size: 256mb
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    command:
+      - --log_destination=stderr
+      - --logging_collector=on
+      - --log_directory=./logs_postgres/
+    networks:
+      - db_api_net
+
+
+  micro_blogs:
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    container_name: micro_blogs
+    image: micro_blog:${VERSION_API}
+    ports:
+      - '8000:8000'
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+    depends_on:
+      - db
+    networks:
+      - db_api_net
+
+volumes:
+  postgres_storage: {}
+    #external: true # раскомментировать, если используются другое volume. environment
