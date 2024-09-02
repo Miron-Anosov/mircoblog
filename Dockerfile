@@ -20,10 +20,11 @@ RUN poetry install --no-dev
 
 
 COPY ./src /src/
+COPY gunicorn_conf.py /src/gunicorn_conf.py
 
 FROM python:3.12-slim-bullseye
 WORKDIR /src/
 COPY --from=builder /src /src
 COPY --from=builder /usr/local/ /usr/local/
 
-CMD ["uvicorn", "--factory","main:create_app", "--workers", "4", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["gunicorn", "--config", "/src/gunicorn_conf.py"]
