@@ -28,11 +28,11 @@ services:
       - db_api_net
 
 
-  micro_blogs:
+  micro_blog:
     build:
       dockerfile: Dockerfile
       context: ./
-    container_name: micro_blogs
+    container_name: micro_blog
     image: micro_blog:${VERSION_API}
     ports:
       - '8000:8000'
@@ -49,4 +49,4 @@ services:
 
 volumes:
   postgres_storage: {}
-    #external: true # раскомментировать, если используются другое volume. environment
+    #external: true # раскомментировать, если используются другое volume.
