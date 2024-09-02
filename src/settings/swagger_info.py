@@ -31,6 +31,6 @@ CONTACT = {
     "email": "miron-nicolaevich@gmail.com",
 }
 
-SERVERS = [{"url": "http://127.0.0.1:8000"}]
+SERVERS = [{"url": "http://localhost:8000"}]
 
 __all__ = ["SUMMARY", "DESCRIPTION", "TAGS_METADATA", "CONTACT", "SERVERS"]

@@ -15,6 +15,8 @@ Functional ability:
 
 """
 
+from sys import prefix
+
 import uvicorn
 from fastapi import FastAPI
 
@@ -33,6 +35,7 @@ def create_app() -> FastAPI:
         contact=swagger_info.CONTACT,
         servers=swagger_info.SERVERS,
         summary=swagger_info.SUMMARY,
+        prefix="/api",
     )
 
     app_.include_router(router=media)
