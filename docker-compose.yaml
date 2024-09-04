@@ -1,0 +1,67 @@
+version: '3.9'
+
+networks:
+  api_net:
+    driver: bridge
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - socket_volume:/tmp
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - micro_blog
+    networks:
+      - api_net
+
+  db:
+    image: postgres:16.3
+    container_name: api_db
+    restart: always
+    ports:
+      - '${POSTGRES_PORT}:5432'
+    volumes:
+      - postgres_storage:/var/lib/postgresql/data
+      - postgres_logs:/logs_postgres
+    shm_size: 256mb
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    command:
+      - --log_destination=stderr
+      - --logging_collector=on
+      - --log_directory=./logs_postgres/
+    networks:
+      - api_net
+
+
+  micro_blog:
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    container_name: micro_blog
+    image: micro_blog:${VERSION_API}
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+    depends_on:
+      - db
+    networks:
+      - api_net
+    volumes:
+      - socket_volume:/tmp
+
+volumes:
+  postgres_storage: {}
+  socket_volume: {}
+  nginx_logs: {}
+  postgres_logs: {}
