@@ -51,13 +51,20 @@ flake8:
     - flake8 ./src/
     - flake8 ./tests/
 
-
-#
-#production:
-#  stage: deploy
-#  script:
-#    - echo $0
-#    - echo whoami
-#  only:
-#    - main
-#    - master
+test:
+  stage: test
+  script:
+    - pytest --cov=src --cov-report=term-missing --cov-report=xml:coverage.xml --junitxml=report.xml
+    - pip install coverage-badge
+    - coverage-badge -o coverage.svg -f
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+      junit: report.xml
+    paths:
+      - coverage.svg
+  after_script:
+    - grep -oP "line-rate=\"\K[^\"]*" coverage.xml | awk '{print $1*100 "%"}'

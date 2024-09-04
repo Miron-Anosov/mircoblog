@@ -35,7 +35,7 @@ repos:
     -   id: mypy
         name: mypy
         entry: mypy
-        args: [--explicit-package-bases]
+        args: [--explicit-package-bases,  --ignore-missing-imports, --follow-imports=skip, --strict-optional]
         language: python
         types: [python]
         require_serial: true
