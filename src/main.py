@@ -15,27 +15,32 @@ Functional ability:
 
 """
 
+from sys import prefix
+
 import uvicorn
 from fastapi import FastAPI
 
-from src.back_core import media, swagger_info, tweets, users
+from back_core.controllers.media import media
+from back_core.controllers.tweets import tweets
+from settings import swagger_info
+from settings.settings import settings
 
 
 def create_app() -> FastAPI:
     """Maker FastAPI."""
     app_ = FastAPI(
-        title=swagger_info.TITLE,
+        title="MicroBlog API",
         description=swagger_info.DESCRIPTION,
-        version=swagger_info.VERSION_API,
+        version="0.1.0",
         openapi_tags=swagger_info.TAGS_METADATA,
         contact=swagger_info.CONTACT,
         servers=swagger_info.SERVERS,
         summary=swagger_info.SUMMARY,
+        prefix="/api",
     )
 
     app_.include_router(router=media)
     app_.include_router(router=tweets)
-    app_.include_router(router=users)
     return app_
 
 
@@ -47,4 +52,5 @@ if __name__ == "__main__":
         port=8001,
         log_level="info",
         factory=True,
+        # uds='./web_socks_backend'
     )
