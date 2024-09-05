@@ -20,6 +20,7 @@ from fastapi import FastAPI
 
 from back_core.controllers.media import media
 from back_core.controllers.tweets import tweets
+from back_core.controllers.users import users
 from back_core.settings import swagger_info
 
 
@@ -38,6 +39,7 @@ def create_app() -> FastAPI:
 
     app_.include_router(router=media)
     app_.include_router(router=tweets)
+    app_.include_router(router=users)
     return app_
 
 
