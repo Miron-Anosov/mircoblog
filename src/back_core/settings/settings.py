@@ -40,16 +40,7 @@ class InfoSettingMix(BaseSettings):
     CONTACT_EMAIL: EmailStr
 
 
-class EnvironmentSettingMix(BaseSettings):
-    """EnvironmentSettingMix uses type mode.
-
-    MODE: str : TEST, PROD or something else.
-    """
-
-    MODE: str = Field(min_length=2)
-
-
-class ProdSettings(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
+class ProdSettings(CommonSettings, InfoSettingMix):
     """Production environments are deploy.
 
     Environments params:
@@ -79,9 +70,7 @@ class ProdSettings(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
 
     model_config = SettingsConfigDict(
         env_file=Path(__file__).parent.parent.parent.parent / ".env",
-        env_file_encoding="utf-8",
         extra="ignore",
-        case_sensitive=False,
     )
 
 
@@ -100,8 +89,6 @@ class TestSettings(ProdSettings):
     model_config = SettingsConfigDict(
         env_file=Path(__file__).parent.parent.parent.parent / ".env.test",
         extra="ignore",
-        case_sensitive=False,
-        env_file_encoding="utf-8",
     )
 
 

@@ -20,7 +20,7 @@ from fastapi import FastAPI
 
 from back_core.controllers.media import media
 from back_core.controllers.tweets import tweets
-from settings import swagger_info
+from back_core.settings import swagger_info
 
 
 def create_app() -> FastAPI:
