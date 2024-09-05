@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.settings.settings import CommonSettings, settings
+from src.back_core.settings.settings import CommonSettings, settings
 
 # import httpx
 # import pytest_asyncio
