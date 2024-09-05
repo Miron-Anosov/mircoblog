@@ -22,11 +22,11 @@ def post_new_tweet(
     Create a new tweet.
 
     **Headers**:
-    - `api_key str*`: API key for authentication.
+    - `api_key (str)*`: API key for authentication.
 
     **Body**:
-    - `tweet_data :str*`: The text content of the tweet.
-    - `tweet_media_ids :Array[int]:` A list of media IDs (e.g., images)<br>
+    - `tweet_data (str)*`: The text content of the tweet.
+    - `tweet_media_ids (Array[int])`: A list of media IDs (e.g., images)<br>
      associated with the tweet.
 
     **Notes**:
