@@ -2,7 +2,7 @@
 
 from typing import Annotated
 
-from fastapi import Header, HTTPException
+from fastapi import Header, HTTPException, status
 
 
 def api_key_depend(api_key: Annotated[str | None, Header()]):
@@ -11,6 +11,9 @@ def api_key_depend(api_key: Annotated[str | None, Header()]):
     api_key: str| None: user's api_key.
     """
     if api_key is None:
-        raise HTTPException(status_code=400, detail="API key is required")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="API key is required",
+        )
 
     pass
