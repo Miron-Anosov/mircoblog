@@ -3,11 +3,19 @@
 from abc import abstractmethod
 from pathlib import Path
 
+from pydantic import EmailStr, Field, HttpUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class CommonSettings(BaseSettings):
-    """Common config model for environments."""
+    """Common config model for environments.
+
+    Methods:
+        get_url_database(self) -> str
+
+    Raise:
+        - NotImplementedError: Method must be overridden in subclasses.
+    """
 
     @property
     @abstractmethod
@@ -16,8 +24,33 @@ class CommonSettings(BaseSettings):
         raise NotImplementedError("Method must be overridden in subclasses.")
 
 
-class ProdSettings(CommonSettings):
-    """Production environments are deploy."""
+class InfoSettingMix(BaseSettings):
+    """Class give common environments params.
+
+    Environments params:
+     - VERSION_API: str
+     - CONTACT_NAME: str
+     - CONTACT_URL: HttpUrl
+     - CONTACT_EMAIL: EmailStr
+    """
+
+    VERSION_API: str = Field(min_length=5, max_length=8)
+    CONTACT_NAME: str = Field(min_length=2, max_length=15)
+    CONTACT_URL: HttpUrl
+    CONTACT_EMAIL: EmailStr
+
+
+class ProdSettings(CommonSettings, InfoSettingMix):
+    """Production environments are deploy.
+
+    Environments params:
+     - POSTGRES_HOST: str
+     - POSTGRES_PORT: int
+     - POSTGRES_USER: str
+     - POSTGRES_DB: str
+     - POSTGRES_PASSWORD: str
+     - ECHO: bool
+    """
 
     POSTGRES_HOST: str
     POSTGRES_PORT: int
@@ -40,8 +73,17 @@ class ProdSettings(CommonSettings):
     )
 
 
-class TestSettings(CommonSettings):
-    """Test environments are test."""
+class TestSettings(CommonSettings, InfoSettingMix):
+    """Test environments are test.
+
+    Environments params:
+     - POSTGRES_HOST_TEST: str
+     - POSTGRES_PORT_TEST: int
+     - POSTGRES_USER_TEST: str
+     - POSTGRES_DB_TEST: str
+     - POSTGRES_PASSWORD_TEST: str
+     - ECHO_TEST: bool
+    """
 
     POSTGRES_HOST_TEST: str
     POSTGRES_PORT_TEST: int
@@ -68,15 +110,10 @@ class TestSettings(CommonSettings):
 class Settings:
     """Common settings for environments."""
 
-    @property
-    def prod(self) -> ProdSettings:
-        """Use production env."""
-        return ProdSettings()
-
-    @property
-    def test(self) -> TestSettings:
-        """Use test env.test."""
-        return TestSettings()
+    def __init__(self):
+        """Interface for environments."""
+        self.prod = ProdSettings()
+        self.test = TestSettings()
 
 
 settings = Settings()
