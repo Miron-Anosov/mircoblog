@@ -4,16 +4,22 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from ..validators.validation_post_new_tweet import (
+from ..settings.routes_path import PathRoutes
+from ..validators.validation_tweet import (
+    ValidDeleteModelTweet,
     ValidPostModelNewTweetInput,
     ValidPostModelNewTweetOutput,
 )
 from .controller_dependends.http_handler_api_key import api_key_depend
 
-tweets = APIRouter(tags=["Tweets"])
+tweets = APIRouter(tags=["Tweets"], prefix=PathRoutes.PREFIX.value)
 
 
-@tweets.post("/tweets", status_code=201)
+@tweets.post(
+    path=PathRoutes.TWEETS.value,
+    status_code=201,
+    response_model=ValidPostModelNewTweetOutput,
+)
 def post_new_tweet(
     tweet: ValidPostModelNewTweetInput,
     api_key: Annotated[str, Depends(api_key_depend)],
@@ -36,4 +42,25 @@ def post_new_tweet(
      upload before submitting the tweet and will include
      the image IDs in the request.
     """
-    pass
+    return ValidPostModelNewTweetOutput()
+
+
+@tweets.delete(
+    path=PathRoutes.TWEETS_DEL_BY_ID.value,
+    response_model=ValidDeleteModelTweet,
+)
+def delete_post_by_id(
+    tweet_id: int,
+    api_key: Annotated[str, Depends(api_key_depend)],
+) -> ValidDeleteModelTweet:
+    """
+    Delete a tweet by ID.
+
+     **Headers**:
+    - `api_key (str)*`: API key for authentication.
+
+    **Path Parameters**:
+    - `tweet_id (int)`: The ID of the tweet to delete.
+    """
+    # Заглушка для возвращаемого значения
+    return ValidDeleteModelTweet()
