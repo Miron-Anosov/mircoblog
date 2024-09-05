@@ -59,12 +59,15 @@ services:
       - api_net
     volumes:
       - socket_volume:/tmp
+      - api_logs:/var/log/nginx
     env_file:
       - .env
       - .env.test
+    stop_grace_period: 10s
 
 volumes:
   postgres_storage: {}
   socket_volume: {}
   nginx_logs: {}
   postgres_logs: {}
+  api_logs: {}

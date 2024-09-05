@@ -69,40 +69,25 @@ class ProdSettings(CommonSettings, InfoSettingMix):
         )
 
     model_config = SettingsConfigDict(
-        env_file=Path(__file__).parent.parent.parent / ".env", extra="ignore"
+        env_file=Path(__file__).parent.parent.parent.parent / ".env",
+        extra="ignore",
     )
 
 
-class TestSettings(CommonSettings, InfoSettingMix):
+class TestSettings(ProdSettings):
     """Test environments are test.
 
     Environments params:
-     - POSTGRES_HOST_TEST: str
-     - POSTGRES_PORT_TEST: int
-     - POSTGRES_USER_TEST: str
-     - POSTGRES_DB_TEST: str
-     - POSTGRES_PASSWORD_TEST: str
-     - ECHO_TEST: bool
+     - POSTGRES_HOST: str
+     - POSTGRES_PORT: int
+     - POSTGRES_USER: str
+     - POSTGRES_DB: str
+     - POSTGRES_PASSWORD: str
+     - ECHO: bool
     """
 
-    POSTGRES_HOST_TEST: str
-    POSTGRES_PORT_TEST: int
-    POSTGRES_USER_TEST: str
-    POSTGRES_DB_TEST: str
-    POSTGRES_PASSWORD_TEST: str
-    ECHO_TEST: bool
-
-    @property
-    def get_url_database(self) -> str:
-        """Return database URL."""
-        return (
-            f"postgresql+asyncpg://{self.POSTGRES_USER_TEST}:"
-            f"{self.POSTGRES_PASSWORD_TEST}@{self.POSTGRES_HOST_TEST}:"
-            f"{self.POSTGRES_PORT_TEST}/{self.POSTGRES_DB_TEST}"
-        )
-
     model_config = SettingsConfigDict(
-        env_file=Path(__file__).parent.parent.parent / ".env.test",
+        env_file=Path(__file__).parent.parent.parent.parent / ".env.test",
         extra="ignore",
     )
 
