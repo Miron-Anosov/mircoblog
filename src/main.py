@@ -21,6 +21,7 @@ import uvicorn
 from fastapi import FastAPI
 
 from back_core.controllers.media import media
+from back_core.controllers.tweets import tweets
 from settings import swagger_info
 from settings.settings import settings
 
@@ -39,6 +40,7 @@ def create_app() -> FastAPI:
     )
 
     app_.include_router(router=media)
+    app_.include_router(router=tweets)
     return app_
 
 
