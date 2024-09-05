@@ -2,6 +2,16 @@
 
 import enum
 
+# path /api/tweets
+TWEETS_PATH = "/tweets"
+TWEET_ID = "{tweet_id}"
+LIKE = "like"
+
+# path /api/users
+USERS_PATH = "/users"  # POST /api/users/<id>/follow
+USER_ID = "{id}"
+FOLLOW = "follow"
+
 
 class PathRoutes(enum.Enum):
     """Central storage all paths.
@@ -10,8 +20,7 @@ class PathRoutes(enum.Enum):
     """
 
     PREFIX = "/api"
-    TWEETS = "/tweets"
-    TWEETS_ID_LIKE = "/tweets/{tweet_id}/like"
-    TWEETS_DEL_BY_ID = "/tweets/{tweet_id}"
-    TWEETS_DEL_LIKE_BY_ID = "/tweets/{tweet_id}/like"
-    USERS = "/users"
+    TWEETS = f"{TWEETS_PATH}"
+    TWEETS_POST_DEL_ID_LIKE = f"{TWEETS_PATH}/{TWEET_ID}/{LIKE}"
+    TWEETS_DEL_BY_ID = f"{TWEETS_PATH}/{TWEET_ID}"
+    USERS_FOLLOW_BY_ID = f"{USERS_PATH}/{USER_ID}/{FOLLOW}"
