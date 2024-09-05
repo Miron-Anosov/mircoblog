@@ -59,6 +59,9 @@ services:
       - api_net
     volumes:
       - socket_volume:/tmp
+    env_file:
+      - .env
+      - .env.test
 
 volumes:
   postgres_storage: {}
