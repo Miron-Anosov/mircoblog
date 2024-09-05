@@ -6,9 +6,9 @@ from fastapi import APIRouter, Depends
 
 from ..settings.routes_path import PathRoutes
 from ..validators.validation_tweet import (
-    ValidDeleteModelTweet,
     ValidPostModelNewTweetInput,
     ValidPostModelNewTweetOutput,
+    ValidStatusModelTweet,
 )
 from .controller_dependends.http_handler_api_key import api_key_depend
 
@@ -47,12 +47,12 @@ def post_new_tweet(
 
 @tweets.delete(
     path=PathRoutes.TWEETS_DEL_BY_ID.value,
-    response_model=ValidDeleteModelTweet,
+    response_model=ValidStatusModelTweet,
 )
 def delete_post_by_id(
     tweet_id: int,
     api_key: Annotated[str, Depends(api_key_depend)],
-) -> ValidDeleteModelTweet:
+) -> ValidStatusModelTweet:
     """
     Delete a tweet by ID.
 
@@ -63,4 +63,45 @@ def delete_post_by_id(
     - `tweet_id (int)`: The ID of the tweet to delete.
     """
     # Заглушка для возвращаемого значения
-    return ValidDeleteModelTweet()
+    return ValidStatusModelTweet()
+
+
+@tweets.post(
+    path=PathRoutes.TWEETS_ID_LIKE.value,
+    status_code=201,
+    response_model=ValidStatusModelTweet,
+)
+def tweet_like_by_id(
+    tweet_id: int,
+    api_key: Annotated[str, Depends(api_key_depend)],
+) -> ValidStatusModelTweet:
+    """
+    Like a tweet by ID.
+
+     **Headers**:
+    - `api_key (str)*`: API key for authentication.
+
+    **Path Parameters**:
+    - `tweet_id (int)`: The ID of the tweet to like.
+    """
+
+
+@tweets.delete(
+    path=PathRoutes.TWEETS_DEL_LIKE_BY_ID.value,
+    response_model=ValidStatusModelTweet,
+)
+def delete_like_by_id(
+    tweet_id: int,
+    api_key: Annotated[str, Depends(api_key_depend)],
+) -> ValidStatusModelTweet:
+    """
+    Delete a like of tweet by ID.
+
+     **Headers**:
+    - `api_key (str)*`: API key for authentication.
+
+    **Path Parameters**:
+    - `tweet_id (int)`: The ID of the like of tweet to delete.
+    """
+    # Заглушка для возвращаемого значения
+    return ValidStatusModelTweet()
