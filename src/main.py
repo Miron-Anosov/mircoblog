@@ -15,23 +15,20 @@ Functional ability:
 
 """
 
-from sys import prefix
-
 import uvicorn
 from fastapi import FastAPI
 
 from back_core.controllers.media import media
 from back_core.controllers.tweets import tweets
 from settings import swagger_info
-from settings.settings import settings
 
 
 def create_app() -> FastAPI:
     """Maker FastAPI."""
     app_ = FastAPI(
-        title="MicroBlog API",
+        title=swagger_info.TITLE,
         description=swagger_info.DESCRIPTION,
-        version="0.1.0",
+        version=swagger_info.VERSION_API,
         openapi_tags=swagger_info.TAGS_METADATA,
         contact=swagger_info.CONTACT,
         servers=swagger_info.SERVERS,
