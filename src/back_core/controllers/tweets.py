@@ -2,18 +2,22 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, Header
+from fastapi import APIRouter, Depends
 
-from ..validators.validation_post_new_tweet import ValidPostModelNewTweetInput
+from ..validators.validation_post_new_tweet import (
+    ValidPostModelNewTweetInput,
+    ValidPostModelNewTweetOutput,
+)
+from .controller_dependends.http_handler_api_key import api_key_depend
 
 tweets = APIRouter(tags=["Tweets"])
 
 
-@tweets.post("/tweets")
+@tweets.post("/tweets", status_code=201)
 def post_new_tweet(
     tweet: ValidPostModelNewTweetInput,
-    api_key: Annotated[str | None, Header()] = None,
-):
+    api_key: Annotated[str, Depends(api_key_depend)],
+) -> ValidPostModelNewTweetOutput:
     """
     Create a new tweet.
 
