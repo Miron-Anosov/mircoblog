@@ -37,8 +37,8 @@ class ValidPostModelNewTweetOutput(pydantic.BaseModel):
     )
 
 
-class ValidDeleteModelTweet(pydantic.BaseModel):
-    """**Movel validate response DELETE /tweets**.
+class ValidStatusModelTweet(pydantic.BaseModel):
+    """**Movel validate response status  /tweets**.
 
     - `result`: bool : Successful or unsuccessful.
 
