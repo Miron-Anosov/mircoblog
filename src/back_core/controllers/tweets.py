@@ -2,7 +2,7 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 
 from ..settings.routes_path import PathRoutes
 from ..validators.validation_tweet import (
@@ -17,7 +17,7 @@ tweets = APIRouter(tags=["Tweets"], prefix=PathRoutes.PREFIX.value)
 
 @tweets.post(
     path=PathRoutes.TWEETS.value,
-    status_code=201,
+    status_code=status.HTTP_201_CREATED,
     response_model=ValidPostModelNewTweetOutput,
 )
 def post_new_tweet(
@@ -67,8 +67,8 @@ def delete_post_by_id(
 
 
 @tweets.post(
-    path=PathRoutes.TWEETS_ID_LIKE.value,
-    status_code=201,
+    path=PathRoutes.TWEETS_POST_DEL_ID_LIKE.value,
+    status_code=status.HTTP_201_CREATED,
     response_model=ValidStatusModelTweet,
 )
 def tweet_like_by_id(
@@ -87,7 +87,7 @@ def tweet_like_by_id(
 
 
 @tweets.delete(
-    path=PathRoutes.TWEETS_DEL_LIKE_BY_ID.value,
+    path=PathRoutes.TWEETS_POST_DEL_ID_LIKE.value,
     response_model=ValidStatusModelTweet,
 )
 def delete_like_by_id(
