@@ -19,7 +19,7 @@ import uvicorn
 from fastapi import FastAPI
 
 from back_core.controllers.media import media
-from back_core.controllers.tweets import tweets
+from back_core.controllers.tweets_controllers.main_tweets import tweets
 from back_core.controllers.users import users
 from back_core.settings import swagger_info
 
@@ -34,7 +34,6 @@ def create_app() -> FastAPI:
         contact=swagger_info.CONTACT,
         servers=swagger_info.SERVERS,
         summary=swagger_info.SUMMARY,
-        prefix="/api",
     )
 
     app_.include_router(router=media)
@@ -51,5 +50,4 @@ if __name__ == "__main__":
         port=8001,
         log_level="info",
         factory=True,
-        # uds='./web_socks_backend'
     )
