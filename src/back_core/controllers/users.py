@@ -33,7 +33,7 @@ def follow_users(
 
 @users.delete(
     path=PathRoutes.USERS_FOLLOW_BY_ID.value,
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_200_OK,
 )
 def follow_users_delete(
     user_id: int,
