@@ -40,8 +40,8 @@ class ValidPostModelNewTweetOutput(pydantic.BaseModel):
     )
 
 
-class ValidStatusModelTweet(pydantic.BaseModel):
-    """**Movel validate response status  /tweets**.
+class ValidStatusModelTweetOrUser(pydantic.BaseModel):
+    """**Movel validate response status  /tweets /users**.
 
     - `result`: bool : Successful or unsuccessful.
 
