@@ -5,7 +5,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, status
 
 from ..settings.routes_path import PathRoutes
-from ..validators.validation_tweet import (
+from ..validators.valid_tweet import (
+    ValidGETModelTweet,
     ValidPostModelNewTweetInput,
     ValidPostModelNewTweetOutput,
     ValidStatusModelTweet,
@@ -105,3 +106,16 @@ def delete_like_by_id(
     """
     # Заглушка для возвращаемого значения
     return ValidStatusModelTweet()
+
+
+@tweets.get(path=PathRoutes.TWEETS.value)
+def get_tweets(
+    api_key: Annotated[str, Depends(api_key_depend)],
+) -> ValidGETModelTweet:
+    """
+    Get tweets.
+
+     **Headers**:
+    - `api_key (str)*`: API key for authentication.
+    """
+    pass
