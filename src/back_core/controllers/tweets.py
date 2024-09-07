@@ -9,7 +9,7 @@ from ..validators.valid_tweet import (
     ValidGETModelTweet,
     ValidPostModelNewTweetInput,
     ValidPostModelNewTweetOutput,
-    ValidStatusModelTweet,
+    ValidStatusModelTweetOrUser,
 )
 from .controller_dependends.http_handler_api_key import api_key_depend
 
@@ -48,12 +48,12 @@ def post_new_tweet(
 
 @tweets.delete(
     path=PathRoutes.TWEETS_DEL_BY_ID.value,
-    response_model=ValidStatusModelTweet,
+    response_model=ValidStatusModelTweetOrUser,
 )
 def delete_post_by_id(
-    tweet_id: int,
+    tweet_id: str,
     api_key: Annotated[str, Depends(api_key_depend)],
-) -> ValidStatusModelTweet:
+) -> ValidStatusModelTweetOrUser:
     """
     Delete a tweet by ID.
 
@@ -63,19 +63,18 @@ def delete_post_by_id(
     **Path Parameters**:
     - `tweet_id (int)`: The ID of the tweet to delete.
     """
-    # Заглушка для возвращаемого значения
-    return ValidStatusModelTweet()
+    return ValidStatusModelTweetOrUser()  # TODO: заглушка, прикрутить CRUD
 
 
 @tweets.post(
     path=PathRoutes.TWEETS_POST_DEL_ID_LIKE.value,
     status_code=status.HTTP_201_CREATED,
-    response_model=ValidStatusModelTweet,
+    response_model=ValidStatusModelTweetOrUser,
 )
 def tweet_like_by_id(
-    tweet_id: int,
+    tweet_id: str,
     api_key: Annotated[str, Depends(api_key_depend)],
-) -> ValidStatusModelTweet:
+) -> ValidStatusModelTweetOrUser:
     """
     Like a tweet by ID.
 
@@ -85,16 +84,17 @@ def tweet_like_by_id(
     **Path Parameters**:
     - `tweet_id (int)`: The ID of the tweet to like.
     """
+    return ValidStatusModelTweetOrUser()  # TODO: заглушка, прикрутить CRUD
 
 
 @tweets.delete(
     path=PathRoutes.TWEETS_POST_DEL_ID_LIKE.value,
-    response_model=ValidStatusModelTweet,
+    response_model=ValidStatusModelTweetOrUser,
 )
 def delete_like_by_id(
-    tweet_id: int,
+    tweet_id: str,
     api_key: Annotated[str, Depends(api_key_depend)],
-) -> ValidStatusModelTweet:
+) -> ValidStatusModelTweetOrUser:
     """
     Delete a like of tweet by ID.
 
@@ -105,7 +105,7 @@ def delete_like_by_id(
     - `tweet_id (int)`: The ID of the like of tweet to delete.
     """
     # Заглушка для возвращаемого значения
-    return ValidStatusModelTweet()
+    return ValidStatusModelTweetOrUser()  # TODO: заглушка, прикрутить CRUD
 
 
 @tweets.get(path=PathRoutes.TWEETS.value)
@@ -118,4 +118,4 @@ def get_tweets(
      **Headers**:
     - `api_key (str)*`: API key for authentication.
     """
-    pass
+    return ValidGETModelTweet()  # TODO: заглушка, прикрутить CRUD
