@@ -1,26 +1,41 @@
 """API path."""
 
-import enum
-
+ID = "{id}"
 # path /api/tweets
 TWEETS_PATH = "/tweets"
-TWEET_ID = "{tweet_id}"
 LIKE = "like"
 
 # path /api/users
 USERS_PATH = "/users"  # POST /api/users/<id>/follow
-USER_ID = "{id}"
 FOLLOW = "follow"
 
 
-class PathRoutes(enum.Enum):
+class PathRoutes:
     """Central storage all paths.
 
     If you need to change a path anywhere, you can do it here.
     """
 
     PREFIX = "/api"
+
+
+class TweetsRoutes(PathRoutes):
+    """Tweets storage all paths.
+
+    If you need to change a path anywhere, you can do it here.
+    """
+
+    TAG = "Tweets"
     TWEETS = f"{TWEETS_PATH}"
-    TWEETS_POST_DEL_ID_LIKE = f"{TWEETS_PATH}/{TWEET_ID}/{LIKE}"
-    TWEETS_DEL_BY_ID = f"{TWEETS_PATH}/{TWEET_ID}"
-    USERS_FOLLOW_BY_ID = f"{USERS_PATH}/{USER_ID}/{FOLLOW}"
+    TWEETS_POST_DEL_ID_LIKE = f"{TWEETS_PATH}/{ID}/{LIKE}"
+    TWEETS_DEL_BY_ID = f"{TWEETS_PATH}/{ID}"
+
+
+class UsersRoutes(PathRoutes):
+    """Users storage all paths.
+
+    If you need to change a path anywhere, you can do it here.
+    """
+
+    TAG = "Users"
+    USERS_FOLLOW_BY_ID = f"{USERS_PATH}/{ID}/{FOLLOW}"
