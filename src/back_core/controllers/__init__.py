@@ -14,4 +14,6 @@ This package provides API endpoints for the MicroBlog application.
         users:
          - POST /api/users/<id>/follow
          - DELETE /api/users/<id>/follow
+         - GET /api/users/me
+         - GET /api/users/<id>
 """
