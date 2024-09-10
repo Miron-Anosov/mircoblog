@@ -3,8 +3,10 @@
 Delete tweet.
 """
 
+from back_core.validators import StatusResponse
 
-def del_tweet_by_id(tweet_id: str):
+
+async def del_tweet_by_id(tweet_id: str) -> StatusResponse:
     """
     Delete a tweet by ID.
 

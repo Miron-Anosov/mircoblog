@@ -3,10 +3,10 @@
 Create a new tweet.
 """
 
-from back_core.validators.valid_tweet import ValidPostModelNewTweetInput
+from back_core.validators import PostNewTweet, ReturnNewTweet
 
 
-def post_new_tweet(tweet: ValidPostModelNewTweetInput):
+async def post_new_tweet(tweet: PostNewTweet) -> ReturnNewTweet:
     """
     Create a new tweet.
 

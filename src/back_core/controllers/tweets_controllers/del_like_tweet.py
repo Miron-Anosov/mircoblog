@@ -3,8 +3,10 @@
 del like of tweet.
 """
 
+from back_core.validators import StatusResponse
 
-def del_like_tweet_by_id(tweet_id: str):
+
+async def del_like_tweet_by_id(tweet_id: str) -> StatusResponse:
     """
     Del Like a tweet by ID.
 
@@ -14,4 +16,4 @@ def del_like_tweet_by_id(tweet_id: str):
     **Path Parameters**:
     - `tweet_id (int)`: The ID of the tweet to delete.
     """
-    return  # TODO: заглушка, прикрутить CRUD
+    return StatusResponse()
