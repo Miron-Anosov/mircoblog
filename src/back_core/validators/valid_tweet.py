@@ -22,6 +22,7 @@ class ValidPostModelNewTweetInput(pydantic.BaseModel):
     tweet_media_ids: list[int] | None = pydantic.Field(
         strict=False, description="Array tweet IDs"
     )
+    model_config = pydantic.ConfigDict(title="Tweet Request")
 
 
 class ValidPostModelNewTweetOutput(pydantic.BaseModel):
@@ -39,8 +40,10 @@ class ValidPostModelNewTweetOutput(pydantic.BaseModel):
         description="Unique identifier for " "the tweet.",
     )
 
+    model_config = pydantic.ConfigDict(title="Tweet Response")
 
-class ValidStatusModelTweetOrUser(pydantic.BaseModel):
+
+class ValidStatusResponse(pydantic.BaseModel):
     """**Movel validate response status  /tweets /users**.
 
     - `result`: bool : Successful or unsuccessful.
@@ -48,6 +51,7 @@ class ValidStatusModelTweetOrUser(pydantic.BaseModel):
     """
 
     result: bool = True
+    model_config = pydantic.ConfigDict(title="Status OK")
 
 
 class ValidGETModelTweet(pydantic.BaseModel):
@@ -81,6 +85,7 @@ class ValidGETModelTweet(pydantic.BaseModel):
 
     model_config = pydantic.ConfigDict(
         from_attributes=True,
+        title="Get Tweets Response",
         json_schema_extra={
             "example": {
                 "result": True,
