@@ -40,7 +40,16 @@ class InfoSettingMix(BaseSettings):
     CONTACT_EMAIL: EmailStr
 
 
-class ProdSettings(CommonSettings, InfoSettingMix):
+class EnvironmentSettingMix(BaseSettings):
+    """EnvironmentSettingMix uses type mode.
+
+    MODE: str : TEST, PROD or something else.
+    """
+
+    MODE: str = Field(min_length=2)
+
+
+class ProdSettings(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
     """Production environments are deploy.
 
     Environments params:
