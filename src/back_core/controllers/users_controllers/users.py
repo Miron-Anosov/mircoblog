@@ -1,13 +1,14 @@
-"""User routes."""
+"""Users routes."""
 
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
-from ..settings.routes_path import UsersRoutes
-from ..validators.valid_tweet import ValidStatusResponse
-from ..validators.valid_user import ValidUserModel
-from .controller_depends.http_handler_api_key import api_key_depend
+from back_core.settings.routes_path import UsersRoutes
+from back_core.validators.valid_tweet import ValidStatusResponse
+from back_core.validators.valid_user import ValidUserModel
+
+from ..controller_depends.http_handler_api_key import api_key_depend
 
 users = APIRouter(tags=[UsersRoutes.TAG], prefix=UsersRoutes.PREFIX)
 
