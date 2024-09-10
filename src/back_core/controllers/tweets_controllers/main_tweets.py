@@ -18,11 +18,16 @@ from .get_tweets import get_tweets
 from .post_like_tweet import post_like_by_id
 from .post_new_tweet import post_new_tweet
 
-tweets = APIRouter(
-    tags=[TweetsRoutes.TAG],
-    prefix=TweetsRoutes.PREFIX,
-)
 
+def create_tweets_route() -> APIRouter:
+    """Create tweets' routes."""
+    return APIRouter(
+        tags=[TweetsRoutes.TAG],
+        prefix=TweetsRoutes.PREFIX,
+    )
+
+
+tweets = create_tweets_route()
 
 common_depends = [Depends(api_key_depend)]
 
