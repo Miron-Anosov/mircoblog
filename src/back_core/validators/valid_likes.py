@@ -7,9 +7,10 @@ import pydantic
 
 
 class ValidLikeModel(pydantic.BaseModel):
-    """Model for tweet likes."""
+    """**Likes of tweet**."""
 
     user_id: int = pydantic.Field(
         ..., description="User's unique ID who liked the tweet"
     )
     name: str = pydantic.Field(..., description="User's name")
+    model_config = pydantic.ConfigDict(title="Like Tweet")

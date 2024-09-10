@@ -16,3 +16,5 @@ class ValidUserModel(pydantic.BaseModel):
         description="Author's unique ID",
     )
     name: str = pydantic.Field(..., description="Author's name")
+
+    model_config = pydantic.ConfigDict(title="User")
