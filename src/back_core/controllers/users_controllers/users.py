@@ -4,16 +4,16 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
-from ..settings.routes_path import PathRoutes
-from ..validators.valid_tweet import ValidStatusModelTweetOrUser
+from ..settings.routes_path import UsersRoutes
+from ..validators.valid_tweet import ValidStatusResponse
 from ..validators.valid_user import ValidUserModel
-from .controller_dependends.http_handler_api_key import api_key_depend
+from .controller_depends.http_handler_api_key import api_key_depend
 
-users = APIRouter(tags=["Users"], prefix=PathRoutes.PREFIX.value)
+users = APIRouter(tags=[UsersRoutes.TAG], prefix=UsersRoutes.PREFIX)
 
 
 @users.post(
-    path=PathRoutes.USERS_FOLLOW_BY_ID.value,
+    path=UsersRoutes.USERS_FOLLOW_BY_ID,
     status_code=status.HTTP_201_CREATED,
 )
 def follow_users(
@@ -34,13 +34,13 @@ def follow_users(
 
 
 @users.delete(
-    path=PathRoutes.USERS_FOLLOW_BY_ID.value,
+    path=UsersRoutes.USERS_FOLLOW_BY_ID,
     status_code=status.HTTP_200_OK,
 )
 def follow_users_delete(
     user_id: str,
     api_key: Annotated[str, Depends(api_key_depend)],
-) -> ValidStatusModelTweetOrUser:
+) -> ValidStatusResponse:
     """
     Unfollow any user by ID.
 
@@ -51,4 +51,4 @@ def follow_users_delete(
     - `user_id (int)`: The ID of the user following.
 
     """
-    return ValidStatusModelTweetOrUser()
+    return ValidStatusResponse()
