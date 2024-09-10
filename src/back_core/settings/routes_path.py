@@ -39,3 +39,4 @@ class UsersRoutes(PathRoutes):
 
     TAG = "Users"
     USERS_FOLLOW_BY_ID = f"{USERS_PATH}/{ID}/{FOLLOW}"
+    GET = f"{USERS_PATH}/me"
