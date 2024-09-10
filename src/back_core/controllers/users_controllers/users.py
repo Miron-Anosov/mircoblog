@@ -6,11 +6,17 @@ from fastapi import APIRouter, Depends, status
 
 from back_core.settings.routes_path import UsersRoutes
 from back_core.validators.valid_tweet import ValidStatusResponse
-from back_core.validators.valid_user import ValidUserModel
+from back_core.validators.valid_user import ValidateUserProfile, ValidUserModel
 
 from ..controller_depends.http_handler_api_key import api_key_depend
 
-users = APIRouter(tags=[UsersRoutes.TAG], prefix=UsersRoutes.PREFIX)
+
+def create_user_route() -> APIRouter:
+    """Create user's routes."""
+    return APIRouter(tags=[UsersRoutes.TAG], prefix=UsersRoutes.PREFIX)
+
+
+users = create_user_route()
 
 
 @users.post(
@@ -53,3 +59,20 @@ def follow_users_delete(
 
     """
     return ValidStatusResponse()
+
+
+@users.get(
+    path=UsersRoutes.GET,
+    status_code=status.HTTP_200_OK,
+)
+def get_user_profile(
+    api_key: Annotated[str, Depends(api_key_depend)],
+) -> ValidateUserProfile:
+    """
+    Get user profile.
+
+    **Headers**:
+    - `api_key (str)*`: API key for authentication.
+
+    """
+    return ValidateUserProfile()
