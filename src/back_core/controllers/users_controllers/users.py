@@ -1,22 +1,31 @@
-"""Users routes."""
+"""Users routes.
+
+Routes:
+    - POST /api/users/<id>/follow
+    - GET /api/users/me
+    - GET /api/users/<id>
+"""
 
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
 from back_core.settings.routes_path import UsersRoutes
-from back_core.validators.valid_tweet import ValidStatusResponse
-from back_core.validators.valid_user import ValidateUserProfile, ValidUserModel
+from back_core.validators import StatusResponse, User, UserProfile
 
 from ..controller_depends.http_handler_api_key import api_key_depend
 
 
 def create_user_route() -> APIRouter:
-    """Create user's routes."""
+    """Create user's routes.
+
+    Return:
+        APIRouter
+    """
     return APIRouter(tags=[UsersRoutes.TAG], prefix=UsersRoutes.PREFIX)
 
 
-users = create_user_route()
+users: APIRouter = create_user_route()
 
 
 @users.post(
@@ -26,7 +35,7 @@ users = create_user_route()
 def follow_users(
     user_id: str,
     api_key: Annotated[str, Depends(api_key_depend)],
-) -> ValidUserModel:
+) -> StatusResponse:
     """
     Follow a new user by ID.
 
@@ -47,7 +56,7 @@ def follow_users(
 def follow_users_delete(
     user_id: str,
     api_key: Annotated[str, Depends(api_key_depend)],
-) -> ValidStatusResponse:
+) -> StatusResponse:
     """
     Unfollow any user by ID.
 
@@ -58,7 +67,7 @@ def follow_users_delete(
     - `user_id (int)`: The ID of the user following.
 
     """
-    return ValidStatusResponse()
+    return StatusResponse()
 
 
 @users.get(
@@ -67,7 +76,7 @@ def follow_users_delete(
 )
 def get_user_profile(
     api_key: Annotated[str, Depends(api_key_depend)],
-) -> ValidateUserProfile:
+) -> UserProfile:
     """
     Get user profile.
 
@@ -75,4 +84,4 @@ def get_user_profile(
     - `api_key (str)*`: API key for authentication.
 
     """
-    return ValidateUserProfile()
+    return UserProfile()

@@ -3,8 +3,10 @@
 Create like of tweet.
 """
 
+from back_core.validators import StatusResponse
 
-def post_like_by_id(tweet_id: str):
+
+async def post_like_by_id(tweet_id: str) -> StatusResponse:
     """
     Like a tweet by ID.
 
@@ -14,4 +16,4 @@ def post_like_by_id(tweet_id: str):
     **Path Parameters**:
     - `tweet_id (int)`: The ID of the tweet to like.
     """
-    return  # TODO: заглушка, прикрутить CRUD
+    pass  # TODO: заглушка, прикрутить CRUD
