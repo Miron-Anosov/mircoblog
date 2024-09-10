@@ -50,12 +50,10 @@ class ValidateUserProfile(pydantic.BaseModel):
     result: bool
     user: ValidModelGetMe
 
-    class Config:
-        """Config schema users' profile."""
-
-        title = "User's profile"
-        from_attributes = True
-        json_schema_extra = {
+    model_config = pydantic.ConfigDict(
+        title="User's profile",
+        from_attributes=True,
+        json_schema_extra={
             "example": {
                 "result": True,
                 "user": {
@@ -75,4 +73,5 @@ class ValidateUserProfile(pydantic.BaseModel):
                     ],
                 },
             }
-        }
+        },
+    )
