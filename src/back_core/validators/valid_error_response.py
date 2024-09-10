@@ -4,7 +4,7 @@ import pydantic
 
 
 class ValidErrorResponse(pydantic.BaseModel):
-    """Response error model.
+    """Response error.
 
     If Api will have any errors, it will send to client.
     """
@@ -12,3 +12,5 @@ class ValidErrorResponse(pydantic.BaseModel):
     result: bool
     error_type: str
     error_message: str
+
+    model_config = pydantic.ConfigDict(title="Bad Request")
