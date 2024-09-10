@@ -1,4 +1,4 @@
-"""Validator models for /tweets.
+"""Validator models for GET /tweets.
 
 You can see route to /src/back_core/controllers/tweets.py
 """
@@ -11,47 +11,45 @@ from .valid_likes import ValidLikeModel
 from .valid_user import ValidUserModel
 
 
-class ValidPostModelNewTweetInput(pydantic.BaseModel):
-    """**Model validate input date from route POST /tweets**.
+class ValidDataGetTweetOutput(pydantic.BaseModel):
+    """**Model validate input date from route Get /tweets**.
 
-    - `tweet_data`: str: Data post tweet.
-    - `tweet_media_ids`: Pictures id with tweet.
+    - `tweet_data`: str: Data of tweet.
+    - `tweet_id`: Tweet ID.
+    - `attachments`: list: List of URLs (optional)
     """
 
-    tweet_data: str = pydantic.Field(description="Message to new post")
-    tweet_media_ids: list[int] | None = pydantic.Field(
-        strict=False, description="Array tweet IDs"
-    )
-    model_config = pydantic.ConfigDict(title="Tweet Request")
-
-
-class ValidPostModelNewTweetOutput(pydantic.BaseModel):
-    """**Movel validate response POST /tweets**.
-
-    - `result`: bool : Successful or unsuccessful.
-    - `tweet_id`: UUID : Unique identifier for the tweet.
-    """
-
-    result: bool = pydantic.Field(
-        description="Successful or unsuccessful",
-    )
+    tweet_data: str = pydantic.Field(description="Content")
     tweet_id: uuid.UUID = pydantic.Field(
         default_factory=uuid.uuid4,
-        description="Unique identifier for " "the tweet.",
+        description="Unique identifier for the tweet.",
     )
 
-    model_config = pydantic.ConfigDict(title="Tweet Response")
+    attachments: list[str] | None = pydantic.Field(
+        default=None, description="List of URLs (optional)"
+    )
+
+    model_config = pydantic.ConfigDict(title="Tweet Content")
 
 
-class ValidStatusResponse(pydantic.BaseModel):
-    """**Movel validate response status  /tweets /users**.
+class DataGetTweets(pydantic.BaseModel):
+    """**Data response tweets**.
 
-    - `result`: bool : Successful or unsuccessful.
-
+    - `tweets` : list[ValidDataGetTweetOutput]
+    - `author` : ValidUserModel
+    - `likes` : list[ValidLikeModel]
     """
 
-    result: bool = True
-    model_config = pydantic.ConfigDict(title="Status OK")
+    tweets: list[ValidDataGetTweetOutput] = pydantic.Field(
+        ..., description="Content of the tweet"
+    )
+    author: ValidUserModel
+    likes: list[ValidLikeModel]
+
+    model_config = pydantic.ConfigDict(
+        from_attributes=True,
+        title="Tweets' Data Array",
+    )
 
 
 class ValidGETModelTweet(pydantic.BaseModel):
@@ -72,16 +70,7 @@ class ValidGETModelTweet(pydantic.BaseModel):
     """
 
     result: bool
-    content: str = pydantic.Field(..., description="Content of the tweet")
-    attachments: list[pydantic.HttpUrl] | None = pydantic.Field(
-        None, description="List of attachment links for the tweet"
-    )
-    author: ValidUserModel = pydantic.Field(
-        ..., description="Author of the tweet"
-    )
-    likes: list[ValidLikeModel] | None = pydantic.Field(
-        [], description="List of users who liked the tweet"
-    )
+    tweets: DataGetTweets
 
     model_config = pydantic.ConfigDict(
         from_attributes=True,

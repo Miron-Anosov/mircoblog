@@ -1,11 +1,13 @@
 """GET /tweets/."""
 
+from back_core.validators import GetAllTweets
 
-def get_tweets():
+
+async def get_tweets() -> GetAllTweets:
     """
     Get tweets.
 
      **Headers**:
     - `api_key (str)*`: API key for authentication.
     """
-    return  # TODO: заглушка, прикрутить CRUD
+    pass  # TODO: заглушка, прикрутить CRUD
