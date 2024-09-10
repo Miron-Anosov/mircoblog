@@ -9,7 +9,7 @@ GET
 Get Tweets
 
 DELETE
-/api/tweets
+/api/tweets/{id}
 Del Like Tweet By Id
 
 DELETE
