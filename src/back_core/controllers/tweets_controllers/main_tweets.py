@@ -13,8 +13,12 @@ from typing import Sequence
 
 from fastapi import APIRouter, Depends, status
 
-from back_core.settings.routes_path import TweetsRoutes
-from back_core.validators import GetAllTweets, ReturnNewTweet, StatusResponse
+from src.back_core.settings.routes_path import TweetsRoutes
+from src.back_core.validators import (
+    GetAllTweets,
+    ReturnNewTweet,
+    StatusResponse,
+)
 
 from ..controller_depends.http_handler_api_key import api_key_depend
 from .del_like_tweet import del_like_tweet_by_id
