@@ -1,7 +1,5 @@
 """Common data for tests."""
 
-from src.back_core.validators.valid_user import ValidateUserProfile
-
 user_data = {
     "result": True,
     "user": {
@@ -22,4 +20,27 @@ user_data = {
     },
 }
 
-ValidateUserProfile_fake_user_profile = ValidateUserProfile(**user_data)
+
+tweets_data = {
+    "result": True,
+    "tweets": [
+        {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "content": "This is a sample tweet",
+            "attachments": [
+                "/media/images/12345.jpg",
+                "/media/images/12346.jpg",
+            ],
+            "author": {
+                "id": "3fa85f64-4578-4562-b3fc-2c963f66afa6",
+                "name": "Author Name",
+            },
+            "likes": [
+                {
+                    "user_id": "3fa85f64-5555-4562-b3fc-2c963f66afa6",
+                    "name": "User1",
+                },
+            ],
+        },
+    ],
+}
