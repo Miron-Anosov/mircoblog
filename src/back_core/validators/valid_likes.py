@@ -3,14 +3,14 @@
 You can see route to /src/back_core/controllers/
 """
 
+import uuid
+
 import pydantic
 
 
 class ValidLikeModel(pydantic.BaseModel):
     """**Likes of tweet**."""
 
-    user_id: int = pydantic.Field(
-        ..., description="User's unique ID who liked the tweet"
-    )
+    user_id: uuid.UUID
     name: str = pydantic.Field(..., description="User's name")
     model_config = pydantic.ConfigDict(title="Like Tweet")
