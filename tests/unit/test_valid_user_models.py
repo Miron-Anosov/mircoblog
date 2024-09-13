@@ -4,15 +4,17 @@ import pytest
 from pydantic import ValidationError
 
 from src.back_core.validators.valid_user import ValidateUserProfile
-from tests.common_data import ValidateUserProfile_fake_user_profile
+from tests.common_data import user_data
 
 
-def test_user_profile_model():
+def test_user_profile_model() -> None:
     """Test user model."""
-    assert ValidateUserProfile_fake_user_profile.result is True
-    assert ValidateUserProfile_fake_user_profile.user.name == "Dick"
-    assert len(ValidateUserProfile_fake_user_profile.user.followers) == 1
-    assert len(ValidateUserProfile_fake_user_profile.user.following) == 1
+    assert ValidateUserProfile(**user_data)
+    user = ValidateUserProfile(**user_data)
+    assert user.result is True
+    assert user.user.name == "Dick"
+    assert len(user.user.followers) == 1
+    assert len(user.user.following) == 1
 
     invalid_data = {
         "result": "Not a boolean",
