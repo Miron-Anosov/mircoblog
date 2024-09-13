@@ -3,7 +3,7 @@
 Create like of tweet.
 """
 
-from back_core.validators import StatusResponse
+from src.back_core.validators import StatusResponse
 
 
 async def post_like_by_id(tweet_id: str) -> StatusResponse:

@@ -3,7 +3,7 @@
 Create a new tweet.
 """
 
-from back_core.validators import PostNewTweet, ReturnNewTweet
+from src.back_core.validators import PostNewTweet, ReturnNewTweet
 
 
 async def post_new_tweet(tweet: PostNewTweet) -> ReturnNewTweet:

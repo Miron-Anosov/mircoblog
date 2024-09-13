@@ -5,17 +5,12 @@ from pathlib import Path
 from .settings import settings
 
 SUMMARY = (
-    "This API working with MicroBlog data."
-    "Functional ability:\
-    - User can add new post.\
-    - User can delete him post.\
-    - User can follow another users.\
-    - User can unfollow another users.\
-    - User can mark post.\
-    - User can unmark post.\
-    - User can receive news from posts in descending\
-                                 order of popularity from users they follow.\
-    - A post can include a picture."
+    "Добро пожаловать в MicroBlog API! Это интерфейс для работы с данными\
+     микроблога, который позволяет вам легко управлять постами, медиафайлами\
+      и подписками на пользователей. Надеемся, что API будет удобным и \
+      полезным в вашей работе.\n\n"
+    "Если у вас возникнут вопросы или потребуется помощь,\
+     не стесняйтесь обращаться к нам по нижеуказанным контактам."
 )
 _file_description_path = Path(__file__).parent / "description.md"
 DESCRIPTION = Path(_file_description_path).read_text()
