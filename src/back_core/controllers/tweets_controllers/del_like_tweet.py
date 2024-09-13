@@ -3,7 +3,7 @@
 del like of tweet.
 """
 
-from back_core.validators import StatusResponse
+from src.back_core.validators import StatusResponse
 
 
 async def del_like_tweet_by_id(tweet_id: str) -> StatusResponse:
