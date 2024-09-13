@@ -18,7 +18,7 @@ Functional ability:
 import uvicorn
 from fastapi import FastAPI
 
-from back_core import media, swagger_info, tweets, users
+from src.back_core import media, swagger_info, tweets, users
 
 
 def create_app() -> FastAPI:
