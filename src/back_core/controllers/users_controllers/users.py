@@ -34,7 +34,7 @@ api_key: Sequence[Depends] = [Depends(api_key_depend)]
     status_code=status.HTTP_201_CREATED,
     dependencies=api_key,
 )
-def follow_users(user_id: str) -> StatusResponse:
+async def follow_users(user_id: str) -> StatusResponse:
     """
     Follow a new user by ID.
 
@@ -54,7 +54,7 @@ def follow_users(user_id: str) -> StatusResponse:
     status_code=status.HTTP_200_OK,
     dependencies=api_key,
 )
-def follow_users_delete(user_id: str) -> StatusResponse:
+async def follow_users_delete(user_id: str) -> StatusResponse:
     """
     Unfollow any user by ID.
 
@@ -75,7 +75,7 @@ def follow_users_delete(user_id: str) -> StatusResponse:
     response_model=UserProfile,
     dependencies=api_key,
 )
-def get_user_profile():
+async def get_user_profile():
     """
     Get user profile.
 
@@ -93,7 +93,7 @@ def get_user_profile():
     dependencies=api_key,
     response_model=UserProfile,
 )
-def get_user_profile_by_id():
+async def get_user_profile_by_id(id_: int):
     """
     Get user profile.
 
