@@ -8,7 +8,7 @@ from httpx import AsyncClient
 
 from src.back_core.settings.routes_path import UsersRoutes
 from src.back_core.validators.valid_user import ValidateUserProfile
-from tests.common_data import user_data
+from tests.common_data import valid_user_data
 
 
 @pytest.mark.asyncio
