@@ -15,7 +15,9 @@ class ValidPostModelNewTweetInput(pydantic.BaseModel):
     - `tweet_media_ids`: Pictures id with tweet.
     """
 
-    tweet_data: str = pydantic.Field(description="Message to new post")
+    tweet_data: str = pydantic.Field(
+        description="Message to new post", min_length=1
+    )
     tweet_media_ids: list[int] | None = pydantic.Field(
         default=None, strict=False, description="Array tweet IDs"
     )
