@@ -6,8 +6,22 @@ from typing import Any, Dict, List, cast
 import pytest
 from pydantic import ValidationError
 
-from src.back_core.validators.valid_get_tweets import ValidGETModelTweet
-from tests.common_data import tweets_data
+from src.back_core.validators.valid_get_tweets import (
+    ValidateGetTweet,
+    ValidGETModelTweet,
+)
+from src.back_core.validators.valid_post_tweet import (
+    ValidPostModelNewTweetInput,
+    ValidPostModelNewTweetOutput,
+)
+from tests.common_data import (
+    invalid_data_tweet,
+    invalid_post_new_tweet_response,
+    invalid_tweet,
+    tweets_data,
+    valid_post_new_tweet_response,
+    valid_tweet,
+)
 
 
 def test_get_models_tweet() -> None:
@@ -30,29 +44,8 @@ def test_get_models_tweet() -> None:
 
 def test_invalid_get_models_tweet() -> None:
     """Test ValidGETModelTweet with invalid data."""
-    invalid_data = {
-        "result": "Not a boolean",
-        "tweets": [
-            {
-                "id": "invalid-uuid",
-                "content": 123,  # Should be a string
-                "attachments": "Not a list",
-                "author": {
-                    "id": "invalid-uuid",
-                    "name": 456,  # Should be a string
-                },
-                "likes": [
-                    {
-                        "user_id": "invalid-uuid",
-                        "name": 789,  # Should be a string
-                    },
-                ],
-            },
-        ],
-    }
-
     with pytest.raises(ValidationError):
-        ValidGETModelTweet(**invalid_data)
+        ValidGETModelTweet(**invalid_data_tweet)
 
 
 def test_empty_tweets_list() -> None:
@@ -78,3 +71,31 @@ def test_multiple_tweets() -> None:
         assert tweets.result is True
         assert len(tweets.tweets) == 2
         assert tweets.tweets[0].content == tweets.tweets[1].content
+
+
+def test_valid_model_get_tweet() -> None:
+    """Test ValidModelGetMe."""
+    with pytest.raises(ValidationError):
+        ValidateGetTweet(**invalid_tweet)
+    assert ValidateGetTweet(**valid_tweet)
+
+
+def test_valid_post_model_new_tweet_output() -> None:
+    """Test ValidPostModelNewTweetOutput."""
+    assert ValidPostModelNewTweetOutput(**valid_post_new_tweet_response)
+    with pytest.raises(ValidationError):
+        ValidPostModelNewTweetOutput(**invalid_post_new_tweet_response)
+
+
+def test_valid_post_model_new_tweet_intput() -> None:
+    """Test ValidPostModelNewTweetInput."""
+    assert ValidPostModelNewTweetInput(
+        **{"tweet_data": "string", "tweet_media_ids": []}
+    )
+    assert ValidPostModelNewTweetInput(
+        **{"tweet_data": "string", "tweet_media_ids": [1, 2, 3]}
+    )
+    with pytest.raises(ValidationError):
+        ValidPostModelNewTweetInput(
+            **{"tweet_data": "", "tweet_media_ids": [1, 2, 3]}
+        )

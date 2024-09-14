@@ -29,8 +29,8 @@ class ValidModelGetMe(pydantic.BaseModel):
 
     id: uuid.UUID
     name: str
-    followers: list[ValidUserModel]
-    following: list[ValidUserModel]
+    followers: list[ValidUserModel | None]
+    following: list[ValidUserModel | None]
 
 
 class ValidateUserProfile(pydantic.BaseModel):

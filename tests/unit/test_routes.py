@@ -25,14 +25,14 @@ from src.back_core.controllers.users_controllers.users import (
     get_user_profile_by_id,
 )
 from src.back_core.validators.valid_user import ValidateUserProfile
-from tests.common_data import tweets_data, user_data
+from tests.common_data import tweets_data, valid_user_data
 
 
 @pytest.mark.asyncio
 @pytest.mark.mock
 async def test_get_user_profile_with_mocked_data_and_api_key():
     """Test func with moke."""
-    mocked_profile = ValidateUserProfile(**user_data)
+    mocked_profile = ValidateUserProfile(**valid_user_data)
     trg = "src.back_core.controllers.users_controllers.users.get_user_profile"
     with patch(
         target=trg,
@@ -49,7 +49,7 @@ async def test_get_user_profile() -> None:
     """Test too many positional arguments."""
     mock_user_prof = create_autospec(
         get_user_profile,
-        return_value=AsyncMock(return_value=user_data),
+        return_value=AsyncMock(return_value=valid_user_data),
     )
     assert await cast(AsyncMock, mock_user_prof)()
     with pytest.raises(TypeError):
@@ -61,7 +61,7 @@ async def test_get_user_profile() -> None:
 async def test_follow_users_delete() -> None:
     """Test too many positional arguments."""
     mock_follow_users_delete = create_autospec(
-        follow_users_delete, return_value=user_data
+        follow_users_delete, return_value=valid_user_data
     )
     with pytest.raises(TypeError):
         assert mock_follow_users_delete()
@@ -72,7 +72,9 @@ async def test_follow_users_delete() -> None:
 @pytest.mark.mock
 async def test_follow_users() -> None:
     """Test too many positional arguments."""
-    mock_follow_users = create_autospec(follow_users, return_value=user_data)
+    mock_follow_users = create_autospec(
+        follow_users, return_value=valid_user_data
+    )
     with pytest.raises(TypeError):
         assert await mock_follow_users()
     assert await mock_follow_users(user_id="any_user_id_str")
@@ -83,7 +85,7 @@ async def test_follow_users() -> None:
 async def test_get_user_profile_by_id() -> None:
     """Test too many positional arguments."""
     mock_get_user_profile_by_id = create_autospec(
-        get_user_profile_by_id, return_value=user_data
+        get_user_profile_by_id, return_value=valid_user_data
     )
     assert await mock_get_user_profile_by_id(id_="any_user_id_str")
     with pytest.raises(TypeError):
