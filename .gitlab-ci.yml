@@ -57,7 +57,14 @@ test:
     - echo $MODE
     - echo $LOG_LEVEL
     - echo $CONTACT_NAME
-    - echo POSTGRES_PORT
+    - echo $POSTGRES_DB
+    - echo $POSTGRES_HOST
+    - echo $POSTGRES_PASSWORD
+    - echo $POSTGRES_USER
+    - echo $POSTGRES_PORT
+    - echo $CONTACT_URL
+    - echo $ECHO
+    - echo $VERSION_API
     - pytest --cov=src --cov-report=term-missing --cov-report=xml:coverage.xml --junitxml=report.xml
     - pip install coverage-badge
     - coverage-badge -o coverage.svg -f
