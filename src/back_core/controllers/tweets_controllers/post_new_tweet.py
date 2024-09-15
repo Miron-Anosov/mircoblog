@@ -3,7 +3,7 @@
 Create a new tweet.
 """
 
-from back_core.validators import PostNewTweet, ReturnNewTweet
+from src.back_core.validators import PostNewTweet, ReturnNewTweet
 
 
 async def post_new_tweet(tweet: PostNewTweet) -> ReturnNewTweet:
@@ -15,7 +15,7 @@ async def post_new_tweet(tweet: PostNewTweet) -> ReturnNewTweet:
 
     **Body**:
     - `tweet_data (str)*`: The text content of the tweet.
-    - `tweet_media_ids (Array[int])`: A list of media IDs (e.g., images)<br>
+    - `tweet_media_ids (Array[int])`: A list of media IDs (e.g., images)
      associated with the tweet.
 
     **Notes**:

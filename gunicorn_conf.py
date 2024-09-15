@@ -12,7 +12,7 @@ bind = "unix:/tmp/gunicorn.sock"
 loglevel = "info"
 
 # Путь к приложению
-wsgi_app = "main:create_app()"
+wsgi_app = "src.main:create_app()"
 
 # Класс рабочего процесса
 worker_class = "uvicorn.workers.UvicornWorker"

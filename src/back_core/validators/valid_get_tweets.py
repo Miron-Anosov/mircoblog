@@ -11,44 +11,30 @@ from .valid_likes import ValidLikeModel
 from .valid_user import ValidUserModel
 
 
-class ValidDataGetTweetOutput(pydantic.BaseModel):
-    """**Model validate input date from route Get /tweets**.
-
-    - `tweet_data`: str: Data of tweet.
-    - `tweet_id`: Tweet ID.
-    - `attachments`: list: List of URLs (optional)
-    """
-
-    tweet_data: str = pydantic.Field(description="Content")
-    tweet_id: uuid.UUID = pydantic.Field(
-        default_factory=uuid.uuid4,
-        description="Unique identifier for the tweet.",
-    )
-
-    attachments: list[str] | None = pydantic.Field(
-        default=None, description="List of URLs (optional)"
-    )
-
-    model_config = pydantic.ConfigDict(title="Tweet Content")
-
-
-class DataGetTweets(pydantic.BaseModel):
+class ValidateGetTweet(pydantic.BaseModel):
     """**Data response tweets**.
 
+    - `id` : Unique identifier for the tweet
+    - `content` : User's data of tweet
     - `tweets` : list[ValidDataGetTweetOutput]
     - `author` : ValidUserModel
     - `likes` : list[ValidLikeModel]
     """
 
-    tweets: list[ValidDataGetTweetOutput] = pydantic.Field(
-        ..., description="Content of the tweet"
+    id: uuid.UUID = pydantic.Field(
+        default_factory=uuid.uuid4,
+        description="Unique identifier for the tweet.",
+    )
+    content: str
+    attachments: list[str] | None = pydantic.Field(
+        default=None, description="List of URLs (optional)"
     )
     author: ValidUserModel
     likes: list[ValidLikeModel]
 
     model_config = pydantic.ConfigDict(
         from_attributes=True,
-        title="Tweets' Data Array",
+        title="Tweet",
     )
 
 
@@ -70,7 +56,7 @@ class ValidGETModelTweet(pydantic.BaseModel):
     """
 
     result: bool
-    tweets: DataGetTweets
+    tweets: list[ValidateGetTweet]
 
     model_config = pydantic.ConfigDict(
         from_attributes=True,
@@ -80,19 +66,19 @@ class ValidGETModelTweet(pydantic.BaseModel):
                 "result": True,
                 "tweets": [
                     {
-                        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",  # noqa E501
+                        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
                         "content": "This is a sample tweet",
                         "attachments": [
                             "/media/images/12345.jpg",
                             "/media/images/12346.jpg",
                         ],
                         "author": {
-                            "id": "3fa85f64-4578-4562-b3fh-2c963867ytg4",  # noqa E501
+                            "id": "3fa85f64-4578-4562-b3fc-2c963f66afa6",
                             "name": "Author Name",
                         },
                         "likes": [
                             {
-                                "user_id": "3fa85f64-5555-4562-b3fc-2c963g66afb3",  # noqa E501
+                                "user_id": "3fa85f64-5555-4562-b3fc-2c963f66afa6",  # noqa E501
                                 "name": "User1",
                             },
                         ],

@@ -12,7 +12,6 @@ before_script:
   - poetry install
 
 
-
 stages:
 #  - build
   - test
