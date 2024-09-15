@@ -79,7 +79,9 @@ class ProdSettings(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
 
     model_config = SettingsConfigDict(
         env_file=Path(__file__).parent.parent.parent.parent / ".env",
+        env_file_encoding="utf-8",
         extra="ignore",
+        case_sensitive=False,
     )
 
 
@@ -98,6 +100,8 @@ class TestSettings(ProdSettings):
     model_config = SettingsConfigDict(
         env_file=Path(__file__).parent.parent.parent.parent / ".env.test",
         extra="ignore",
+        case_sensitive=False,
+        env_file_encoding="utf-8",
     )
 
 
