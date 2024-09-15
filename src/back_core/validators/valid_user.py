@@ -27,9 +27,10 @@ class ValidUserModel(pydantic.BaseModel):
 class ValidModelGetMe(pydantic.BaseModel):
     """Validate model for profile of user."""
 
-    user: dict[str, ValidUserModel]
-    followers: list[dict[str, ValidUserModel]]
-    following: list[dict[str, ValidUserModel]]
+    id: uuid.UUID
+    name: str
+    followers: list[ValidUserModel | None]
+    following: list[ValidUserModel | None]
 
 
 class ValidateUserProfile(pydantic.BaseModel):
@@ -50,12 +51,10 @@ class ValidateUserProfile(pydantic.BaseModel):
     result: bool
     user: ValidModelGetMe
 
-    class Config:
-        """Config schema users' profile."""
-
-        title = "User's profile"
-        from_attributes = True
-        json_schema_extra = {
+    model_config = pydantic.ConfigDict(
+        title="User's profile",
+        from_attributes=True,
+        json_schema_extra={
             "example": {
                 "result": True,
                 "user": {
@@ -69,10 +68,11 @@ class ValidateUserProfile(pydantic.BaseModel):
                     ],
                     "following": [
                         {
-                            "id": "3fa33364-5717-4562-b3fc-2c963f4563fa6",
+                            "id": "3fa33364-5717-4562-b3fc-2c963f4563fa",
                             "name": "Ramil",
                         }
                     ],
                 },
             }
-        }
+        },
+    )

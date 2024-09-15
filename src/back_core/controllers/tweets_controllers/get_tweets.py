@@ -1,6 +1,6 @@
 """GET /tweets/."""
 
-from back_core.validators import GetAllTweets
+from src.back_core.validators import GetAllTweets
 
 
 async def get_tweets() -> GetAllTweets:
