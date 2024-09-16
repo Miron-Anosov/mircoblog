@@ -41,6 +41,7 @@ services:
       - api_net
 
   adminer:
+    container_name: adminer
     image: adminer:4.8.1
     restart: always
     ports:
