@@ -23,14 +23,14 @@ TAGS_METADATA = [
 ]
 
 CONTACT = {
-    "name": settings.prod.CONTACT_NAME,
-    "url": settings.prod.CONTACT_URL,
-    "email": settings.prod.CONTACT_EMAIL,
+    "name": settings.env_params.CONTACT_NAME,
+    "url": settings.env_params.CONTACT_URL,
+    "email": settings.env_params.CONTACT_EMAIL,
 }
 
 SERVERS = [{"url": "http://localhost:8000"}]
 
-VERSION_API = settings.prod.VERSION_API
+VERSION_API = settings.env_params.VERSION_API
 
 TITLE = "MicroBlog API"
 

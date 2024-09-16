@@ -1,10 +1,20 @@
 """Configuration .env."""
 
+import os
 from abc import abstractmethod
 from pathlib import Path
 
-from pydantic import EmailStr, Field, HttpUrl
+from pydantic import EmailStr, Field, HttpUrl, ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+env = Path(__file__).parent.parent.parent.parent / ".env"
+env_test = Path(__file__).parent.parent.parent.parent / ".env.test"
+
+
+class RequirementsEnvironmentFileNotFound(ValueError):
+    """Custom environment exception."""
+
+    pass
 
 
 class CommonSettings(BaseSettings):
@@ -49,7 +59,7 @@ class EnvironmentSettingMix(BaseSettings):
     MODE: str = Field(min_length=2)
 
 
-class ProdSettings(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
+class EnvConf(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
     """Production environments are deploy.
 
     Environments params:
@@ -78,25 +88,7 @@ class ProdSettings(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
         )
 
     model_config = SettingsConfigDict(
-        env_file=Path(__file__).parent.parent.parent.parent / ".env",
-        extra="ignore",
-    )
-
-
-class TestSettings(ProdSettings):
-    """Test environments are test.
-
-    Environments params:
-     - POSTGRES_HOST: str
-     - POSTGRES_PORT: int
-     - POSTGRES_USER: str
-     - POSTGRES_DB: str
-     - POSTGRES_PASSWORD: str
-     - ECHO: bool
-    """
-
-    model_config = SettingsConfigDict(
-        env_file=Path(__file__).parent.parent.parent.parent / ".env.test",
+        env_file=env_test if os.path.exists(env_test) else env,
         extra="ignore",
     )
 
@@ -104,10 +96,19 @@ class TestSettings(ProdSettings):
 class Settings:
     """Common settings for environments."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Interface for environments."""
-        self.prod = ProdSettings()
-        self.test = TestSettings()
+        try:
+            self.env_params = EnvConf()
+        except ValidationError:
+            raise RequirementsEnvironmentFileNotFound(
+                f"~/.env or ~/.env.test are not exist.\n"
+                f"Exist env_test: "
+                f"{os.path.exists(env_test)}, path={env_test}\n"
+                f"Exist env: "
+                f"{os.path.exists(env)}, path={env}\n"
+            )
 
 
+print(env_test if os.path.exists(env_test) else env)
 settings = Settings()
