@@ -15,6 +15,6 @@ exclude =
     .gitignore,
     .gitlab-ci.yml,
     pytest.ini,
-    api/static/description.md
+    alembic/
 max-line-length = 79
 extend-ignore = F401
