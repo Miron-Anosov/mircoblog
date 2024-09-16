@@ -110,5 +110,4 @@ class Settings:
             )
 
 
-print(env_test if os.path.exists(env_test) else env)
 settings = Settings()
