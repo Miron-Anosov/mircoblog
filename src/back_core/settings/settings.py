@@ -11,7 +11,7 @@ env = Path(__file__).parent.parent.parent.parent / ".env"
 env_test = Path(__file__).parent.parent.parent.parent / ".env.test"
 
 
-class RequirementsEnvironmentFileNotFound(ValueError):
+class EnvironmentFileNotFoundError(ValueError):
     """Custom environment exception."""
 
     pass
@@ -101,7 +101,7 @@ class Settings:
         try:
             self.env_params = EnvConf()
         except ValidationError:
-            raise RequirementsEnvironmentFileNotFound(
+            raise EnvironmentFileNotFoundError(
                 f"~/.env or ~/.env.test are not exist.\n"
                 f"Exist env_test: "
                 f"{os.path.exists(env_test)}, path={env_test}\n"
