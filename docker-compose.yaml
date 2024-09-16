@@ -40,6 +40,19 @@ services:
     networks:
       - api_net
 
+  adminer:
+    image: adminer:4.8.1
+    restart: always
+    ports:
+      - '8080:8080'
+    networks:
+      - api_net
+    environment:
+      - ADMINER_DESIGN=pepa-linha-dark
+      - ADMINER_DEFAULT_SERVER=postgres
+    depends_on:
+      - db
+
 
   micro_blog:
     build:
@@ -66,8 +79,8 @@ services:
     stop_grace_period: 10s
 
 volumes:
-  postgres_storage: {}
-  socket_volume: {}
-  nginx_logs: {}
-  postgres_logs: {}
-  api_logs: {}
+  postgres_storage: { }
+  socket_volume: { }
+  nginx_logs: { }
+  postgres_logs: { }
+  api_logs: { }
