@@ -19,7 +19,9 @@ class ValidUserModel(pydantic.BaseModel):
         default_factory=uuid.uuid4,
         description="Author's unique ID",
     )
-    name: str = pydantic.Field(..., description="Author's name")
+    name: str = pydantic.Field(
+        ..., description="Author's name", min_length=2, max_length=15
+    )
 
     model_config = pydantic.ConfigDict(title="User")
 
