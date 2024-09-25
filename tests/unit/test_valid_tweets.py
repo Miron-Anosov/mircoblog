@@ -6,11 +6,11 @@ from typing import Any, Dict, List, cast
 import pytest
 from pydantic import ValidationError
 
-from src.back_core.validators.valid_get_tweets import (
+from src.core.validators.valid_get_tweets import (
     ValidateGetTweet,
     ValidGETModelTweet,
 )
-from src.back_core.validators.valid_post_tweet import (
+from src.core.validators.valid_post_tweet import (
     ValidPostModelNewTweetInput,
     ValidPostModelNewTweetOutput,
 )
