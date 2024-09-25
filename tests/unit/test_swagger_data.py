@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.back_core import swagger_info
+from src.core.settings import swagger_info
 
 
 @pytest.mark.test_config

@@ -1,9 +1,9 @@
-"""Test valid models."""
+"""Test valid models_orm."""
 
 import pytest
 from pydantic import ValidationError
 
-from src.back_core.validators.valid_user import (
+from src.core.validators.valid_user import (
     ValidateUserProfile,
     ValidModelGetMe,
     ValidUserModel,
