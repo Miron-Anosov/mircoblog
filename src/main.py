@@ -18,7 +18,11 @@ Functional ability:
 import uvicorn
 from fastapi import FastAPI
 
-from src.back_core import media, swagger_info, tweets, users
+from src.core.controllers.auth_controllers.auth import auth
+from src.core.controllers.media.media import media
+from src.core.controllers.tweets.main_tweets import tweets
+from src.core.controllers.users.users import users
+from src.core.settings import swagger_info
 
 
 def create_app() -> FastAPI:
@@ -36,6 +40,7 @@ def create_app() -> FastAPI:
     app_.include_router(router=media)
     app_.include_router(router=tweets)
     app_.include_router(router=users)
+    app_.include_router(router=auth)
     return app_
 
 
