@@ -3,11 +3,8 @@
 import pytest
 from pydantic import ValidationError
 
-from src.back_core.validators.valid_common_status_ok import ValidStatusResponse
-from src.back_core.validators.valid_error_response_and_apy_key import (
-    ValidApiKey,
-    ValidErrorResponse,
-)
+from src.core.validators import ErrResp, UserToken
+from src.core.validators.valid_status_ok import ValidStatusResponse
 
 
 def test_valid_status_ok_model() -> None:
@@ -47,32 +44,32 @@ def test_error_response() -> None:
         "error_message": "Allert",
     }
 
-    assert ValidErrorResponse(**data_response_valid)
+    assert ErrResp(**data_response_valid)
 
     with pytest.raises(ValidationError):
-        assert ValidErrorResponse(**data_response_invalid)
+        assert ErrResp(**data_response_invalid)
 
 
 def test_valid_api_key_model() -> None:
     """Test model ValidApiKey."""
     too_short_key = {"api_key": "key"}
     with pytest.raises(ValidationError):
-        assert ValidApiKey(**too_short_key)
+        assert UserToken(**too_short_key)
 
     too_long_key = {"api_key": "key" * 21}
     with pytest.raises(ValidationError):
-        assert ValidApiKey(**too_long_key)
+        assert UserToken(**too_long_key)
 
     int_key = {"api_key": 123234}
     with pytest.raises(ValidationError):
-        assert ValidApiKey(**int_key)
+        assert UserToken(**int_key)
 
     empty_key = {"api_key": ""}
     with pytest.raises(ValidationError):
-        assert ValidApiKey(**empty_key)
+        assert UserToken(**empty_key)
 
     valid_key = {"api_key": "api-key"}
-    assert ValidApiKey(**valid_key)
+    assert UserToken(**valid_key)
 
     valid_key_int = {"api_key": "api-key-1234"}
-    assert ValidApiKey(**valid_key_int)
+    assert UserToken(**valid_key_int)

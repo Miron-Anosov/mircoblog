@@ -5,7 +5,7 @@ import pytest
 import pytest_asyncio
 from asgi_lifespan import LifespanManager
 
-from src.back_core.settings.settings import settings
+from src.core.settings.settings import settings
 
 try:
     assert (
