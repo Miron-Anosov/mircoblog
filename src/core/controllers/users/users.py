@@ -11,7 +11,7 @@ from typing import Sequence
 
 from fastapi import APIRouter, Depends, status
 
-from src.core.controllers.depends.http_token import token_depends
+from src.core.controllers.depends.check_token import token_depends
 from src.core.settings.routes_path import UsersRoutes
 from src.core.validators import StatusResponse, UserProfile
 
