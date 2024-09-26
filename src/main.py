@@ -18,7 +18,7 @@ Functional ability:
 import uvicorn
 from fastapi import FastAPI
 
-from src.core.controllers.auth_controllers.auth import auth
+from src.core.controllers.auth.auth import auth
 from src.core.controllers.media.media import media
 from src.core.controllers.tweets.main_tweets import tweets
 from src.core.controllers.users.users import users

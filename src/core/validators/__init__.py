@@ -1,5 +1,6 @@
 """Common import validators."""
 
+from src.core.validators.valid_auth import ValidateLoginUser as LoginUser
 from src.core.validators.valid_auth import ValidateNewUser as NewUser
 from src.core.validators.valid_err_response import ValidErrResponse as ErrResp
 from src.core.validators.valid_get_tweets import (
@@ -28,4 +29,5 @@ __all__ = [
     "UserToken",
     "NewUser",
     "ErrResp",
+    "LoginUser",
 ]
