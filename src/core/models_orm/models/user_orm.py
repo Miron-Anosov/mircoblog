@@ -1,11 +1,16 @@
 """SQLAlchemy UserORM model."""
 
 import uuid
+from typing import TYPE_CHECKING
 
 from sqlalchemy import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.core.models_orm.models.base_model import BaseModel
+
+if TYPE_CHECKING:
+    from src.core.models_orm.models.auth import UsersAuthORM
+    from src.core.models_orm.models.tweet_orm import TweetsORM
 
 
 class UserORM(BaseModel):
@@ -31,4 +36,11 @@ class UserORM(BaseModel):
         primaryjoin="UserORM.id==FollowersORM.follower_id",
         secondaryjoin="UserORM.id==FollowersORM.following_id",
         back_populates="followers",
+    )
+
+    users_profile: Mapped["UsersAuthORM"] = relationship(
+        "UsersAuthORM", back_populates="user_auth"
+    )
+    users_likes: Mapped["TweetsORM"] = relationship(
+        "TweetsORM", back_populates="likes"
     )
