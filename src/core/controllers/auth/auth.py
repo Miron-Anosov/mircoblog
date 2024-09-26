@@ -11,8 +11,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.responses import JSONResponse
 
-from src.core.controllers.depends.authentication import login_user
 from src.core.controllers.depends.new_user import valid_new_user
+from src.core.controllers.depends.validate_user import login_user
 from src.core.settings.routes_path import AuthRoutes
 from src.core.validators import StatusResponse
 

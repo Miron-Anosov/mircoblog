@@ -68,8 +68,8 @@ def test_valid_api_key_model() -> None:
     with pytest.raises(ValidationError):
         assert UserToken(**empty_key)
 
-    valid_key = {"api_key": "api-key"}
+    valid_key = {"access_token": "api-key", "token_type": ""}
     assert UserToken(**valid_key)
 
-    valid_key_int = {"api_key": "api-key-1234"}
-    assert UserToken(**valid_key_int)
+    valid_vol_int = {"access_token": "api-key", "token_type": "12123"}
+    assert UserToken(**valid_vol_int)
