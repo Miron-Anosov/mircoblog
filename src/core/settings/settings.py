@@ -4,7 +4,7 @@ import os
 from abc import abstractmethod
 from pathlib import Path
 
-from pydantic import EmailStr, Field, HttpUrl, ValidationError
+from pydantic import BaseModel, EmailStr, Field, HttpUrl, ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 env = Path(__file__).parent.parent.parent.parent / ".env"
@@ -90,6 +90,17 @@ class EnvConf(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
     model_config = SettingsConfigDict(
         env_file=env_test if os.path.exists(env_test) else env,
         extra="ignore",
+    )
+
+
+class AuthJWT(BaseModel):
+    """AuthJWT token path."""
+
+    private_token: Path = Path(
+        os.getenv("JWT_PRIVATE_KEY_PATH", "certs/jwt-private.pem")
+    )
+    public_token: Path = Path(
+        os.getenv("JWT_PUBLIC_KEY_PATH", "certs/jwt-public.pem")
     )
 
 
