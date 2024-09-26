@@ -18,10 +18,10 @@ class ValidateNewUser(pydantic.BaseModel):
         pattern=r"^[a-zA-Z0-9_]+$",
     )
 
-    password: pydantic.SecretStr = pydantic.Field(
+    password: bytes = pydantic.Field(
         min_length=8, max_length=64, description="User's secret."
     )
-    password_control: pydantic.SecretStr = pydantic.Field(
+    password_control: bytes = pydantic.Field(
         min_length=8,
         max_length=64,
         description="User's secret for check both.",
