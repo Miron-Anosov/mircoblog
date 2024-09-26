@@ -103,6 +103,7 @@ class AuthJWT(BaseModel):
         os.getenv("JWT_PUBLIC_KEY_PATH", "certs/jwt-public.pem")
     )
     algorithm: str = "RS256"
+    access_token_expire_minutes: int = 15
 
 
 class Settings:
