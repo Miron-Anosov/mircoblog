@@ -9,7 +9,7 @@ class ValidErrResponse(pydantic.BaseModel):
     If Api will have any errors, it will send to client.
     """
 
-    result: bool
+    result: bool = False
     error_type: str
     error_message: str
 
