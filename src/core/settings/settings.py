@@ -102,6 +102,7 @@ class AuthJWT(BaseModel):
     public_token: Path = Path(
         os.getenv("JWT_PUBLIC_KEY_PATH", "certs/jwt-public.pem")
     )
+    algorithm: str = "RS256"
 
 
 class Settings:
@@ -119,6 +120,7 @@ class Settings:
                 f"Exist env: "
                 f"{os.path.exists(env)}, path={env}\n"
             )
+        self.jwt_tokens = AuthJWT()
 
 
 settings = Settings()
