@@ -3,14 +3,14 @@
 import pydantic
 
 
-class ValidApiKey(pydantic.BaseModel):
+class ValidTokenInfo(pydantic.BaseModel):
     """User's uniq api-key.
 
     `apy-key` uses for authorisation for users.
     """
 
-    api_key: str = pydantic.Field(
+    access_token: str = pydantic.Field(
         default=None, description="String key.", min_length=6, max_length=60
     )
-
-    model_config = pydantic.ConfigDict(title="api-key")
+    token_type: str
+    model_config = pydantic.ConfigDict(title="Token")

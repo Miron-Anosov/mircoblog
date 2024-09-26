@@ -15,7 +15,7 @@ from src.core.validators.valid_post_tweet import (
 from src.core.validators.valid_status_ok import (
     ValidStatusResponse as StatusResponse,
 )
-from src.core.validators.valid_token import ValidApiKey as UserToken
+from src.core.validators.valid_token import ValidTokenInfo as UserToken
 from src.core.validators.valid_user import ValidateUserProfile as UserProfile
 from src.core.validators.valid_user import ValidUserModel as User
 
