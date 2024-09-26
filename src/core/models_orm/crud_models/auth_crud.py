@@ -2,6 +2,7 @@
 
 import abc
 
+from sqlalchemy import bindparam, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,8 +15,7 @@ class _AuthInterface(abc.ABC):
     @staticmethod
     @abc.abstractmethod
     async def login_user(
-        email: str | None,
-        username: str | None,
+        email: str,
         session: AsyncSession,
     ) -> bool:
         """Login."""
@@ -37,24 +37,23 @@ class _AuthInterface(abc.ABC):
 
     @staticmethod
     @abc.abstractmethod
-    async def check_if_exist_user(
-        email: str | None,
-        username: str | None,
+    async def if_exist_email(
+        email: str,
         session: "AsyncSession",
-        table: "UsersAuthORM",
+        table: UsersAuthORM,
     ) -> bool:
         """Check user in DB.
 
-        new_user: UsersRoutes
+        email: Users email
         session: AsyncSession
         Return:
-            - True: if user is already exists .
+            - True: if user is already exists.
             - False: if user is not exist.
         """
 
 
 class AuthUsers(_AuthInterface):
-    """User crud interface."""
+    """User CRUD interface."""
 
     @staticmethod
     async def post_new_user(
@@ -63,43 +62,46 @@ class AuthUsers(_AuthInterface):
     ) -> bool:
         """Create new user."""
         print(new_user)
-        # new_person = UsersAuthORM()
-        # print(new_person)
         try:
             print(type(session))
             print(dir(session))
             await session.begin()
-            print("СОЗДАЮ НОВОГО ПОЛЬЗОВАТЕЯ")  # TODO: Add logger INFO
-            # session.add(new_person)
+            print("СОЗДАЮ НОВОГО ПОЛЬЗОВАТЕЛЯ")  # TODO: Add logger INFO
         except SQLAlchemyError:
-            # todo: loger WARNING
+            # TODO: Logger WARNING
             return False
         else:
-            # todo: send email to new user
+            # TODO: Send email to new user
             return True
 
     @staticmethod
-    async def check_if_exist_user(email, username, session, table) -> bool:
+    async def if_exist_email(
+        email: str, session: AsyncSession, table=UsersAuthORM
+    ) -> bool:
         """Check user in DB.
 
-        new_user: UsersRoutes
+        email: Users email
         session: AsyncSession
         Return:
-            - True: if user is already exists .
+            - True: if user is already exists.
             - False: if user is not exist.
         """
-        return True  # TODO: miss to make logic
+        stmt = select(table.email).where(table.email == bindparam(key="email"))
+        email_exist = await session.scalar(stmt, params={"email": email})
+        return True if email_exist else False
 
     @staticmethod
     async def login_user(
-        email: str | None,
-        username: str | None,
+        email: str,
         session: AsyncSession,
     ) -> bool:
         """Login."""
-        return True  # TODO: miss to make logic
+        return True  # TODO: Implement logic
 
     @staticmethod
-    async def logout_user(session: AsyncSession, user_id: dict) -> bool:
+    async def logout_user(
+        session: AsyncSession,
+        user_id: dict,
+    ) -> bool:
         """Logout."""
-        return True  # TODO: miss to make logic
+        return True  # TODO: Implement logic
