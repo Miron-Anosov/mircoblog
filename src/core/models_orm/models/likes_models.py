@@ -25,4 +25,3 @@ class LikesORM(BaseModel):
     following_id: Mapped[UUID] = mapped_column(
         ForeignKey("tweets.id"), primary_key=True
     )
-    users: Mapped[list["UserORM"]] = relationship(back_populates="users")
