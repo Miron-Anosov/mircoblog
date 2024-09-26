@@ -8,6 +8,7 @@ class ValidateNewUser(pydantic.BaseModel):
 
     - `name`: User's name.
     - `password`: secret.
+    - `user_email`: user email.
     """
 
     name: str = pydantic.Field(
@@ -30,3 +31,19 @@ class ValidateNewUser(pydantic.BaseModel):
         alias="email", description="User's email."
     )
     model_config = pydantic.ConfigDict(title="NewUser")
+
+
+class ValidateLoginUser(pydantic.BaseModel):
+    """**Model for tweet author details**.
+
+    - `email`: User's email.
+    - `password`: secret.
+    """
+
+    user_email: pydantic.EmailStr = pydantic.Field(
+        alias="email", description="User's email."
+    )
+    password: pydantic.SecretStr = pydantic.Field(
+        min_length=8, max_length=64, description="User's secret."
+    )
+    model_config = pydantic.ConfigDict(title="LoginUser")
