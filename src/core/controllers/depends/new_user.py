@@ -32,8 +32,16 @@ async def valid_new_user(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail="password is not same.",
         )
+    if _ := await crud.auth_users.if_exist_email(
+        email=new_user.user_email,
+        session=session,
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="email already exist",
+        )
 
-        # TODO: HASH AND SOLT AND PAPER PASSWORD
+    # TODO: HASH AND SOLT AND PAPER PASSWORD
 
     result = await crud.auth_users.post_new_user(
         session=session, new_user=new_user.model_dump()
