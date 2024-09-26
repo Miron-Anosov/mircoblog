@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import UUID, String, func
+from sqlalchemy import UUID, ForeignKey, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.core.models_orm.models.base_model import BaseModel
@@ -24,9 +24,13 @@ class UsersAuthORM(BaseModel):
 
     __tablename__ = "users_auth"
     user_id: Mapped[str] = mapped_column(
-        UUID, primary_key=True, default=uuid.uuid4, unique=True
+        UUID,
+        ForeignKey("users.id"),
+        primary_key=True,
+        default=uuid.uuid4,
+        unique=True,
     )
     created: Mapped[datetime] = mapped_column(server_default=func.now())
     hashed_password: Mapped[str] = mapped_column(String, nullable=False)
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
-    user: Mapped["UserORM"] = relationship(back_populates="users")
+    user_auth: Mapped["UserORM"] = relationship(back_populates="users_profile")

@@ -19,7 +19,7 @@ class TweetsORM(BaseModel):
     id: Mapped[str] = mapped_column(UUID, primary_key=True)
     content: Mapped[str] = mapped_column(Text)
     author: Mapped[str] = mapped_column(ForeignKey("users.id"))
-    likes: Mapped[list["UserORM"]] = relationship(back_populates="users")
+    likes: Mapped[list["UserORM"]] = relationship(back_populates="users_likes")
     attachments: Mapped[list["MediaORM"]] = relationship(
         back_populates="tweets", cascade="all, delete-orphan"
     )
