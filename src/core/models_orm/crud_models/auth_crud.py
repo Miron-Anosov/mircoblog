@@ -14,13 +14,19 @@ from src.core.models_orm.models.user_orm import UserORM
 class _AuthInterface(abc.ABC):
     """Interface for auth-related operations."""
 
-    @staticmethod
+    @classmethod
     @abc.abstractmethod
     async def login_user(
+        cls,
         email: str,
         session: AsyncSession,
-    ) -> bool:
-        """Login."""
+        auth_user: UsersAuthORM,
+    ) -> str | None:
+        """Login exist user.
+
+        Returns:
+          str: user pwd if user exists, None otherwise.
+        """
         pass
 
     @staticmethod
@@ -113,13 +119,30 @@ class AuthUsers(_AuthInterface):
         email_exist = await session.scalar(stmt, params={"email": email})
         return True if email_exist else False
 
-    @staticmethod
+    @classmethod
     async def login_user(
+        cls,
         email: str,
         session: AsyncSession,
-    ) -> bool:
-        """Login."""
-        return True  # TODO: Implement logic
+        auth_user=UsersAuthORM,
+    ) -> str | None:
+        """Login exist user.
+
+        Returns:
+          str: user pwd if user exists, None otherwise.
+        """
+        if _ := await cls.if_exist_email(email=email, session=session):
+            user: UsersAuthORM = await session.scalar(
+                statement=(
+                    select(auth_user).where(
+                        auth_user.email == bindparam("email")
+                    )
+                ),
+                params=[{"email": email}],
+            )
+            return user.hashed_password
+
+        return None
 
     @staticmethod
     async def logout_user(
