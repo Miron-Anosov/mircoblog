@@ -4,12 +4,7 @@ from abc import ABC, abstractmethod
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-# from src.back_core.models_orm.models.tweet_orm import (
-#     UserORM as _User
-# )
-
-
-# from src.back_core.models_orm.models
+from src.core.models_orm.models.user_orm import UserORM
 
 
 class _UserInterface(ABC):
@@ -35,13 +30,9 @@ class _UserInterface(ABC):
 
     @staticmethod
     @abstractmethod
-    async def get_user(id_user: int) -> dict:
-        """Get user by id."""
-        pass
-
-    @staticmethod
-    @abstractmethod
-    async def create_user(session: AsyncSession, new_user: dict) -> dict:
+    async def get_user(
+        id_user: str, session: AsyncSession, user_table: UserORM
+    ) -> UserORM:
         """Get user by id."""
         pass
 
@@ -65,11 +56,8 @@ class Users(_UserInterface):
         return {}  # TODO: miss to make logic
 
     @staticmethod
-    async def get_user(id_user: int) -> dict:
+    async def get_user(
+        id_user: str, session: AsyncSession, user_table=UserORM
+    ) -> UserORM:
         """Get user by id."""
-        return {}  # TODO: miss to make logic
-
-    @staticmethod
-    async def create_user(session, new_user) -> dict:
-        """Get user by id."""
-        return {}  # TODO: miss to make logic
+        raise await session.get(user_table, id_user)
