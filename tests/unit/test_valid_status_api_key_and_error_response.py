@@ -52,21 +52,21 @@ def test_error_response() -> None:
 
 def test_valid_api_key_model() -> None:
     """Test model ValidApiKey."""
-    too_short_key = {"api_key": "key"}
+    invalid_key = {"api_key": "key"}
     with pytest.raises(ValidationError):
-        assert UserToken(**too_short_key)
+        UserToken(**invalid_key)
 
     too_long_key = {"api_key": "key" * 21}
     with pytest.raises(ValidationError):
-        assert UserToken(**too_long_key)
+        UserToken(**too_long_key)
 
     int_key = {"api_key": 123234}
     with pytest.raises(ValidationError):
-        assert UserToken(**int_key)
+        UserToken(**int_key)
 
     empty_key = {"api_key": ""}
     with pytest.raises(ValidationError):
-        assert UserToken(**empty_key)
+        UserToken(**empty_key)
 
     valid_key = {"access_token": "api-key", "token_type": ""}
     assert UserToken(**valid_key)
