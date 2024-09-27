@@ -25,7 +25,7 @@ from tests.common_data import tweets_data, valid_user_data
 async def test_get_user_profile_with_mocked_data_and_api_key():
     """Test func with moke."""
     mocked_profile = ValidateUserProfile(**valid_user_data)
-    trg = "src.back_core.controllers.users.users.get_user_profile"
+    trg = "src.core.controllers.users.users.get_user_profile"
     with patch(
         target=trg,
         return_value=mocked_profile,
