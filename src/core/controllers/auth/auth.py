@@ -8,13 +8,14 @@ Routes:
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 
-from src.core.controllers.depends.new_user import valid_new_user
+from src.core.controllers.depends.new_user_form import create_new_user_form
+from src.core.controllers.depends.new_user_json import create_new_user_json
 from src.core.controllers.depends.validate_user import login_user
 from src.core.settings.routes_path import AuthRoutes
-from src.core.validators import StatusResponse
+from src.core.validators import StatusResponse, UserToken
 
 # from fastapi.responses import RedirectResponse
 
@@ -32,13 +33,13 @@ auth: APIRouter = create_auth_route()
 
 
 @auth.post(
-    path=AuthRoutes.POST_CREATE_USER,
+    path=AuthRoutes.POST_CREATE_USER_FORM,
     status_code=status.HTTP_201_CREATED,
     response_model=StatusResponse,
 )
-async def new_user(
-    user: Annotated[bool, Depends(valid_new_user)]
-) -> StatusResponse:
+async def new_user_form(
+    _: Annotated[bool, Depends(create_new_user_form)]
+) -> JSONResponse:
     """**Post new user**.
 
     **Body**:
@@ -48,18 +49,44 @@ async def new_user(
     - `email` (str): personal email
 
     """
-    if user:
-        return StatusResponse()
-    return StatusResponse(result=user)
+    return JSONResponse(
+        content=StatusResponse().model_dump(),
+        status_code=status.HTTP_201_CREATED,
+        media_type="application/json",
+    )
+
+
+@auth.post(
+    path=AuthRoutes.POST_CREATE_USER_JSON,
+    status_code=status.HTTP_201_CREATED,
+    response_model=StatusResponse,
+)
+async def new_user_json(
+    _: Annotated[bool, Depends(create_new_user_json)]
+) -> JSONResponse:
+    """**Post new user**.
+
+    **Body**:
+    - `name` (str): user's name.
+    - `password` (str): user's secret.
+    - `password-control` (str): same user's secret control again.
+    - `email` (str): personal email
+
+    """
+    return JSONResponse(
+        content=StatusResponse().model_dump(),
+        status_code=status.HTTP_201_CREATED,
+        media_type="application/json",
+    )
 
 
 @auth.post(
     path=AuthRoutes.POST_LOGIN_USER,
     status_code=status.HTTP_200_OK,
-    response_model=StatusResponse,
+    response_model=UserToken,
 )
 async def login(
-    response: Response, user: Annotated[bool, Depends(login_user)]
+    user: Annotated[UserToken, Depends(login_user)]
 ) -> "JSONResponse":
     """**Post loging user**.
 
@@ -68,16 +95,11 @@ async def login(
     - `password` (str): user's secret.
 
     """
-    if user:
-        response.set_cookie(key="x-auth-token", value="test-token")
+    # response.set_cookie(key="x-auth-token", value="test-token")
 
-        return JSONResponse(
-            content=StatusResponse(),
-            status_code=200,
-            media_type="application/json",
-            headers={"x-auth-token": "TEST"},
-        )
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Invalid email or password",
+    return JSONResponse(
+        content=user,
+        status_code=status.HTTP_200_OK,
+        media_type="application/json",
+        headers={"x-auth-token": "TEST"},
     )
