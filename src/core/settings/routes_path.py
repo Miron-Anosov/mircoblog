@@ -54,7 +54,8 @@ class AuthRoutes(PathRoutes):
     """
 
     TAG = "Auth"
-    POST_LOGIN_USER = f"{AUTH_PATH}/login"
+    POST_LOGIN_USER_JSON = f"{AUTH_PATH}/login/json"
+    POST_LOGIN_USER_FORM = f"{AUTH_PATH}/login/form"
     POST_LOGOUT_USER = f"{AUTH_PATH}/logout"
     POST_CREATE_USER_FORM = f"{AUTH_PATH}/new/form"
     POST_CREATE_USER_JSON = f"{AUTH_PATH}/new/json"
