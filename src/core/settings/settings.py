@@ -4,7 +4,14 @@ import os
 from abc import abstractmethod
 from pathlib import Path
 
-from pydantic import BaseModel, EmailStr, Field, HttpUrl, ValidationError
+from pydantic import (
+    BaseModel,
+    EmailStr,
+    Field,
+    HttpUrl,
+    ValidationError,
+    field_validator,
+)
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 env = Path(__file__).parent.parent.parent.parent / ".env"
@@ -88,22 +95,49 @@ class EnvConf(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
         )
 
     model_config = SettingsConfigDict(
+        # try to use first test-env if exist else use prod-env
         env_file=env_test if os.path.exists(env_test) else env,
         extra="ignore",
     )
 
 
-class AuthJWT(BaseModel):
-    """AuthJWT token path."""
+def default_token_path(token_type: str) -> Path:
+    """Return path for tokens."""
+    return Path(__file__).parent.parent.parent / f"certs/jwt-{token_type}.pem"
 
-    private_token: Path = Path(
-        os.getenv("JWT_PRIVATE_KEY_PATH", "certs/jwt-private.pem")
+
+class AuthJWT(BaseModel):
+    """AuthJWT token path with fallback to environment variables."""
+
+    private_token: Path = Field(
+        default_factory=lambda: default_token_path("private")
     )
-    public_token: Path = Path(
-        os.getenv("JWT_PUBLIC_KEY_PATH", "certs/jwt-public.pem")
+    public_token: Path = Field(
+        default_factory=lambda: default_token_path("public")
     )
     algorithm: str = "RS256"
     access_token_expire_minutes: int = 15
+
+    @classmethod
+    @field_validator("private_token", "public_token")
+    def validate_token_paths(cls, value, info):
+        """Validate openssl data."""
+        if value.exists():
+            return value
+
+        env_var_name = f"JWT_{info.field_name.split('_')[0].upper()}_KEY_PATH"
+        env_path = os.getenv(env_var_name)
+
+        if env_path and Path(env_path).exists():
+            return Path(env_path)
+
+        raise ValueError(
+            f"No valid path found for {info.field_name}. "
+            f"Tried default path: {value} and "
+            f"environment variable: {env_var_name}"
+        )
+
+    model_config = SettingsConfigDict(validate_assignment=True)
 
 
 class Settings:
