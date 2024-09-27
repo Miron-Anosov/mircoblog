@@ -6,11 +6,14 @@ import pydantic
 class ValidTokenInfo(pydantic.BaseModel):
     """User's uniq api-key.
 
-    `apy-key` uses for authorisation for users.
+    `access_token` uses for authorisation for users.
+    `token_type`: Bearer
     """
 
     access_token: str = pydantic.Field(
-        default=None, description="String key.", min_length=6, max_length=60
+        description="String key.",
+        min_length=6,
+        max_length=60,
     )
-    token_type: str
+    token_type: str = "Bearer"
     model_config = pydantic.ConfigDict(title="Token")
