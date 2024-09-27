@@ -1,12 +1,14 @@
 """Users CRUD methods."""
 
 import abc
+import uuid
 
-from sqlalchemy import bindparam, select
+from sqlalchemy import bindparam, insert, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.models_orm.models.auth import UsersAuthORM
+from src.core.models_orm.models.user_orm import UserORM
 
 
 class _AuthInterface(abc.ABC):
@@ -32,6 +34,8 @@ class _AuthInterface(abc.ABC):
     async def post_new_user(
         session: AsyncSession,
         new_user: dict,
+        table_auth: UsersAuthORM,
+        table_user: UserORM,
     ) -> bool:
         """Create new user."""
 
@@ -58,25 +62,44 @@ class AuthUsers(_AuthInterface):
     @staticmethod
     async def post_new_user(
         session: AsyncSession,
-        new_user: dict,
+        auth_user: dict,
+        table_auth: UsersAuthORM = UsersAuthORM,
+        table_user: UserORM = UsersAuthORM,
     ) -> bool:
-        """Create new user."""
-        print(new_user)
+        """Create new user at DB.
+
+        Create new user at auth_users.
+        Create new user at users.
+
+        Returns:
+            bool
+        """
+        new_uuid = uuid.uuid4().hex
+        auth_user["user_id"] = new_uuid
+        print(auth_user)
         try:
-            print(type(session))
-            print(dir(session))
-            await session.begin()
+            await session.execute(
+                insert(UserORM),
+                params=[{"id": new_uuid, "name": auth_user["name"]}],
+            )
+
+            await session.execute(insert(UsersAuthORM), params=[auth_user])
             print("СОЗДАЮ НОВОГО ПОЛЬЗОВАТЕЛЯ")  # TODO: Add logger INFO
-        except SQLAlchemyError:
+            await session.commit()
+        except SQLAlchemyError as e:
+            print(str(e))
             # TODO: Logger WARNING
             return False
+
         else:
             # TODO: Send email to new user
             return True
 
     @staticmethod
     async def if_exist_email(
-        email: str, session: AsyncSession, table=UsersAuthORM
+        email: str,
+        session: AsyncSession,
+        table=UsersAuthORM,
     ) -> bool:
         """Check user in DB.
 
