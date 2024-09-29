@@ -71,15 +71,6 @@ class ManagerDBInterface(
 
     """API DB."""
 
-    _instance: Optional["ManagerDBInterface"] = None
-
-    def __new__(cls, *args, **kwargs):
-        """Create singleton API."""
-        if cls._instance is None:
-            # todo: add logger
-            cls._instance = super(ManagerDBInterface, cls).__new__(cls)
-        return cls._instance
-
     @abstractmethod
     def create_session(
         self, engine: AsyncEngine
@@ -108,8 +99,8 @@ class AsyncEngineCreator(EngineCreator):
 
     def create_async_engine(self, url: str, echo: bool) -> AsyncEngine:
         """Return AsyncEngine."""
-        print("СОЗДАЕМ НОВЫЙ ДВИЖОК БД")
-        return create_async_engine(url=url, echo=echo)
+        # TODO: add logger DEBUG
+        return create_async_engine(url=url, echo=echo, pool_pre_ping=True)
 
 
 class AsyncSessionCreator(SessionCreator):
@@ -158,21 +149,35 @@ class AsyncScopedSessionManager(ScopedSessionManager):
 class ManagerDB(ManagerDBInterface):
     """Async engine manager."""
 
+    _instance: Optional["ManagerDBInterface"] = None
+
+    def __new__(cls, *args, **kwargs):
+        """Create singleton API."""
+        if cls._instance is None:
+            # todo: add logger
+            cls._instance = super(ManagerDB, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self, url: str, echo: bool) -> "None":
         """Init SQLAlchemy manager."""
-        self.__url = url
-        self.__echo = echo
-        self._engine_creator = AsyncEngineCreator()
-        self._async_session_maker = AsyncSessionCreator()
-        self.async_engine = self.create_async_engine()
-        self._session = self.create_session(self.async_engine)
-        self._async_scoped_session = AsyncScopedSessionManager(self._session)
+        if not hasattr(self, "_initialize_tables"):
+            self.__url = url
+            self.__echo = echo
+            self._engine_creator = AsyncEngineCreator()
+            self._async_session_maker = AsyncSessionCreator()
+            self.async_engine = self.create_async_engine()
+            self._session = self.create_session(self.async_engine)
+            self._async_scoped_session = AsyncScopedSessionManager(
+                self._session
+            )
+
+            self._initialize_tables = False
 
     def create_session(
         self, engine: "AsyncEngine"
     ) -> "async_sessionmaker[AsyncSession]":
         """Create db session."""
-        print("Создание сессии!!")
+        # TODO: add logger about new session DEBUG
         return self._async_session_maker.create_session(engine=engine)
 
     def get_scoped_session(self) -> "AsyncSession":
@@ -187,13 +192,14 @@ class ManagerDB(ManagerDBInterface):
 
     async def initialize(self):
         """Initialize the database by creating tables."""
-        await self.create_tables()
+        if self._initialize_tables is False:
+            await self.create_tables()
+            self._initialize_tables = True
 
     async def create_tables(self):
         """Create table if not exist."""
         async with self.async_engine.begin() as conn:
-            # todo: add logger
-            print("Создаем таблицы!")
+            # todo: add logger INIT DB TABLES
             await conn.run_sync(BaseModel.metadata.create_all)
 
 
