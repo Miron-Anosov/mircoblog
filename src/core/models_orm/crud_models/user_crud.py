@@ -60,4 +60,4 @@ class Users(_UserInterface):
         id_user: str, session: AsyncSession, user_table=UserORM
     ) -> UserORM:
         """Get user by id."""
-        raise await session.get(user_table, id_user)
+        return await session.get(user_table, id_user)
