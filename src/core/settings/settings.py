@@ -131,7 +131,7 @@ class AuthJWT(BaseModel):
         if env_path and Path(env_path).exists():
             return Path(env_path)
 
-        raise ValueError(
+        raise EnvironmentFileNotFoundError(
             f"No valid path found for {info.field_name}. "
             f"Tried default path: {value} and "
             f"environment variable: {env_var_name}"
