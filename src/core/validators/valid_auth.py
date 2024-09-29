@@ -44,6 +44,6 @@ class ValidateLoginUser(pydantic.BaseModel):
         alias="email", description="User's email."
     )
     password: bytes = pydantic.Field(
-        min_length=8, max_length=64, description="User's secret."
+        min_length=1, max_length=64, description="User's secret."
     )
     model_config = pydantic.ConfigDict(title="LoginUser")
