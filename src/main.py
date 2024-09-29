@@ -22,7 +22,7 @@ from src.core.controllers.auth.auth import auth
 from src.core.controllers.media.media import media
 from src.core.controllers.tweets.main_tweets import tweets
 from src.core.controllers.users.users import users
-from src.core.settings import swagger_info
+from src.core.settings import settings, swagger_info
 
 
 def create_app() -> FastAPI:
@@ -36,7 +36,7 @@ def create_app() -> FastAPI:
         servers=swagger_info.SERVERS,
         summary=swagger_info.SUMMARY,
     )
-
+    # todo: logger conf app DEBUG
     app_.include_router(router=media)
     app_.include_router(router=tweets)
     app_.include_router(router=users)
