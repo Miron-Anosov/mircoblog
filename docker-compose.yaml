@@ -72,6 +72,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PORT=${POSTGRES_PORT}
+      - JWT_PRIVATE_KEY_PATH=${JWT_PRIVATE}
+      - JWT_PUBLIC_KEY_PATH=${JWT_PUBLIC}
     depends_on:
       - db
     networks:
@@ -81,7 +83,6 @@ services:
       - api_logs:/var/log/nginx
     env_file:
       - .env
-      - .env.test
     stop_grace_period: 10s
 
 volumes:
