@@ -4,14 +4,7 @@ import os
 from abc import abstractmethod
 from pathlib import Path
 
-from pydantic import (
-    BaseModel,
-    EmailStr,
-    Field,
-    HttpUrl,
-    ValidationError,
-    field_validator,
-)
+from pydantic import EmailStr, Field, HttpUrl, ValidationError, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 env = Path(__file__).parent.parent.parent.parent / ".env"
@@ -106,17 +99,17 @@ def default_token_path(token_type: str) -> Path:
     return Path(__file__).parent.parent.parent / f"certs/jwt-{token_type}.pem"
 
 
-class AuthJWT(BaseModel):
+class AuthJWT(BaseSettings):
     """AuthJWT token path with fallback to environment variables."""
 
     private_token: Path = Field(
         default_factory=lambda: default_token_path("private")
     )
     public_token: Path = Field(
-        default_factory=lambda: default_token_path("public")
+        default_factory=lambda: default_token_path("public"),
     )
     algorithm: str = "RS256"
-    access_token_expire_minutes: int = 15
+    access_token_expire_minutes: int = Field(default=15)
 
     @classmethod
     @field_validator("private_token", "public_token")
