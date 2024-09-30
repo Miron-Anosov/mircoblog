@@ -6,8 +6,8 @@ import pydantic
 from fastapi import Depends, Form, HTTPException, status
 
 from src.core.controllers.depends.connect_db import get_crud, get_session
-from src.core.controllers.depends.hash_password import validate_pwd
-from src.core.controllers.depends.jwt_token import encode_jwt
+from src.core.controllers.depends.utils.hash_password import validate_pwd
+from src.core.controllers.depends.utils.jwt_token import encode_jwt
 from src.core.validators import LoginUser, UserToken
 
 if TYPE_CHECKING:
