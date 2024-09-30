@@ -7,7 +7,7 @@ from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
 from jwt.exceptions import ExpiredSignatureError
 
-from src.core.controllers.depends.jwt_token import decode_jwt
+from src.core.controllers.depends.utils.jwt_token import decode_jwt
 from src.core.validators import ErrResp
 
 http_bearer = HTTPBearer()
