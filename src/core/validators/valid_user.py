@@ -55,6 +55,7 @@ class ValidateUserProfile(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(
         title="User's profile",
         from_attributes=True,
+        extra="ignore",
         json_schema_extra={
             "example": {
                 "result": True,
