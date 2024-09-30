@@ -5,7 +5,7 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
-from jwt.exceptions import ExpiredSignatureError
+from jwt.exceptions import InvalidTokenError
 
 from src.core.controllers.depends.utils.jwt_token import decode_jwt
 from src.core.validators import ErrResp
@@ -29,12 +29,11 @@ async def token_is_alive(
     """
     try:
         return decode_jwt(jwt_token=token.credentials).get("sub")
-    except ExpiredSignatureError as e:
-        message_index = 0
+    except InvalidTokenError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=ErrResp(
-                error_type=str(e.args[message_index]),
+                error_type="Invalid token.",
                 error_message="Please repeat authentication.",
             ).model_dump(),
             headers={"WWW-Authenticate": "Bearer"},
