@@ -37,7 +37,7 @@ def decode_jwt(
     jwt_token: str | bytes,
     public_key: str = settings.jwt_tokens.public_token.read_text(),
     algorithm: str = settings.jwt_tokens.algorithm,
-) -> str:
+) -> dict:
     """Return decoded token."""
     decoded = jwt.decode(
         jwt=jwt_token,
