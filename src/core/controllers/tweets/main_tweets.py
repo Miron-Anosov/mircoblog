@@ -13,7 +13,7 @@ from typing import Sequence
 
 from fastapi import APIRouter, Depends, status
 
-from src.core.controllers.depends.check_token import token_depends
+from src.core.controllers.depends.check_token import token_is_alive
 from src.core.controllers.tweets.del_like import del_like
 from src.core.controllers.tweets.del_tweet import del_tweet_by_id
 from src.core.controllers.tweets.get_tweets import get_tweets
@@ -42,7 +42,7 @@ def create_tweets_route() -> APIRouter:
 
 tweets: APIRouter = create_tweets_route()
 
-common_depends: Sequence[Depends] = [Depends(token_depends)]
+common_depends: Sequence[Depends] = [Depends(token_is_alive)]
 
 tweets.add_api_route(
     endpoint=post_new_tweet,

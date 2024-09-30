@@ -7,11 +7,13 @@ Routes:
     - POST api/users/new
 """
 
-from typing import Sequence
+from typing import Annotated, Sequence
 
 from fastapi import APIRouter, Depends, status
+from fastapi.responses import JSONResponse
 
-from src.core.controllers.depends.check_token import token_depends
+from src.core.controllers.depends.check_token import token_is_alive
+from src.core.controllers.depends.get_me import get_me
 from src.core.settings.routes_path import UsersRoutes
 from src.core.validators import StatusResponse, UserProfile
 
@@ -26,7 +28,7 @@ def create_user_route() -> APIRouter:
 
 
 users: APIRouter = create_user_route()
-token_depend: Sequence[Depends] = [Depends(token_depends)]
+token_depend: Sequence[Depends] = [Depends(token_is_alive)]
 
 
 @users.post(
@@ -73,18 +75,22 @@ async def follow_users_delete(user_id: str) -> StatusResponse:
     path=UsersRoutes.GET_ME,
     status_code=status.HTTP_200_OK,
     response_model=UserProfile,
-    dependencies=token_depend,
 )
-async def get_user_profile():
+async def get_user_profile(
+    user_profile: Annotated[UserProfile, Depends(get_me)]
+) -> "JSONResponse":
     """
     Get user profile.
 
     **Headers**:
     - `x-auth-token (str)*`: User key authentication.
-    Min length 6. Max length 60.
 
     """
-    return {"result": "Ok"}
+    return JSONResponse(
+        content=user_profile.model_dump(),
+        status_code=status.HTTP_200_OK,
+        media_type="application/json",
+    )
 
 
 @users.get(
@@ -93,13 +99,12 @@ async def get_user_profile():
     dependencies=token_depend,
     response_model=UserProfile,
 )
-async def get_user_profile_by_id(id_: int):
+async def get_user_profile_by_id(id: str):
     """
     Get user profile.
 
     **Headers**:
     - `x-auth-token (str)*`: User key authentication.
-     Min length 6. Max length 60.
 
     """
     ...
