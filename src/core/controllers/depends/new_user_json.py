@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Annotated
 from fastapi import Depends, HTTPException, status
 
 from src.core.controllers.depends.connect_db import get_crud, get_session
-from src.core.controllers.depends.hash_password import hash_pwd
+from src.core.controllers.depends.utils.hash_password import hash_pwd
 from src.core.validators import ErrResp, NewUser
 
 if TYPE_CHECKING:

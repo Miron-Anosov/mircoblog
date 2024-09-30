@@ -15,7 +15,7 @@ from tests.common_data import valid_user_data
 async def test_get_user_profile_without_api_key(client: AsyncClient):
     """Test GET /users/me without headers : api-key."""
     with patch(
-        "src.core.controllers.users.users.get_user_profile",
+        "src.core.controllers.users.users.get_user_me",
         return_value=None,
     ):
         response = await client.get(

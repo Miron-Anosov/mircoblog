@@ -14,6 +14,7 @@ from fastapi.responses import JSONResponse
 
 from src.core.controllers.depends.check_token import token_is_alive
 from src.core.controllers.depends.get_me import get_me
+from src.core.controllers.depends.get_user_by_id import get_user_by_id
 from src.core.settings.routes_path import UsersRoutes
 from src.core.validators import StatusResponse, UserProfile
 
@@ -76,7 +77,7 @@ async def follow_users_delete(user_id: str) -> StatusResponse:
     status_code=status.HTTP_200_OK,
     response_model=UserProfile,
 )
-async def get_user_profile(
+async def get_user_me(
     user_profile: Annotated[UserProfile, Depends(get_me)]
 ) -> "JSONResponse":
     """
@@ -96,10 +97,11 @@ async def get_user_profile(
 @users.get(
     path=UsersRoutes.GET_BY_ID,
     status_code=status.HTTP_200_OK,
-    dependencies=token_depend,
     response_model=UserProfile,
 )
-async def get_user_profile_by_id(id: str):
+async def get_user_profile_by_id(
+    user_profile: Annotated[UserProfile, Depends(get_user_by_id)]
+):
     """
     Get user profile.
 
@@ -107,4 +109,8 @@ async def get_user_profile_by_id(id: str):
     - `x-auth-token (str)*`: User key authentication.
 
     """
-    ...
+    return JSONResponse(
+        content=user_profile.model_dump(),
+        status_code=status.HTTP_200_OK,
+        media_type="application/json",
+    )
