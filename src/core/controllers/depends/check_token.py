@@ -3,18 +3,21 @@
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer
-from fastapi.security.http import HTTPAuthorizationCredentials
+from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 
 from src.core.controllers.depends.utils.jwt_token import decode_jwt
 from src.core.validators import ErrResp
 
-http_bearer = HTTPBearer()
+oauth_bearer = OAuth2PasswordBearer(
+    tokenUrl="/api/auth/login/form",
+    scheme_name="Authorizations",
+    description="Authorizations and get token.",
+)
 
 
 async def token_is_alive(
-    token: Annotated[HTTPAuthorizationCredentials, Depends(http_bearer)],
+    token: Annotated[str, Depends(oauth_bearer)],
 ):
     """Check HTTP header: api_key.
 
@@ -28,7 +31,7 @@ async def token_is_alive(
             - headers={"WWW-Authenticate": "Bearer"}
     """
     try:
-        return decode_jwt(jwt_token=token.credentials).get("sub")
+        return decode_jwt(jwt_token=token).get("sub")
     except InvalidTokenError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
