@@ -50,7 +50,7 @@ async def login_user_json(
         )
 
         payload = {
-            "sub": user_profile.id,
+            "sub": str(user_profile.id),
             "username": user_profile.name,
         }
 
@@ -110,7 +110,7 @@ async def login_user_form(
         )
 
         payload = {
-            "sub": user_profile.name,
+            "sub": str(user_profile.id),
             "username": user_profile.name,
         }
 
