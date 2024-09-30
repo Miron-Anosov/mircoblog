@@ -63,7 +63,7 @@ async def login_user_json(
 
 
 async def login_user_form(
-    email: Annotated[
+    username: Annotated[
         pydantic.EmailStr,
         Form(
             description="User's email.",
@@ -83,7 +83,7 @@ async def login_user_form(
     """Check user in DB.
 
     Args:
-        email: str: user_email
+        username: str: user_email
         password: srt: secret
         crud: Crud()
         session: AsyncSession
@@ -95,7 +95,7 @@ async def login_user_form(
         Return new JWT token.
     """
     user_hash_pwd, user_id = await crud.auth_users.login_user(
-        email=email, session=session
+        email=username, session=session
     )
 
     if user_hash_pwd and validate_pwd(
