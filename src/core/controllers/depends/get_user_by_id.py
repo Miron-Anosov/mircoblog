@@ -1,10 +1,9 @@
-"""Return User Profile."""
+"""Return User Profile by ID."""
 
 from typing import TYPE_CHECKING, Annotated
 
 from fastapi import Depends
 
-from src.core.controllers.depends.check_token import token_is_alive
 from src.core.controllers.depends.connect_db import get_crud, get_session
 from src.core.controllers.depends.utils.serialize_user import serialize_user
 from src.core.validators import UserProfile
@@ -15,8 +14,8 @@ if TYPE_CHECKING:
     from src.core.models_orm.crud import Crud
 
 
-async def get_me(
-    id_user: Annotated[str, Depends(token_is_alive)],
+async def get_user_by_id(
+    another_user_by_id: str,
     session: Annotated["AsyncSession", Depends(get_session)],
     crud: Annotated["Crud", Depends(get_crud)],
 ) -> "UserProfile":
@@ -29,10 +28,10 @@ async def get_me(
     Returns:
         - UserProfile (pydantic model)
     Notes:
-        - Return profile only with a token.
+        - Return profile without a token.
     """
     user_profile = await crud.users.get_me(
-        id_user=id_user,
+        id_user=another_user_by_id,
         session=session,
     )
 
