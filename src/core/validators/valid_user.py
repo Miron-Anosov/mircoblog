@@ -3,8 +3,6 @@
 You can see route to /src/back_core/controllers/users.py
 """
 
-import uuid
-
 import pydantic
 
 
@@ -15,8 +13,7 @@ class ValidUserModel(pydantic.BaseModel):
     - `name`: User's name.
     """
 
-    id: uuid.UUID = pydantic.Field(
-        default_factory=uuid.uuid4,
+    id: str = pydantic.Field(
         description="Author's unique ID",
     )
     name: str = pydantic.Field(
@@ -29,7 +26,7 @@ class ValidUserModel(pydantic.BaseModel):
 class ValidModelGetMe(pydantic.BaseModel):
     """Validate model for profile of user."""
 
-    id: uuid.UUID
+    id: str
     name: str
     followers: list[ValidUserModel | None]
     following: list[ValidUserModel | None]
@@ -40,13 +37,13 @@ class ValidateUserProfile(pydantic.BaseModel):
 
     - `result`: bool : Successful or unsuccessful.
     - `user`: Dict of user objects containing the following fields:
-        - `id`: int : Unique identifier of the user.
+        - `id`: str : Unique identifier of the user.
         - `name`: string : User's name.
         - `followers`: Dict of users.
-            - `id`: int : Unique identifier of the user.
+            - `id`: str : Unique identifier of the user.
             - `name`: string : User's name.
         - `following`: Dict of users.
-            - `id`: int : Unique identifier of the user.
+            - `id`: str : Unique identifier of the user.
             - `name`: string : User's name.
     """
 
