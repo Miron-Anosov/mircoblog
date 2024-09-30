@@ -1,35 +1,41 @@
-"""There are controllers API of depends."""
+"""Depends-Check active user."""
 
 from typing import Annotated
 
-from fastapi import Depends, Header, HTTPException, status
-from pydantic import ValidationError
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer
+from fastapi.security.http import HTTPAuthorizationCredentials
+from jwt.exceptions import ExpiredSignatureError
 
-from src.core.controllers.depends.connect_db import get_session
-from src.core.validators import UserToken
+from src.core.controllers.depends.jwt_token import decode_jwt
+from src.core.validators import ErrResp
+
+http_bearer = HTTPBearer()
 
 
-async def token_depends(
-    api_key: Annotated[
-        str | None,
-        Header(
-            alias="x-auth-token", alias_priority=1, description="x-auth-token"
-        ),
-    ],
-    session: Annotated[AsyncSession, Depends(get_session)],
+async def token_is_alive(
+    token: Annotated[HTTPAuthorizationCredentials, Depends(http_bearer)],
 ):
     """Check HTTP header: api_key.
 
     Args:
-    - api_key (str): API key for authentication. Min length 6. Max length 60.
+        - token (str): HTTPBearer API key for authentication.
+        - session (AsyncSession): get db session.
+        - crud (Crud): crud worker.
+    Raises:
+        HTTPException:
+            - status 401
+            - headers={"WWW-Authenticate": "Bearer"}
     """
     try:
-        UserToken(api_key=api_key)
-    except ValidationError:
+        return decode_jwt(jwt_token=token.credentials).get("sub")
+    except ExpiredSignatureError as e:
+        message_index = 0
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="api-key is invalid.",
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=ErrResp(
+                error_type=str(e.args[message_index]),
+                error_message="Please repeat authentication.",
+            ).model_dump(),
+            headers={"WWW-Authenticate": "Bearer"},
         )
-    else:
-        return api_key
