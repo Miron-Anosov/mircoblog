@@ -21,7 +21,7 @@ async def test_get_user_profile_without_api_key(client: AsyncClient):
         response = await client.get(
             f"{UsersRoutes.PREFIX}{UsersRoutes.GET_ME}"
         )
-        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
 # @pytest.mark.asyncio
