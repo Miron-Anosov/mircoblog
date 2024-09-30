@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Annotated
 
 import pydantic
 from fastapi import Depends, Form, HTTPException, status
-from fastapi.security import HTTPBearer
 
 from src.core.controllers.depends.connect_db import get_crud, get_session
 from src.core.controllers.depends.hash_password import validate_pwd
@@ -51,7 +50,7 @@ async def login_user_json(
         )
 
         payload = {
-            "sub": user_profile.name,
+            "sub": user_profile.id,
             "username": user_profile.name,
         }
 
