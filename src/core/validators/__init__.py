@@ -17,6 +17,7 @@ from src.core.validators.valid_status_ok import (
 )
 from src.core.validators.valid_token import ValidTokenInfo as UserToken
 from src.core.validators.valid_user import ValidateUserProfile as UserProfile
+from src.core.validators.valid_user import ValidModelGetMe as UserMe
 from src.core.validators.valid_user import ValidUserModel as User
 
 __all__ = [
@@ -30,4 +31,5 @@ __all__ = [
     "NewUser",
     "ErrResp",
     "LoginUser",
+    "UserMe",
 ]
