@@ -2,7 +2,9 @@
 
 from abc import ABC, abstractmethod
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from src.core.models_orm.models.user_orm import UserORM
 
@@ -24,7 +26,9 @@ class _UserInterface(ABC):
 
     @staticmethod
     @abstractmethod
-    async def get_me() -> dict:
+    async def get_me(
+        id_user: str, session: AsyncSession, user_table=UserORM
+    ) -> "UserORM":
         """Get current user info."""
         pass
 
@@ -51,13 +55,31 @@ class Users(_UserInterface):
         pass
 
     @staticmethod
-    async def get_me() -> dict:
-        """Get current user info."""
-        return {}  # TODO: miss to make logic
+    async def get_me(
+        id_user: str, session: AsyncSession, user_table=UserORM
+    ) -> "UserORM":
+        """Get user by id."""
+        query = (
+            select(user_table)
+            .options(
+                selectinload(user_table.followers),
+                selectinload(user_table.following),
+            )
+            .where(user_table.id == id_user)
+        )
+        return await session.scalar(query)
 
     @staticmethod
     async def get_user(
         id_user: str, session: AsyncSession, user_table=UserORM
-    ) -> UserORM:
+    ) -> "UserORM":
         """Get user by id."""
-        return await session.get(user_table, id_user)
+        query = (
+            select(user_table)
+            .options(
+                selectinload(user_table.followers),
+                selectinload(user_table.following),
+            )
+            .where(user_table.id == id_user)
+        )
+        return await session.scalar(query)
