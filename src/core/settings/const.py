@@ -24,9 +24,17 @@ class MessageError:
     """STATIC ERROR DATA."""
 
     INVALID_EMAIL_OR_PWD = "Invalid email or password"
+    INVALID_TOKEN_ERR = "Invalid token."
+    INVALID_TOKEN_ERR_MESSAGE = "Please repeat authentication."
 
 
 class TypeEncoding:
     """STATIC ENCODING DATA."""
 
     UTF8 = "utf-8"
+
+
+class Headers:
+    """STATIC HEADERS DATA."""
+
+    WWW_AUTH_BEARER = {"WWW-Authenticate": "Bearer"}
