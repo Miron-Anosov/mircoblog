@@ -21,7 +21,7 @@ class _AuthInterface(abc.ABC):
         email: str,
         session: AsyncSession,
         auth_user: UsersAuthORM,
-    ) -> tuple | None:
+    ) -> tuple:
         """Login exist user.
 
         Returns:
@@ -125,7 +125,7 @@ class AuthUsers(_AuthInterface):
         email: str,
         session: AsyncSession,
         auth_user=UsersAuthORM,
-    ) -> tuple | None:
+    ) -> tuple:
         """Login exist user.
 
         Returns:
@@ -142,7 +142,7 @@ class AuthUsers(_AuthInterface):
             )
             return user.hashed_password, user.user_id
 
-        return None
+        return None, None
 
     @staticmethod
     async def logout_user(
