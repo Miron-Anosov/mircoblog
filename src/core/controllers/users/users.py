@@ -11,6 +11,7 @@ from typing import Annotated, Sequence
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
+from fastapi.security import HTTPBearer
 
 from src.core.controllers.depends.check_token import token_is_alive
 from src.core.controllers.depends.get_me import get_me
@@ -25,7 +26,11 @@ def create_user_route() -> APIRouter:
     Return:
             APIRouter
     """
-    return APIRouter(tags=[UsersRoutes.TAG], prefix=UsersRoutes.PREFIX)
+    return APIRouter(
+        tags=[UsersRoutes.TAG],
+        prefix=UsersRoutes.PREFIX,
+        dependencies=[Depends(HTTPBearer(auto_error=False))],
+    )
 
 
 users: APIRouter = create_user_route()
