@@ -59,3 +59,4 @@ class AuthRoutes(PathRoutes):
     POST_LOGOUT_USER = f"{AUTH_PATH}/logout"
     POST_CREATE_USER_FORM = f"{AUTH_PATH}/new/form"
     POST_CREATE_USER_JSON = f"{AUTH_PATH}/new/json"
+    DEL_LOGOUT_USER = f"{AUTH_PATH}/logout"
