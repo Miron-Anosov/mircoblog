@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Annotated
 
 from fastapi import Depends
 
-from src.core.controllers.depends.check_token import token_is_alive
+from src.core.controllers.depends.check_token import token_access
 from src.core.controllers.depends.connect_db import get_crud, get_session
 from src.core.controllers.depends.utils.serialize_user import serialize_user
 from src.core.validators import UserProfile
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 async def get_me(
-    id_user: Annotated[str, Depends(token_is_alive)],
+    id_user: Annotated[str, Depends(token_access)],
     session: Annotated["AsyncSession", Depends(get_session)],
     crud: Annotated["Crud", Depends(get_crud)],
 ) -> "UserProfile":
