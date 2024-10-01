@@ -46,7 +46,7 @@ async def token_is_alive(
 async def token_access(
     token: Annotated[dict, Depends(token_is_alive)],
 ):
-    """Check HTTP header: Authenticate: Bearer.
+    """Check type token.
 
     Args:
         - token (str): HTTPBearer API key for authentication.
@@ -55,6 +55,8 @@ async def token_access(
         HTTPException:
             - status 401
             - headers={"WWW-Authenticate": "Bearer"}
+    Notes:
+        if token is not "access_token", it'll raise InvalidTokenError.
     """
     try:
 
