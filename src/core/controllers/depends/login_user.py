@@ -4,15 +4,15 @@ from typing import TYPE_CHECKING, Annotated
 
 import pydantic
 from fastapi import Depends, Form, HTTPException, status
-from fastapi.responses import JSONResponse
 
 from src.core.controllers.depends.connect_db import get_crud, get_session
 from src.core.controllers.depends.utils.hash_password import validate_pwd
-from src.core.controllers.depends.utils.jwt_token import create_token
+from src.core.controllers.depends.utils.jsonresponse_new_jwt import response
 from src.core.settings.const import JWT, MessageError, TypeEncoding
-from src.core.validators import LoginUser, UserToken
+from src.core.validators import LoginUser
 
 if TYPE_CHECKING:
+    from fastapi.responses import JSONResponse
     from sqlalchemy.ext.asyncio import AsyncSession
 
     from src.core.models_orm.crud import Crud
@@ -121,35 +121,7 @@ async def login_user(
             JWT.PAYLOAD_USERNAME_KEY: user_profile.name,
         }
 
-        user_token = UserToken(
-            access_token=create_token(
-                payload=payload, type_token=JWT.TOKEN_TYPE_ACCESS
-            ),
-            refresh_token=create_token(
-                payload=payload, type_token=JWT.TOKEN_TYPE_REFRESH
-            ),
-        )
-
-        response = JSONResponse(
-            content=user_token.model_dump(
-                exclude={
-                    JWT.TOKEN_TYPE_REFRESH,
-                    JWT.DESCRIPTION_PYDANTIC_EXPIRE_REFRESH,
-                }
-            ),
-            status_code=status.HTTP_201_CREATED,
-            media_type="application/json",
-            # headers={"x-auth-token": user_token.access_token},
-        )
-        response.set_cookie(
-            key=JWT.TOKEN_TYPE_REFRESH,
-            value=user_token.refresh_token,
-            httponly=True,
-            # secure=True,
-            expires=user_token.expires_refresh,
-        )
-
-        return response
+        return response(payload=payload)
 
     # TODO ADD LOGER DEBUG : unsuccessful login
     raise HTTPException(
