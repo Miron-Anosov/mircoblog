@@ -60,33 +60,31 @@ class PydanticTweets:
     TITLE_TWEETS_RESPONSE = "Tweet Response"
     TITLE_TWEET_REQUEST = "Tweet Request"
     TWEET_MEDIA_IDS_DESCRIPTION = "Array tweet IDs"
-    JSON_SCHEMA_TWEET = (
-        {
-            "example": {
-                "result": True,
-                "tweets": [
-                    {
-                        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                        "content": "This is a sample tweet",
-                        "attachments": [
-                            "/media/images/12345.jpg",
-                            "/media/images/12346.jpg",
-                        ],
-                        "author": {
-                            "id": "3fa85f64-4578-4562-b3fc-2c963f66afa6",
-                            "name": "Author Name",
-                        },
-                        "likes": [
-                            {
-                                "user_id": "3fa85f64-5555-4562-b3fc-2c963f66afa6",  # noqa E501
-                                "name": "User1",
-                            },
-                        ],
+    JSON_SCHEMA_TWEET = {
+        "example": {
+            "result": True,
+            "tweets": [
+                {
+                    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    "content": "This is a sample tweet",
+                    "attachments": [
+                        "/media/images/12345.jpg",
+                        "/media/images/12346.jpg",
+                    ],
+                    "author": {
+                        "id": "3fa85f64-4578-4562-b3fc-2c963f66afa6",
+                        "name": "Author Name",
                     },
-                ],
-            }
-        },
-    )
+                    "likes": [
+                        {
+                            "user_id": "3fa85f64-5555-4562-b3fc-2c963f66afa6",
+                            "name": "User1",
+                        },
+                    ],
+                },
+            ],
+        }
+    }
 
 
 class MimeTypes:
