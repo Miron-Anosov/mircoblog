@@ -16,6 +16,7 @@ from fastapi.security import HTTPBearer
 from src.core.controllers.depends.auth.check_token import token_is_alive
 from src.core.controllers.depends.users.get_me import get_me
 from src.core.controllers.depends.users.get_user_by_id import get_user_by_id
+from src.core.settings.const import MimeTypes
 from src.core.settings.routes_path import UsersRoutes
 from src.core.validators import StatusResponse, UserProfile
 
@@ -95,7 +96,7 @@ async def get_user_me(
     return JSONResponse(
         content=user_profile.model_dump(),
         status_code=status.HTTP_200_OK,
-        media_type="application/json",
+        media_type=MimeTypes.APPLICATION_JSON,
     )
 
 
@@ -117,5 +118,5 @@ async def get_user_profile_by_id(
     return JSONResponse(
         content=user_profile.model_dump(),
         status_code=status.HTTP_200_OK,
-        media_type="application/json",
+        media_type=MimeTypes.APPLICATION_JSON,
     )
