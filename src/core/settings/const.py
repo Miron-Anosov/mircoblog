@@ -38,3 +38,8 @@ class Headers:
     """STATIC HEADERS DATA."""
 
     WWW_AUTH_BEARER = {"WWW-Authenticate": "Bearer"}
+    WWW_AUTH_BEARER_LOGOUT = {"WWW-Authenticate": 'Bearer realm="logout"'}
+    AUTHORIZATION = {"Authorization": ""}
+    WWW_AUTH_BEARER_EXPIRED = {
+        "WWW-Authenticate": 'Bearer realm="Refresh token expired"'
+    }
