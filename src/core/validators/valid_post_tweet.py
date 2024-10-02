@@ -7,6 +7,8 @@ import uuid
 
 import pydantic
 
+from src.core.settings.const import PydanticTweets
+
 
 class ValidPostModelNewTweetInput(pydantic.BaseModel):
     """**Model validate input date from route POST /tweets**.
@@ -16,12 +18,17 @@ class ValidPostModelNewTweetInput(pydantic.BaseModel):
     """
 
     tweet_data: str = pydantic.Field(
-        description="Message to new post", min_length=1
+        description=PydanticTweets.TWEET_DATA_DESCRIPTION,
+        min_length=PydanticTweets.TWEET_DATA_MIN_LENGTH_DESCRIPTION,
     )
     tweet_media_ids: list[int] | None = pydantic.Field(
-        default=None, strict=False, description="Array tweet IDs"
+        default=None,
+        strict=False,
+        description=PydanticTweets.TWEET_MEDIA_IDS_DESCRIPTION,
     )
-    model_config = pydantic.ConfigDict(title="Tweet Request")
+    model_config = pydantic.ConfigDict(
+        title=PydanticTweets.TITLE_TWEET_REQUEST
+    )
 
 
 class ValidPostModelNewTweetOutput(pydantic.BaseModel):
@@ -32,11 +39,13 @@ class ValidPostModelNewTweetOutput(pydantic.BaseModel):
     """
 
     result: bool = pydantic.Field(
-        description="Successful or unsuccessful",
+        description=PydanticTweets.TWEET_RESULT_BOOL_DESCRIPTION, default=True
     )
     tweet_id: uuid.UUID = pydantic.Field(
         default_factory=uuid.uuid4,
-        description="Unique identifier for " "the tweet.",
+        description=PydanticTweets.ID_DESCRIPTION,
     )
 
-    model_config = pydantic.ConfigDict(title="Tweet Response")
+    model_config = pydantic.ConfigDict(
+        title=PydanticTweets.TITLE_TWEETS_RESPONSE
+    )
