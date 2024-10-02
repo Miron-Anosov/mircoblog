@@ -20,7 +20,7 @@ from src.core.controllers.depends.auth.login_user import (
 )
 from src.core.controllers.depends.auth.post_user_form import user_form
 from src.core.controllers.depends.auth.post_user_json import user_json
-from src.core.settings.const import JWT, Headers
+from src.core.settings.const import JWT, Headers, MimeTypes
 from src.core.settings.routes_path import AuthRoutes
 from src.core.validators import StatusResponse, UserToken
 
@@ -60,7 +60,7 @@ async def new_user_form(
     return JSONResponse(
         content=StatusResponse().model_dump(),
         status_code=status.HTTP_201_CREATED,
-        media_type="application/json",
+        media_type=MimeTypes.MULTIPART_FORM_DATA,
     )
 
 
@@ -84,7 +84,7 @@ async def new_user_json(
     return JSONResponse(
         content=StatusResponse().model_dump(),
         status_code=status.HTTP_201_CREATED,
-        media_type="application/json",
+        media_type=MimeTypes.APPLICATION_JSON,
     )
 
 
