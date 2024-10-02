@@ -13,7 +13,7 @@ from src.core.settings.routes_path import AuthRoutes
 from src.core.validators import ErrResp
 
 oauth_bearer = OAuth2PasswordBearer(
-    tokenUrl=AuthRoutes.POST_CREATE_USER_FORM,
+    tokenUrl=f"{AuthRoutes.PREFIX}{AuthRoutes.POST_LOGIN_USER_FORM}",
 )
 
 cookie_refresh = APIKeyCookie(name=JWT.TOKEN_TYPE_REFRESH)
