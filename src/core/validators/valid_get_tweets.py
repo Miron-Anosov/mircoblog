@@ -7,6 +7,8 @@ import uuid
 
 import pydantic
 
+from src.core.settings.const import PydanticTweets
+
 from .valid_likes import ValidLikeModel
 from .valid_user import ValidUserModel
 
@@ -23,18 +25,18 @@ class ValidateGetTweet(pydantic.BaseModel):
 
     id: uuid.UUID = pydantic.Field(
         default_factory=uuid.uuid4,
-        description="Unique identifier for the tweet.",
+        description=PydanticTweets.ID_DESCRIPTION,
     )
     content: str
     attachments: list[str] | None = pydantic.Field(
-        default=None, description="List of URLs (optional)"
+        default=None, description=PydanticTweets.ATTACHMENTS_DESCRIPTION
     )
     author: ValidUserModel
     likes: list[ValidLikeModel]
 
     model_config = pydantic.ConfigDict(
         from_attributes=True,
-        title="Tweet",
+        title=PydanticTweets.TITLE_TWEET,
     )
 
 
@@ -60,30 +62,6 @@ class ValidGETModelTweet(pydantic.BaseModel):
 
     model_config = pydantic.ConfigDict(
         from_attributes=True,
-        title="Get Tweets Response",
-        json_schema_extra={
-            "example": {
-                "result": True,
-                "tweets": [
-                    {
-                        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                        "content": "This is a sample tweet",
-                        "attachments": [
-                            "/media/images/12345.jpg",
-                            "/media/images/12346.jpg",
-                        ],
-                        "author": {
-                            "id": "3fa85f64-4578-4562-b3fc-2c963f66afa6",
-                            "name": "Author Name",
-                        },
-                        "likes": [
-                            {
-                                "user_id": "3fa85f64-5555-4562-b3fc-2c963f66afa6",  # noqa E501
-                                "name": "User1",
-                            },
-                        ],
-                    },
-                ],
-            }
-        },
+        title=PydanticTweets.TITLE_GET_TWEETS_RESPONSE,
+        json_schema_extra=PydanticTweets.JSON_SCHEMA_TWEET,
     )
