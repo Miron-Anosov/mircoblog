@@ -3,11 +3,10 @@
 from typing import TYPE_CHECKING, Annotated
 
 import pydantic
-from fastapi import Depends, Form, HTTPException, status
+from fastapi import Depends, Form
 
+from src.core.controllers.depends.auth.create_user import create_user
 from src.core.controllers.depends.connect_db import get_crud, get_session
-from src.core.controllers.depends.utils.hash_password import hash_pwd
-from src.core.validators import ErrResp
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,7 +14,7 @@ if TYPE_CHECKING:
     from src.core.models_orm.crud import Crud
 
 
-async def create_new_user_form(
+async def user_form(
     name: Annotated[
         str,
         Form(
@@ -66,33 +65,12 @@ async def create_new_user_form(
     Raises:
         HTTPException
     """
-    if password != password_control:
-        # TODO: Add logger DEBUG
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=ErrResp(
-                error_type="ValidationError",
-                error_message="password is invalid.",
-            ).model_dump(),
-        )
-
-    email_exist: bool = await crud.auth_users.if_exist_email(
+    created_user = create_user(
+        name=name,
         email=email,
+        password=password,
+        password_control=password_control,
+        crud=crud,
         session=session,
-    )
-    if email_exist:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="email already exist",
-        )
-
-    # TODO: HASH AND SOLT AND PAPER PASSWORD
-    password_hash = hash_pwd(password)
-    new_user = dict(
-        name=name, hashed_password=password_hash.decode("utf-8"), email=email
-    )
-
-    created_user = await crud.auth_users.post_new_user(
-        session=session, auth_user=new_user
     )
     return True if created_user else False

@@ -13,13 +13,13 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.security import APIKeyCookie, HTTPBearer
 
-from src.core.controllers.depends.check_token import update_tokens_by_refresh
-from src.core.controllers.depends.login_user import (
+from src.core.controllers.depends.auth.check_token import up_tokens_by_refresh
+from src.core.controllers.depends.auth.login_user import (
     login_user_form,
     login_user_json,
 )
-from src.core.controllers.depends.new_user_form import create_new_user_form
-from src.core.controllers.depends.new_user_json import create_new_user_json
+from src.core.controllers.depends.auth.post_user_form import user_form
+from src.core.controllers.depends.auth.post_user_json import user_json
 from src.core.settings.const import JWT, Headers
 from src.core.settings.routes_path import AuthRoutes
 from src.core.validators import StatusResponse, UserToken
@@ -46,7 +46,7 @@ auth: APIRouter = create_auth_route()
     response_model=StatusResponse,
 )
 async def new_user_form(
-    _: Annotated[bool, Depends(create_new_user_form)]
+    _: Annotated[bool, Depends(user_form)]
 ) -> JSONResponse:
     """**Post new user**.
 
@@ -70,7 +70,7 @@ async def new_user_form(
     response_model=StatusResponse,
 )
 async def new_user_json(
-    _: Annotated[bool, Depends(create_new_user_json)]
+    _: Annotated[bool, Depends(user_json)]
 ) -> JSONResponse:
     """**Post new user**.
 
@@ -132,7 +132,7 @@ async def login_form(
     response_model=UserToken,
 )
 async def patch_access_token(
-    refresh_token: Annotated["JSONResponse", Depends(update_tokens_by_refresh)]
+    refresh_token: Annotated["JSONResponse", Depends(up_tokens_by_refresh)]
 ) -> "JSONResponse":
     """**Path access and refresh token**.
 
