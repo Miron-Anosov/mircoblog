@@ -99,7 +99,7 @@ async def get_user_id_by_token_access(
         raise http_exception()
 
 
-async def update_tokens_by_refresh(
+async def up_tokens_by_refresh(
     token: Annotated[dict, Depends(refresh_token_is_alive)],
 ):
     """Token refresh update.

@@ -13,9 +13,9 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer
 
-from src.core.controllers.depends.check_token import token_is_alive
-from src.core.controllers.depends.get_me import get_me
-from src.core.controllers.depends.get_user_by_id import get_user_by_id
+from src.core.controllers.depends.auth.check_token import token_is_alive
+from src.core.controllers.depends.users.get_me import get_me
+from src.core.controllers.depends.users.get_user_by_id import get_user_by_id
 from src.core.settings.routes_path import UsersRoutes
 from src.core.validators import StatusResponse, UserProfile
 

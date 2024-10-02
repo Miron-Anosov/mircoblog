@@ -55,7 +55,7 @@ class ValidGETModelTweet(pydantic.BaseModel):
             - `name`: string : Name of the user.
     """
 
-    result: bool
+    result: bool = True
     tweets: list[ValidateGetTweet]
 
     model_config = pydantic.ConfigDict(
