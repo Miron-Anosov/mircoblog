@@ -1,13 +1,11 @@
 """Users CRUD methods."""
 
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from src.core.models_orm.crud_models.utils.catcher_errors import cather_sql_err
 from src.core.models_orm.models.user_orm import UserORM
 
 
@@ -59,7 +57,7 @@ class Users(_UserInterface):
     @staticmethod
     async def get_me(
         id_user: str, session: AsyncSession, user_table=UserORM
-    ) -> Optional["UserORM"]:
+    ) -> "UserORM":
         """Get user by id."""
         query = (
             select(user_table)
@@ -72,10 +70,9 @@ class Users(_UserInterface):
         return await session.scalar(query)
 
     @staticmethod
-    @cather_sql_err
     async def get_user(
         id_user: str, session: AsyncSession, user_table=UserORM
-    ) -> Optional["UserORM"]:
+    ) -> "UserORM":
         """Get user by id."""
         query = (
             select(user_table)
