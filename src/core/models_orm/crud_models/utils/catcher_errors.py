@@ -10,9 +10,9 @@ def cather_sql_err(function: Callable) -> Callable:
     """Catch SQLAlchemyError and return None."""
 
     @wraps(function)
-    def wrapper(*args, **kwargs) -> Callable | None:
+    async def wrapper(*args, **kwargs) -> Callable | None:
         try:
-            return function(*args, **kwargs)
+            return await function(*args, **kwargs)
         except SQLAlchemyError as e:
             print(str(e))
             # TODO add loger WARNING
