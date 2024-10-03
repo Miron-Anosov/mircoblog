@@ -26,8 +26,10 @@ class MessageError:
     INVALID_EMAIL_OR_PWD = "Invalid email or password"
     INVALID_TOKEN_ERR = "Invalid token."
     INVALID_TOKEN_ERR_MESSAGE = "Please repeat authentication."
-    EMAIL_ALREADY_EXIST = "email already exist"
-    TYPE_ERROR_INVALID_AUTH = "Invalid auth"
+    EMAIL_ALREADY_EXIST = "Email already exist."
+    TYPE_ERROR_INVALID_AUTH = "Invalid auth."
+    TYPE_ERROR_INTERNAL_SERVER_ERROR = "Internal server error."
+    MESSAGE_SERVER_ERROR = "An error occurred."
 
 
 class TypeEncoding:
