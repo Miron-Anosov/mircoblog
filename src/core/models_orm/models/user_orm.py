@@ -10,6 +10,7 @@ from src.core.models_orm.models.base_model import BaseModel
 
 if TYPE_CHECKING:
     from src.core.models_orm.models.auth import UsersAuthORM
+    from src.core.models_orm.models.likes_models import LikesORM
     from src.core.models_orm.models.tweet_orm import TweetsORM
 
 
@@ -20,7 +21,9 @@ class UserORM(BaseModel):
     """
 
     __tablename__ = "users"
-    id: Mapped[str] = mapped_column(UUID, primary_key=True, default=uuid.uuid4)
+    id: Mapped[UUID] = mapped_column(
+        UUID, primary_key=True, default=uuid.uuid4
+    )
     name: Mapped[str] = mapped_column(nullable=False)
 
     followers: Mapped[list["UserORM"]] = relationship(
@@ -41,6 +44,11 @@ class UserORM(BaseModel):
     users_profile: Mapped["UsersAuthORM"] = relationship(
         "UsersAuthORM", back_populates="user_auth"
     )
-    users_likes: Mapped["TweetsORM"] = relationship(
-        "TweetsORM", back_populates="likes"
+    likes: Mapped[list["LikesORM"]] = relationship(
+        "LikesORM",
+        back_populates="user",
+    )
+
+    tweets: Mapped[list["TweetsORM"]] = relationship(
+        back_populates="owner",
     )
