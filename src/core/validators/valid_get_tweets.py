@@ -28,8 +28,8 @@ class ValidateGetTweet(pydantic.BaseModel):
         description=PydanticTweets.ID_DESCRIPTION,
     )
     content: str
-    attachments: list[str] | None = pydantic.Field(
-        default=None, description=PydanticTweets.ATTACHMENTS_DESCRIPTION
+    attachments: list[str] = pydantic.Field(
+        default=[], description=PydanticTweets.ATTACHMENTS_DESCRIPTION
     )
     author: ValidUserModel
     likes: list[ValidLikeModel]

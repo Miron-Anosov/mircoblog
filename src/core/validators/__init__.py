@@ -6,6 +6,7 @@ from src.core.validators.valid_err_response import ValidErrResponse as ErrResp
 from src.core.validators.valid_get_tweets import (
     ValidGETModelTweet as GetAllTweets,
 )
+from src.core.validators.valid_likes import ValidLikeModel as Like
 from src.core.validators.valid_post_tweet import (
     ValidPostModelNewTweetInput as PostNewTweet,
 )
@@ -32,4 +33,5 @@ __all__ = [
     "ErrResp",
     "LoginUser",
     "UserMe",
+    "Like",
 ]
