@@ -30,12 +30,14 @@ def create_user_route() -> APIRouter:
     return APIRouter(
         tags=[UsersRoutes.TAG],
         prefix=UsersRoutes.PREFIX,
-        dependencies=[Depends(HTTPBearer(auto_error=False))],
     )
 
 
 users: APIRouter = create_user_route()
-token_depend: Sequence[Depends] = [Depends(token_is_alive)]
+token_depend: Sequence[Depends] = [
+    Depends(token_is_alive),
+    Depends(HTTPBearer(auto_error=False)),
+]
 
 
 @users.post(
