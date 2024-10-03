@@ -77,7 +77,6 @@ tweets.add_api_route(
     status_code=status.HTTP_200_OK,
     path=TweetsRoutes.TWEETS,
     response_model=GetAllTweets,
-    dependencies=common_depends,
 )
 
 tweets.add_api_route(

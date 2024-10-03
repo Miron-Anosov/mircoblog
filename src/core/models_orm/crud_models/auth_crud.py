@@ -4,7 +4,6 @@ import abc
 import uuid
 
 from sqlalchemy import bindparam, insert, select
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.models_orm.crud_models.utils.catcher_errors import cather_sql_err
