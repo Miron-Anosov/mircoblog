@@ -3,11 +3,12 @@
 from typing import TYPE_CHECKING, Annotated
 
 import pydantic
-from fastapi import Depends, Form, HTTPException, status
+from fastapi import Depends, Form, status
 
 from src.core.controllers.depends.connect_db import get_crud, get_session
 from src.core.controllers.depends.utils.hash_password import validate_pwd
 from src.core.controllers.depends.utils.jsonresponse_new_jwt import response
+from src.core.controllers.depends.utils.return_error import http_exception
 from src.core.settings.const import JWT, MessageError, TypeEncoding
 from src.core.validators import LoginUser
 
@@ -101,9 +102,19 @@ async def login_user(
     Notes:
         Return new JWT access token and refresh token.
     """
-    user_hash_pwd, user_id = await crud.auth_users.login_user(
+    user_data = await crud.auth_users.login_user(
         email=username, session=session
     )
+
+    if not isinstance(user_data, tuple):
+        # todo: add log info - fail login with user, error data from db
+        raise http_exception(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            error_type=MessageError.TYPE_ERROR_INTERNAL_SERVER_ERROR,
+            error_message=MessageError.MESSAGE_SERVER_ERROR,
+        )
+
+    user_hash_pwd, user_id = user_data
 
     if user_hash_pwd and validate_pwd(
         password=password,
@@ -124,7 +135,7 @@ async def login_user(
         return response(payload=payload)
 
     # TODO ADD LOGER DEBUG : unsuccessful login
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail=MessageError.INVALID_EMAIL_OR_PWD,
+    raise http_exception(
+        error_type=MessageError.TYPE_ERROR_INVALID_AUTH,
+        error_message=MessageError.INVALID_EMAIL_OR_PWD,
     )
