@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Annotated
 import pydantic
 from fastapi import Depends, Form, status
 
-from src.core.controllers.depends.connect_db import get_crud, get_session
+from src.core.controllers.depends.utils.connect_db import get_crud, get_session
 from src.core.controllers.depends.utils.hash_password import validate_pwd
 from src.core.controllers.depends.utils.jsonresponse_new_jwt import response
 from src.core.controllers.depends.utils.return_error import http_exception
