@@ -7,7 +7,6 @@ from sqlalchemy import bindparam, insert, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.models_orm.crud_models.utils.catcher_errors import cather_sql_err
 from src.core.models_orm.models.auth import UsersAuthORM
 from src.core.models_orm.models.user_orm import UserORM
 
@@ -67,7 +66,6 @@ class AuthUsers(_AuthInterface):
     """User CRUD interface."""
 
     @staticmethod
-    @cather_sql_err
     async def post_new_user(
         session: AsyncSession,
         auth_user: dict,
@@ -84,19 +82,26 @@ class AuthUsers(_AuthInterface):
         """
         new_uuid = uuid.uuid4().hex
         auth_user["user_id"] = new_uuid
+        print(auth_user)
+        try:
+            await session.execute(
+                insert(UserORM),
+                params=[{"id": new_uuid, "name": auth_user["name"]}],
+            )
 
-        await session.execute(
-            insert(UserORM),
-            params=[{"id": new_uuid, "name": auth_user["name"]}],
-        )
-        await session.execute(insert(UsersAuthORM), params=[auth_user])
-        print("СОЗДАЮ НОВОГО ПОЛЬЗОВАТЕЛЯ")  # TODO: Add logger INFO
-        await session.commit()
+            await session.execute(insert(UsersAuthORM), params=[auth_user])
+            print("СОЗДАЮ НОВОГО ПОЛЬЗОВАТЕЛЯ")  # TODO: Add logger INFO
+            await session.commit()
+        except SQLAlchemyError as e:
+            print(str(e))
+            # TODO: Logger WARNING
+            return False
 
-        return True
+        else:
+            # TODO: Send email to new user
+            return True
 
     @staticmethod
-    @cather_sql_err
     async def if_exist_email(
         email: str,
         session: AsyncSession,
@@ -115,7 +120,6 @@ class AuthUsers(_AuthInterface):
         return True if email_exist else False
 
     @classmethod
-    @cather_sql_err
     async def login_user(
         cls,
         email: str,
