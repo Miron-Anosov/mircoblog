@@ -20,7 +20,7 @@ class _TweetInterface(abc.ABC):
     @abc.abstractmethod
     async def post_like(
         session: AsyncSession,
-        id_tweet: int,
+        id_tweet: str,
         id_user: str,
         like_table=LikesORM,
         model_like: LikesORM = LikesORM,
@@ -32,8 +32,9 @@ class _TweetInterface(abc.ABC):
     @abc.abstractmethod
     async def delete_like(
         session: AsyncSession,
-        id_tweet: int,
-        like_table: "LikesORM",
+        id_tweet: str,
+        id_user: str,
+        like_table=LikesORM,
     ) -> bool | None:
         """Delete like for tweet by id tweet."""
         pass
@@ -42,7 +43,7 @@ class _TweetInterface(abc.ABC):
     @abc.abstractmethod
     async def post_tweet(
         session: AsyncSession,
-        user_id: int,
+        user_id: str,
         content_test: str,
         content_media_ids: list[int],
         table=TweetsORM,
@@ -54,10 +55,10 @@ class _TweetInterface(abc.ABC):
     @abc.abstractmethod
     async def delete_tweet(
         session: AsyncSession,
-        id_tweet: int,
+        id_tweet: str,
         id_user: str,
         table_tweet: "TweetsORM",
-    ) -> bool:
+    ) -> bool | None:
         """Delete tweet by id."""
         pass
 
@@ -75,7 +76,7 @@ class Tweets(_TweetInterface):
     @cather_sql_err
     async def post_like(
         session: AsyncSession,
-        id_tweet: int,
+        id_tweet: str,
         id_user: str,
         like_table=LikesORM,
     ) -> bool | None:
@@ -98,10 +99,23 @@ class Tweets(_TweetInterface):
         return True
 
     @staticmethod
-    async def delete_like(session, id_tweet, model) -> bool:
+    async def delete_like(
+        session: AsyncSession,
+        id_tweet: str,
+        id_user: str,
+        like_table=LikesORM,
+    ) -> bool | None:
         """Delete like for tweet by id tweet."""
-        _ = await session.get(id_tweet, model)
-        return True  # TODO: miss to make logic
+        stmt = (
+            delete(like_table)
+            .where(like_table.tweet_id == id_tweet)
+            .where(like_table.user_id == id_user)
+        )
+        conn = await session.begin()
+        await conn.session.execute(statement=stmt)
+        await conn.commit()
+
+        return True
 
     @staticmethod
     @cather_sql_err
@@ -126,7 +140,7 @@ class Tweets(_TweetInterface):
     @cather_sql_err
     async def delete_tweet(
         session: AsyncSession,
-        id_tweet: int,
+        id_tweet: str,
         id_user: str,
         table_tweet=TweetsORM,
     ) -> bool | None:
