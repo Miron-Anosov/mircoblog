@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from fastapi import HTTPException, status
+from fastapi import status
 
 from src.core.controllers.depends.utils.hash_password import hash_pwd
 from src.core.controllers.depends.utils.return_error import http_exception

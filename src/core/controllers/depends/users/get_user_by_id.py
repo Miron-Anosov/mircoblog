@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Annotated
 
 from fastapi import Depends
 
-from src.core.controllers.depends.connect_db import get_crud, get_session
+from src.core.controllers.depends.utils.connect_db import get_crud, get_session
 from src.core.controllers.depends.utils.serialize_user import serialize_user
 from src.core.validators import UserProfile
 

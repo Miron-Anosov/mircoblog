@@ -6,7 +6,7 @@ import pydantic
 from fastapi import Depends, Form
 
 from src.core.controllers.depends.auth.create_user import create_user
-from src.core.controllers.depends.connect_db import get_crud, get_session
+from src.core.controllers.depends.utils.connect_db import get_crud, get_session
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession

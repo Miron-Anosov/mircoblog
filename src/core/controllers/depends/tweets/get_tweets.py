@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Annotated
 
 from fastapi import Depends, status
 
-from src.core.controllers.depends.connect_db import get_crud, get_session
+from src.core.controllers.depends.utils.connect_db import get_crud, get_session
 from src.core.controllers.depends.utils.return_error import http_exception
 from src.core.settings.const import MessageError
 from src.core.validators import GetAllTweets, Like, User
