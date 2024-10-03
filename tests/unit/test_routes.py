@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, create_autospec, patch
 
 import pytest
 
-from src.core.controllers.tweets.del_like import del_like
+from src.core.controllers.tweets.del_like import delete_like
 from src.core.controllers.tweets.del_tweet import del_tweet_by_id
 from src.core.controllers.tweets.get_tweets import get_tweets
 from src.core.controllers.tweets.post_like import post_like_by_id
@@ -136,7 +136,7 @@ async def test_post_like_by_id() -> None:
 async def test_del_like_tweet_by_id() -> None:
     """Test too many positional arguments."""
     mock_del_like_tweet_by_id = create_autospec(
-        del_like, return_valume=tweets_data
+        delete_like, return_valume=tweets_data
     )
     assert await mock_del_like_tweet_by_id(tweet_id="any_user_id_str")
     with pytest.raises(TypeError):
