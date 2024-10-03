@@ -42,12 +42,14 @@ async def get_tweets_data(
                 ),
                 likes=[
                     Like(
-                        user_id=user_like.id,
-                        name=user_like.name,
+                        user_id=like.user.id,
+                        name=like.user.name,
                     )
-                    for user_like in tweet.likes
+                    for like in tweet.likes
+                    if like
                 ],
             )
             for tweet in tweets
+            if tweet
         ]
     )
