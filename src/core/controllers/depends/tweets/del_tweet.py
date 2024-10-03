@@ -10,7 +10,7 @@ from fastapi import Depends, status
 from src.core.controllers.depends.auth.check_token import (
     get_user_id_by_token_access,
 )
-from src.core.controllers.depends.connect_db import get_crud, get_session
+from src.core.controllers.depends.utils.connect_db import get_crud, get_session
 from src.core.controllers.depends.utils.return_error import http_exception
 from src.core.settings.const import MessageError
 
