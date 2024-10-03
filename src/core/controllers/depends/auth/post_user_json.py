@@ -33,9 +33,9 @@ async def user_json(
     Raises:
         HTTPException
     """
-    created_user = create_user(
+    created_user = await create_user(
         name=new_user.name,
-        email=new_user.email,
+        email=new_user.user_email,
         password=new_user.password.decode(TypeEncoding.UTF8),
         password_control=new_user.password_control.decode(TypeEncoding.UTF8),
         crud=crud,
