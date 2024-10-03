@@ -4,7 +4,7 @@ import abc
 import uuid
 from typing import Any, Sequence
 
-from sqlalchemy import Row, RowMapping, select
+from sqlalchemy import Row, RowMapping, delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -26,7 +26,9 @@ class _TweetInterface(abc.ABC):
     @staticmethod
     @abc.abstractmethod
     async def delete_like(
-        session: AsyncSession, id_tweet: int, model: "TweetsORM"
+        session: AsyncSession,
+        id_tweet: int,
+        model: "TweetsORM",
     ) -> bool:
         """Delete like for tweet by id tweet."""
         pass
@@ -48,6 +50,8 @@ class _TweetInterface(abc.ABC):
     async def delete_tweet(
         session: AsyncSession,
         id_tweet: int,
+        id_user: str,
+        table_tweet: "TweetsORM",
     ) -> bool:
         """Delete tweet by id."""
         pass
@@ -99,10 +103,19 @@ class Tweets(_TweetInterface):
     async def delete_tweet(
         session: AsyncSession,
         id_tweet: int,
+        id_user: str,
+        table_tweet=TweetsORM,
     ) -> bool:
         """Delete tweet by id."""
-        print("delete tweet")
-        return True  # TODO: miss to make logic
+        stmt = (
+            delete(table=table_tweet)
+            .where(table_tweet.owner.has(id=id_user))
+            .where(table_tweet.id == id_tweet)
+        )
+        con = await session.begin()
+        await con.session.execute(statement=stmt)
+        await con.commit()
+        return True
 
     @staticmethod
     @cather_sql_err
