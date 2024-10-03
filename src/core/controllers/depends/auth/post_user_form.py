@@ -65,7 +65,7 @@ async def user_form(
     Raises:
         HTTPException
     """
-    created_user = create_user(
+    created_user = await create_user(
         name=name,
         email=email,
         password=password,
