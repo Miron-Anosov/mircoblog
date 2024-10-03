@@ -21,6 +21,7 @@ class TweetsORM(BaseModel):
     content: Mapped[str] = mapped_column(Text)
     author: Mapped[str] = mapped_column(ForeignKey("users.id"))
     likes: Mapped[list["LikesORM"]] = relationship(
+        "LikesORM",
         back_populates="tweet",
         cascade="all, delete-orphan",
     )
