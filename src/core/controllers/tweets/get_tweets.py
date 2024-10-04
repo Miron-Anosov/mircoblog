@@ -14,7 +14,10 @@ async def get_tweets(
     """
     Get tweets.
 
-     **Headers**:
-    - Authorization: Bearer `access_token` (str): User key authentication.
+    Args:
+        tweets (GetAllTweets): The tweets data dependency.
+
+    Returns:
+        GetAllTweets: The retrieved tweets.
     """
     return tweets
