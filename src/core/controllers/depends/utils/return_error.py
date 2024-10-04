@@ -1,5 +1,7 @@
 """Common Raise HTTPException."""
 
+from typing import Optional
+
 from fastapi import HTTPException, status
 
 from src.core.settings.const import MessageError
@@ -31,3 +33,22 @@ def http_exception(
         ).model_dump(),
         headers=headers,
     )
+
+
+def raise_http_db_fail(is_none_result: Optional[bool]) -> None:
+    """Checker None.
+
+    Args:
+        - is_none_result (Optional[bool]): result db.
+    Raise:
+        - HTTPException
+    Nones:
+        - If db finish incorrect a process than it'll return None.
+    """
+    if is_none_result is None:
+        # todo: add logger info fail get tweets data from db
+        raise http_exception(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            error_type=MessageError.TYPE_ERROR_INTERNAL_SERVER_ERROR,
+            error_message=MessageError.MESSAGE_SERVER_ERROR,
+        )
