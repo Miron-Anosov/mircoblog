@@ -50,8 +50,7 @@ async def follow_users(user_id: str) -> StatusResponse:
     Follow a new user by ID.
 
     **Headers**:
-    - `x-auth-token (str)*`: User key authentication.
-    Min length 6. Max length 60.
+    - Authorization: Bearer `access_token` (str): User key authentication.
 
     **Body**:
     - `user_id (int)`: The ID of the user following.
@@ -70,8 +69,7 @@ async def follow_users_delete(user_id: str) -> StatusResponse:
     Unfollow any user by ID.
 
     **Headers**:
-    - `x-auth-token (str)*`: User key authentication.
-    Min length 6. Max length 60.
+     - Authorization: Bearer `access_token` (str): User key authentication.
 
     **Body**:
     - `user_id (int)`: The ID of the user following.
@@ -92,7 +90,7 @@ async def get_user_me(
     Get user profile.
 
     **Headers**:
-    - `x-auth-token (str)*`: User key authentication.
+     - Authorization: Bearer `access_token` (str): User key authentication.
 
     """
     return JSONResponse(
@@ -114,7 +112,7 @@ async def get_user_profile_by_id(
     Get user profile.
 
     **Headers**:
-    - `x-auth-token (str)*`: User key authentication.
+     - Authorization: Bearer `access_token` (str): User key authentication.
 
     """
     return JSONResponse(
