@@ -4,7 +4,7 @@ import abc
 import uuid
 from typing import Any, Sequence
 
-from sqlalchemy import Row, RowMapping, delete, select
+from sqlalchemy import Row, RowMapping, Select, delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -80,7 +80,18 @@ class Tweets(_TweetInterface):
         id_user: str,
         like_table=LikesORM,
     ) -> bool | None:
-        """Create like for tweet by id tweet."""
+        """
+        Create like for a tweet.
+
+        Args:
+            session (AsyncSession): Database session.
+            id_tweet (str): Tweet ID.
+            id_user (str): User ID.
+            like_table (LikesORM()): Like model.
+
+        Returns:
+            bool | None: Success status.
+        """
         like_exist = (
             select(like_table)
             .where(like_table.user_id == id_user)
@@ -105,7 +116,18 @@ class Tweets(_TweetInterface):
         id_user: str,
         like_table=LikesORM,
     ) -> bool | None:
-        """Delete like for tweet by id tweet."""
+        """
+        Delete like for a tweet.
+
+        Args:
+            session (AsyncSession): Database session.
+            id_tweet (str): Tweet ID.
+            id_user (str): User ID.
+            like_table (LikesORM): Like model.
+
+        Returns:
+            bool | None: Success status.
+        """
         stmt = (
             delete(like_table)
             .where(like_table.tweet_id == id_tweet)
@@ -126,7 +148,19 @@ class Tweets(_TweetInterface):
         content_media_ids: list[int],
         table=TweetsORM,
     ) -> str | None:
-        """Create new tweet."""
+        """
+        Create new tweet.
+
+        Args:
+            session (AsyncSession): Database session.
+            user_id (str): User ID.
+            content_test (str): Tweet content.
+            content_media_ids (list[int]): List of media IDs.
+            table (TweetsORM()): Tweet model.
+
+        Returns:
+            str | None: New tweet ID.
+        """
         new_tweet = table(
             id=uuid.uuid4().hex, content=content_test, author=user_id
         )
@@ -144,9 +178,20 @@ class Tweets(_TweetInterface):
         id_user: str,
         table_tweet=TweetsORM,
     ) -> bool | None:
-        """Delete tweet by id."""
+        """
+        Delete a tweet.
+
+        Args:
+            session (AsyncSession): Database session.
+            id_tweet (str): Tweet ID.
+            id_user (str): User ID.
+            table_tweet (TweetsORM): Tweet model.
+
+        Returns:
+            bool | None: Success status.
+        """
         stmt = (
-            delete(table=table_tweet)
+            delete(table_tweet)
             .where(table_tweet.owner.has(id=id_user))
             .where(table_tweet.id == id_tweet)
         )
@@ -162,8 +207,18 @@ class Tweets(_TweetInterface):
         model_tweets: TweetsORM = TweetsORM,
         model_like: LikesORM = LikesORM,
     ) -> Sequence[Row[Any] | RowMapping | Any] | None:
-        """Create like for tweet by id tweet."""
-        query = select(model_tweets).options(
+        """
+        Get all tweets.
+
+        Args:
+            session (AsyncSession): Database session.
+            model_tweets (TweetsORM): Tweet model.
+            model_like (LikesORM): Like model.
+
+        Returns:
+            Sequence[Row | RowMapping | Any] | None: List of tweets.
+        """
+        query: Select[Any] = select(model_tweets).options(
             selectinload(model_tweets.likes).selectinload(model_like.user),
             selectinload(model_tweets.attachments),
             selectinload(model_tweets.owner),
