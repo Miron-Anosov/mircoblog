@@ -25,13 +25,13 @@ async def get_me(
     """Return User's profile.
 
     Args:
-        - id_user (str): user ID.
-        - session (AsyncSession): db session.
-        - crud (Crud): crud worker interface
+        id_user: str: user ID.
+        session: AsyncSession: db session.
+        crud: Crud: crud worker interface
     Returns:
-        - UserProfile (pydantic model)
+        pydantic.BaseModel:UserProfile
     Notes:
-        - Return profile only with a token.
+        Return profile only with a token.
     """
     user_profile = await crud.users.get_me(
         id_user=id_user,
