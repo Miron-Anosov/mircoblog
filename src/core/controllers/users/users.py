@@ -14,6 +14,10 @@ from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer
 
 from src.core.controllers.depends.auth.check_token import token_is_alive
+from src.core.controllers.depends.users.followers import (
+    del_follow,
+    post_follow,
+)
 from src.core.controllers.depends.users.get_me import get_me
 from src.core.controllers.depends.users.get_user_by_id import get_user_by_id
 from src.core.settings.const import MimeTypes
@@ -25,7 +29,7 @@ def create_user_route() -> APIRouter:
     """Create user's routes.
 
     Return:
-            APIRouter
+            APIRouter: tags ["Users"], prefix: "/api"
     """
     return APIRouter(
         tags=[UsersRoutes.TAG],
@@ -45,7 +49,9 @@ token_depend: Sequence[Depends] = [
     status_code=status.HTTP_201_CREATED,
     dependencies=token_depend,
 )
-async def follow_users(user_id: str) -> StatusResponse:
+async def follow_users(
+    _: Annotated[bool, Depends(post_follow)]
+) -> StatusResponse:
     """
     Follow a new user by ID.
 
@@ -53,7 +59,7 @@ async def follow_users(user_id: str) -> StatusResponse:
     - Authorization: Bearer `access_token` (str): User key authentication.
 
     **Body**:
-    - `user_id (int)`: The ID of the user following.
+    - `user_id (str)`: The ID of the user following.
 
     """
     return StatusResponse()
@@ -64,7 +70,9 @@ async def follow_users(user_id: str) -> StatusResponse:
     status_code=status.HTTP_200_OK,
     dependencies=token_depend,
 )
-async def follow_users_delete(user_id: str) -> StatusResponse:
+async def follow_users_delete(
+    _: Annotated[bool, Depends(del_follow)]
+) -> StatusResponse:
     """
     Unfollow any user by ID.
 
@@ -72,7 +80,7 @@ async def follow_users_delete(user_id: str) -> StatusResponse:
      - Authorization: Bearer `access_token` (str): User key authentication.
 
     **Body**:
-    - `user_id (int)`: The ID of the user following.
+    - `user_id (str)`: The ID of the user following.
 
     """
     return StatusResponse()
