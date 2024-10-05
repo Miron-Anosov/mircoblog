@@ -29,6 +29,6 @@ class MediaORM(BaseModel):
     __tablename__ = "media"
     __mapper_args__ = {"eager_defaults": True}
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    links: Mapped[str] = mapped_column(unique=True)
+    source: Mapped[str] = mapped_column(unique=True)
     tweet_id: Mapped[str] = mapped_column(ForeignKey("tweets.id"))
     tweets: Mapped["TweetsORM"] = relationship(back_populates="attachments")
