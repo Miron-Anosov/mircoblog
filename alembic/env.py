@@ -8,7 +8,14 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-from core.models_orm.models.base_model import BaseModel
+from src.core.models_orm.models.auth import UsersAuthORM  # noqa
+from src.core.models_orm.models.base_model import BaseModel
+from src.core.models_orm.models.followers_orm import FollowersORM  # noqa
+from src.core.models_orm.models.likes_models import LikesORM  # noqa
+from src.core.models_orm.models.media_orm import MediaORM  # noqa
+from src.core.models_orm.models.tweet_orm import TweetsORM  # noqa
+from src.core.models_orm.models.user_orm import UserORM  # noqa
+from src.core.models_orm.models.users_auth_ip import UsersAuthIPORM  # noqa
 from src.core.settings.settings import settings
 
 config = context.config
