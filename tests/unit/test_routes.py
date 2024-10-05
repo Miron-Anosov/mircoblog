@@ -5,26 +5,18 @@ from unittest.mock import AsyncMock, create_autospec, patch
 
 import pytest
 
-from src.back_core.controllers.tweets_controllers.del_like_tweet import (
-    del_like_tweet_by_id,
-)
-from src.back_core.controllers.tweets_controllers.del_tweet import (
-    del_tweet_by_id,
-)
-from src.back_core.controllers.tweets_controllers.get_tweets import get_tweets
-from src.back_core.controllers.tweets_controllers.post_like_tweet import (
-    post_like_by_id,
-)
-from src.back_core.controllers.tweets_controllers.post_new_tweet import (
-    post_new_tweet,
-)
-from src.back_core.controllers.users_controllers.users import (
+from src.core.controllers.tweets.del_like import delete_like
+from src.core.controllers.tweets.del_tweet import del_tweet_by_id
+from src.core.controllers.tweets.get_tweets import get_tweets
+from src.core.controllers.tweets.post_like import post_like_by_id
+from src.core.controllers.tweets.post_new_tweet import post_new_tweet
+from src.core.controllers.users.users import (
     follow_users,
     follow_users_delete,
-    get_user_profile,
+    get_user_me,
     get_user_profile_by_id,
 )
-from src.back_core.validators.valid_user import ValidateUserProfile
+from src.core.validators.valid_user import ValidateUserProfile
 from tests.common_data import tweets_data, valid_user_data
 
 
@@ -33,7 +25,7 @@ from tests.common_data import tweets_data, valid_user_data
 async def test_get_user_profile_with_mocked_data_and_api_key():
     """Test func with moke."""
     mocked_profile = ValidateUserProfile(**valid_user_data)
-    trg = "src.back_core.controllers.users_controllers.users.get_user_profile"
+    trg = "src.core.controllers.users.users.get_user_profile"
     with patch(
         target=trg,
         return_value=mocked_profile,
@@ -48,7 +40,7 @@ async def test_get_user_profile_with_mocked_data_and_api_key():
 async def test_get_user_profile() -> None:
     """Test too many positional arguments."""
     mock_user_prof = create_autospec(
-        get_user_profile,
+        get_user_me,
         return_value=AsyncMock(return_value=valid_user_data),
     )
     assert await cast(AsyncMock, mock_user_prof)()
@@ -144,7 +136,7 @@ async def test_post_like_by_id() -> None:
 async def test_del_like_tweet_by_id() -> None:
     """Test too many positional arguments."""
     mock_del_like_tweet_by_id = create_autospec(
-        del_like_tweet_by_id, return_valume=tweets_data
+        delete_like, return_valume=tweets_data
     )
     assert await mock_del_like_tweet_by_id(tweet_id="any_user_id_str")
     with pytest.raises(TypeError):
