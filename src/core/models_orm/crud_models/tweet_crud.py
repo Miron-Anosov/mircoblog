@@ -8,7 +8,7 @@ from sqlalchemy import Row, RowMapping, Select, delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from src.core.models_orm.crud_models.utils.catcher_errors import cather_sql_err
+from src.core.models_orm.crud_models.utils.catcher_errors import catch_orm_err
 from src.core.models_orm.models.likes_models import LikesORM
 from src.core.models_orm.models.tweet_orm import TweetsORM
 
@@ -73,7 +73,7 @@ class Tweets(_TweetInterface):
     """Tweets CRUD methods."""
 
     @staticmethod
-    @cather_sql_err
+    @catch_orm_err
     async def post_like(
         session: AsyncSession,
         id_tweet: str,
@@ -140,7 +140,7 @@ class Tweets(_TweetInterface):
         return True
 
     @staticmethod
-    @cather_sql_err
+    @catch_orm_err
     async def post_tweet(
         session: AsyncSession,
         user_id: str,
@@ -171,7 +171,7 @@ class Tweets(_TweetInterface):
         return new_tweet.id
 
     @staticmethod
-    @cather_sql_err
+    @catch_orm_err
     async def delete_tweet(
         session: AsyncSession,
         id_tweet: str,
@@ -201,7 +201,7 @@ class Tweets(_TweetInterface):
         return True
 
     @staticmethod
-    @cather_sql_err
+    @catch_orm_err
     async def get_tweets(
         session: AsyncSession,
         model_tweets: TweetsORM = TweetsORM,
