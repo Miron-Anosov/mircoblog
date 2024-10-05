@@ -6,7 +6,7 @@ from functools import wraps
 from sqlalchemy.exc import SQLAlchemyError
 
 
-def cather_sql_err(function: Callable) -> Callable:
+def catch_orm_err(function: Callable) -> Callable:
     """Catch SQLAlchemyError and return None."""
 
     @wraps(function)
