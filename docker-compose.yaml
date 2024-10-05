@@ -74,6 +74,7 @@ services:
       - POSTGRES_PORT=${POSTGRES_PORT}
       - JWT_PRIVATE_KEY_PATH=${JWT_PRIVATE}
       - JWT_PUBLIC_KEY_PATH=${JWT_PUBLIC}
+    command: ["/app/start.sh"]
     depends_on:
       - db
     networks:
