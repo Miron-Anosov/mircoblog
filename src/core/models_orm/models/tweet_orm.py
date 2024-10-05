@@ -14,7 +14,16 @@ if TYPE_CHECKING:
 
 
 class TweetsORM(BaseModel):
-    """Tweets model."""
+    """Tweets model.
+
+        CREATE TABLE tweets (
+        id UUID NOT NULL,
+        content TEXT NOT NULL,
+        author UUID NOT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY(author) REFERENCES users (id)
+    )
+    """
 
     __tablename__ = "tweets"
     id: Mapped[str] = mapped_column(UUID, primary_key=True)
