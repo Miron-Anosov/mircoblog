@@ -10,6 +10,7 @@ from src.core.models_orm.models.base_model import BaseModel
 
 if TYPE_CHECKING:
     from src.core.models_orm.models.auth import UsersAuthORM
+    from src.core.models_orm.models.followers_orm import FollowersORM
     from src.core.models_orm.models.likes_models import LikesORM
     from src.core.models_orm.models.tweet_orm import TweetsORM
 
@@ -18,27 +19,30 @@ class UserORM(BaseModel):
     """User ORM model.
 
     Table: users
+
+        CREATE TABLE users (
+        id UUID NOT NULL,
+        name VARCHAR NOT NULL,
+        PRIMARY KEY (id)
+    )
     """
 
     __tablename__ = "users"
-    id: Mapped[UUID] = mapped_column(
-        UUID, primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[UUID] = mapped_column(UUID, primary_key=True)
     name: Mapped[str] = mapped_column(nullable=False)
 
-    followers: Mapped[list["UserORM"]] = relationship(
-        "UserORM",
-        secondary="followers",
-        primaryjoin="UserORM.id==FollowersORM.following_id",
-        secondaryjoin="UserORM.id==FollowersORM.follower_id",
+    followers: Mapped[list["FollowersORM"]] = relationship(
+        "FollowersORM",
+        foreign_keys="[FollowersORM.followed_id]",
         back_populates="following",
+        cascade="all, delete-orphan",
     )
-    following: Mapped[list["UserORM"]] = relationship(
-        "UserORM",
-        secondary="followers",
-        primaryjoin="UserORM.id==FollowersORM.follower_id",
-        secondaryjoin="UserORM.id==FollowersORM.following_id",
-        back_populates="followers",
+
+    following: Mapped[list["FollowersORM"]] = relationship(
+        "FollowersORM",
+        foreign_keys="[FollowersORM.follower_id]",
+        back_populates="follower",
+        cascade="all, delete-orphan",
     )
 
     users_profile: Mapped["UsersAuthORM"] = relationship(
