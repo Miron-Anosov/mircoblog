@@ -15,13 +15,29 @@ class FollowersORM(BaseModel):
     """Followers ORM model.
 
     Table: followers
+
+    CREATE TABLE followers (
+        id SERIAL NOT NULL,
+        follower_id UUID NOT NULL,
+        followed_id UUID NOT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY(follower_id) REFERENCES users (id),
+        FOREIGN KEY(followed_id) REFERENCES users (id)
+    )
+
     """
 
     __tablename__ = "followers"
     __mapper_args__ = {"eager_defaults": True}
-    follower_id: Mapped[str] = mapped_column(
-        UUID, ForeignKey("users.id"), primary_key=True
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+
+    follower_id: Mapped[str] = mapped_column(UUID, ForeignKey("users.id"))
+    followed_id: Mapped[str] = mapped_column(UUID, ForeignKey("users.id"))
+    follower: Mapped["UserORM"] = relationship(
+        "UserORM", foreign_keys=[follower_id], back_populates="following"
     )
-    following_id: Mapped[str] = mapped_column(
-        UUID, ForeignKey("users.id"), primary_key=True
+
+    following: Mapped["UserORM"] = relationship(
+        "UserORM", foreign_keys=[followed_id], back_populates="followers"
     )
