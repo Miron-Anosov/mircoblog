@@ -35,9 +35,9 @@ class FollowersORM(BaseModel):
     follower_id: Mapped[str] = mapped_column(UUID, ForeignKey("users.id"))
     followed_id: Mapped[str] = mapped_column(UUID, ForeignKey("users.id"))
     follower: Mapped["UserORM"] = relationship(
-        "UserORM", foreign_keys=[follower_id], back_populates="following"
+        "UserORM", foreign_keys=[follower_id], back_populates="followers"
     )
 
     following: Mapped["UserORM"] = relationship(
-        "UserORM", foreign_keys=[followed_id], back_populates="followers"
+        "UserORM", foreign_keys=[followed_id], back_populates="following"
     )
