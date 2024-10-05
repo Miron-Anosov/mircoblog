@@ -1,6 +1,5 @@
 """SQLAlchemy UsersAuthORM model."""
 
-import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -35,7 +34,6 @@ class UsersAuthORM(BaseModel):
         UUID,
         ForeignKey("users.id"),
         primary_key=True,
-        default=uuid.uuid4,
         unique=True,
     )
     created: Mapped[datetime] = mapped_column(server_default=func.now())
