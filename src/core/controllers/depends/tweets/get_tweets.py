@@ -18,7 +18,19 @@ async def get_tweets_data(
     session: Annotated["AsyncSession", Depends(get_session)],
     crud: Annotated["Crud", Depends(get_crud)],
 ) -> "GetAllTweets":
-    """Return tweets."""
+    """
+    Retrieve and return all tweets.
+
+    This function fetches tweets from the database, validates the response,
+    and returns a list of tweets along with their authors and likes.
+
+    Args:
+        session (AsyncSession): Database session used for querying.
+        crud (Crud): CRUD instance for handling tweet operations.
+
+    Returns:
+        GetAllTweets: Pydantic model representing the list of tweets.
+    """
     tweets = await crud.tweets.get_tweets(session=session)
 
     raise_http_db_fail(is_none_result=tweets)
