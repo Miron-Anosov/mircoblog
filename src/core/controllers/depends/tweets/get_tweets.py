@@ -2,11 +2,10 @@
 
 from typing import TYPE_CHECKING, Annotated
 
-from fastapi import Depends, status
+from fastapi import Depends
 
 from src.core.controllers.depends.utils.connect_db import get_crud, get_session
-from src.core.controllers.depends.utils.return_error import http_exception
-from src.core.settings.const import MessageError
+from src.core.controllers.depends.utils.return_error import raise_http_db_fail
 from src.core.validators import GetAllTweets, Like, User
 
 if TYPE_CHECKING:
@@ -22,13 +21,7 @@ async def get_tweets_data(
     """Return tweets."""
     tweets = await crud.tweets.get_tweets(session=session)
 
-    if tweets is None:
-        # todo: add logger info fail get tweets data from db
-        raise http_exception(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            error_type=MessageError.TYPE_ERROR_INTERNAL_SERVER_ERROR,
-            error_message=MessageError.MESSAGE_SERVER_ERROR,
-        )
+    raise_http_db_fail(is_none_result=tweets)
 
     return GetAllTweets(
         tweets=[
