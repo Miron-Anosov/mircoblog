@@ -17,9 +17,17 @@ class UsersAuthORM(BaseModel):
     """UsersAuthORM model.
 
     Table: users_auth
-    user_id: str
-    hashed_password: str
-    email: str
+
+    CREATE TABLE users_auth (
+        user_id UUID NOT NULL,
+        created TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL,
+        hashed_password VARCHAR NOT NULL,
+        email VARCHAR NOT NULL,
+        PRIMARY KEY (user_id),
+        UNIQUE (user_id),
+        FOREIGN KEY(user_id) REFERENCES users (id),
+        UNIQUE (email)
+    )
     """
 
     __tablename__ = "users_auth"

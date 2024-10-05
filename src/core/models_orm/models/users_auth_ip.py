@@ -16,7 +16,13 @@ if TYPE_CHECKING:
 class UsersAuthIPORM(BaseModel):
     """UsersAuthIPORM model.
 
-    Table: users
+        CREATE TABLE users_auth_ip (
+        user_id UUID NOT NULL,
+        api_key VARCHAR NOT NULL,
+        created_key TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+        PRIMARY KEY (user_id),
+        UNIQUE (user_id)
+    )
     """
 
     __tablename__ = "users_auth_ip"
