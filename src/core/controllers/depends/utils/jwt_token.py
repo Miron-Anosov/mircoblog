@@ -10,7 +10,7 @@ from src.core.settings.settings import settings
 
 def encode_jwt(
     payload: dict,
-    private_key: str = settings.jwt_tokens.private_token.read_text(),
+    private_key: str = settings.jwt_tokens.private,
     algorithm: str = settings.jwt_tokens.algorithm,
     expire_minutes: int = settings.jwt_tokens.access_token_expire_minutes,
     expire_delta: datetime.timedelta | None = None,
@@ -36,7 +36,7 @@ def encode_jwt(
 
 def decode_jwt(
     jwt_token: str | bytes,
-    public_key: str = settings.jwt_tokens.public_token.read_text(),
+    public_key: str = settings.jwt_tokens.public,
     algorithm: str = settings.jwt_tokens.algorithm,
 ) -> dict:
     """Return decoded token."""

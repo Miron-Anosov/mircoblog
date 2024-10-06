@@ -4,7 +4,7 @@ import os
 from abc import abstractmethod
 from pathlib import Path
 
-from pydantic import EmailStr, Field, HttpUrl, ValidationError, field_validator
+from pydantic import EmailStr, Field, HttpUrl, ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 env = Path(__file__).parent.parent.parent.parent / ".env"
@@ -60,15 +60,15 @@ class EnvironmentSettingMix(BaseSettings):
 
 
 class EnvConf(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
-    """Production environments are deploy.
+    """Configuration for production environments.
 
-    Environments params:
-     - POSTGRES_HOST: str
-     - POSTGRES_PORT: int
-     - POSTGRES_USER: str
-     - POSTGRES_DB: str
-     - POSTGRES_PASSWORD: str
-     - ECHO: bool
+    Attributes:
+        POSTGRES_HOST (str): The hostname of the PostgreSQL server.
+        POSTGRES_PORT (int): The port number for PostgreSQL.
+        POSTGRES_USER (str): The username for connecting to PostgreSQL.
+        POSTGRES_DB (str): The name of the PostgreSQL database.
+        POSTGRES_PASSWORD (str): The password for the PostgreSQL user.
+        ECHO (bool): A flag to enable or disable SQLAlchemy query logging.
     """
 
     POSTGRES_HOST: str
@@ -80,7 +80,14 @@ class EnvConf(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
 
     @property
     def get_url_database(self) -> str:
-        """Return database URL."""
+        """Return the database URL for SQLAlchemy.
+
+        Constructs and returns a PostgreSQL URL using the asyncpg driver
+        to be used by SQLAlchemy for database connections.
+
+        Returns:
+            str: The full database connection URL.
+        """
         return (
             f"postgresql+asyncpg://{self.POSTGRES_USER}:"
             f"{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:"
@@ -94,51 +101,75 @@ class EnvConf(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
     )
 
 
-def default_token_path(token_type: str) -> Path:
-    """Return path for tokens."""
-    return Path(__file__).parent.parent.parent / f"certs/jwt-{token_type}.pem"
-
-
 class AuthJWT(BaseSettings):
-    """AuthJWT token path with fallback to environment variables."""
+    """Class for handling JWT settings.
 
-    private_token: Path = Field(
-        default_factory=lambda: default_token_path("private")
-    )
-    public_token: Path = Field(
-        default_factory=lambda: default_token_path("public"),
-    )
+    Environment Variables:
+        - JWT_PRIVATE (str): The private JWT key.
+        - JWT_PUBLIC (str): The public JWT key.
+
+    Attributes:
+        private (str): The private JWT key.
+        public (str): The public JWT key.
+        algorithm (str): The algorithm used for JWT encryption,
+            default is 'RS256'.
+        access_token_expire_minutes (int): The expiration time for the
+            access token in minutes, default is 15.
+        refresh_token_expire_days (int): The expiration time for the
+            refresh token in days, default is 30.
+
+    Example:
+        Usage of the class to load JWT configuration from an `.env` file:
+
+        ```python
+        auth_settings = AuthJWT()
+        print(auth_settings.private)
+        print(auth_settings.public)
+        ```
+
+    Configuration:
+        - env_prefix: Prefix for environment variables, used to load the
+            `JWT_PRIVATE` and `JWT_PUBLIC` variables.
+        - extra: Ignores extra variables not specified in the model.
+        - env_file: Loads environment variables from `.env.test` if it
+            exists, otherwise from `.env`.
+    """
+
+    private: str = Field()
+    public: str = Field()
     algorithm: str = "RS256"
     access_token_expire_minutes: int = Field(default=15)
     refresh_token_expire_days: int = Field(default=30)
 
-    @classmethod
-    @field_validator("private_token", "public_token")
-    def validate_token_paths(cls, value, info):
-        """Validate openssl data."""
-        if value.exists():
-            return value
-
-        env_var_name = f"JWT_{info.field_name.split('_')[0].upper()}_KEY_PATH"
-        env_path = os.getenv(env_var_name)
-
-        if env_path and Path(env_path).exists():
-            return Path(env_path)
-
-        raise EnvironmentFileNotFoundError(
-            f"No valid path found for {info.field_name}. "
-            f"Tried default path: {value} and "
-            f"environment variable: {env_var_name}"
-        )
-
-    model_config = SettingsConfigDict(validate_assignment=True)
+    model_config = SettingsConfigDict(
+        env_prefix="JWT_",
+        extra="ignore",
+        env_file=env_test if os.path.exists(env_test) else env,
+    )
 
 
 class Settings:
-    """Common settings for environments."""
+    """Common settings for environments.
+
+    Attributes:
+        env_params (EnvConf): Environment configuration parameters
+            loaded from the `.env` or `.env.test` files.
+        jwt_tokens (AuthJWT): JWT configuration including token paths
+            and expiration settings.
+
+    Raises:
+        EnvironmentFileNotFoundError: If neither the `.env` nor the
+            `.env.test` files are found, this error is raised with
+            detailed information about the missing files.
+    """
 
     def __init__(self) -> None:
-        """Interface for environments."""
+        """Initialize the settings by loading environment variables.
+
+        Tries to load the environment parameters using `EnvConf`. If the
+        `.env` or `.env.test` files are not found, an exception is
+        raised indicating which files were missing.
+        """
         try:
             self.env_params = EnvConf()
         except ValidationError:
