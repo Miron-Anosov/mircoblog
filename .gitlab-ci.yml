@@ -42,7 +42,7 @@ linting:
         elif [ "$LINTER" = "black" ]; then
           black --check ./src ./tests
         elif [ "$LINTER" = "isort" ]; then
-          isort --check-only --diff ./src ./tests
+          isort --profile "black" --filter-files ./src ./tests
         elif [ "$LINTER" = "flake8" ]; then
           flake8 ./src ./tests
         else
