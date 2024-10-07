@@ -6,20 +6,24 @@ workflow:
 
 image: python:3.12.4
 
+cache:
+  paths:
+    - .cache/pip
+    - .cache/poetry
+
 before_script:
   - pip install poetry==1.8
   - poetry config virtualenvs.create false
   - poetry install
 
-
-
 stages:
-#  - build
+  - preparation
+  - linting
   - test
-#  - deploy
+  # - deploy  # Раскомментируйте, когда будете готовы добавить этап развертывания
 
 preparation:
-  stage: test
+  stage: preparation
   script:
     - python3 --version
     - pip --version
@@ -27,29 +31,13 @@ preparation:
     - poetry show --tree
     - pytest --version
 
-
-mypy:
-  stage: test
+linting:
+  stage: linting
+  parallel:
+    matrix:
+      - LINTER: [mypy, black, isort, flake8]
   script:
-    - mypy -p src
-
-black:
-  stage: test
-  script:
-    - black --check ./src
-    - black --check ./tests
-
-isort:
-  stage: test
-  script:
-    - isort --profile "black" --filter-files ./src
-    - isort --profile "black" --filter-files ./tests
-
-flake8:
-  stage: test
-  script:
-    - flake8 ./src/
-    - flake8 ./tests/
+    - $LINTER ./src ./tests
 
 test:
   stage: test
@@ -66,5 +54,6 @@ test:
       junit: report.xml
     paths:
       - coverage.svg
+    expire_in: 1 week
   after_script:
     - grep -oP "line-rate=\"\K[^\"]*" coverage.xml | awk '{print $1*100 "%"}'
