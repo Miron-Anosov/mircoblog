@@ -35,20 +35,20 @@ linting:
   parallel:
     matrix:
       - LINTER: [mypy, black, isort, flake8]
-script:
-    - |
-      if [ "$LINTER" = "mypy" ]; then
-        mypy -p src
-      elif [ "$LINTER" = "black" ]; then
-        black --check ./src ./tests
-      elif [ "$LINTER" = "isort" ]; then
-        isort --check-only --diff ./src ./tests
-      elif [ "$LINTER" = "flake8" ]; then
-        flake8 ./src ./tests
-      else
-        echo "Unknown linter: $LINTER"
-        exit 1
-      fi
+  script:
+      - |
+        if [ "$LINTER" = "mypy" ]; then
+          mypy -p src
+        elif [ "$LINTER" = "black" ]; then
+          black --check ./src ./tests
+        elif [ "$LINTER" = "isort" ]; then
+          isort --check-only --diff ./src ./tests
+        elif [ "$LINTER" = "flake8" ]; then
+          flake8 ./src ./tests
+        else
+          echo "Unknown linter: $LINTER"
+          exit 1
+        fi
 
 test:
   stage: test
