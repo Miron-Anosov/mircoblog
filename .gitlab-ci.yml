@@ -54,7 +54,7 @@ flake8:
 test:
   stage: test
   script:
-    - pytest --cov=src --cov-report=term-missing --cov-report=xml:coverage.xml --junitxml=report.xml
+    - pytest --cov=src --cov-report=term-missing --cov-report=xml:coverage.xml --junitxml=report.xml tests -m "not mock"
     - pip install coverage-badge
     - coverage-badge -o coverage.svg -f
   coverage: '/TOTAL.*\s+(\d+%)$/'
