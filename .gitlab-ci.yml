@@ -20,7 +20,6 @@ stages:
   - preparation
   - linting
   - test
-  # - deploy  # Раскомментируйте, когда будете готовы добавить этап развертывания
 
 preparation:
   stage: preparation
@@ -50,7 +49,6 @@ script:
         echo "Unknown linter: $LINTER"
         exit 1
       fi
-
 
 test:
   stage: test
