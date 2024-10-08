@@ -36,7 +36,6 @@ def create_tweets_route() -> APIRouter:
     """
     return APIRouter(
         tags=[TweetsRoutes.TAG],
-        prefix=TweetsRoutes.PREFIX,
     )
 
 

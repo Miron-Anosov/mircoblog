@@ -33,7 +33,6 @@ def create_auth_route() -> APIRouter:
     """
     return APIRouter(
         tags=[AuthRoutes.TAG],
-        prefix=AuthRoutes.PREFIX,
     )
 
 
