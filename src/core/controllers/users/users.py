@@ -33,7 +33,6 @@ def create_user_route() -> APIRouter:
     """
     return APIRouter(
         tags=[UsersRoutes.TAG],
-        prefix=UsersRoutes.PREFIX,
     )
 
 
