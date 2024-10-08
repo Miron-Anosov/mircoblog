@@ -12,6 +12,7 @@ import http
 from typing import Sequence
 
 from fastapi import APIRouter, Depends, status
+from fastapi.security import HTTPBearer
 
 from src.core.controllers.depends.auth.check_token import token_is_alive
 from src.core.controllers.tweets.del_like import del_like
@@ -41,7 +42,10 @@ def create_tweets_route() -> APIRouter:
 
 tweets: APIRouter = create_tweets_route()
 
-common_depends: Sequence[Depends] = [Depends(token_is_alive)]
+common_depends: Sequence[Depends] = [
+    Depends(token_is_alive),
+    Depends(HTTPBearer(auto_error=False)),
+]
 
 tweets.add_api_route(
     endpoint=post_new_tweet,
