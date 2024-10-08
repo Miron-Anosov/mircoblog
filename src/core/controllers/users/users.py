@@ -90,6 +90,7 @@ async def follow_users_delete(
     path=UsersRoutes.GET_ME,
     status_code=status.HTTP_200_OK,
     response_model=UserProfile,
+    dependencies=token_depend,
 )
 async def get_user_me(
     user_profile: Annotated[UserProfile, Depends(get_me)]
@@ -112,6 +113,7 @@ async def get_user_me(
     path=UsersRoutes.GET_BY_ID,
     status_code=status.HTTP_200_OK,
     response_model=UserProfile,
+    dependencies=token_depend,
 )
 async def get_user_profile_by_id(
     user_profile: Annotated[UserProfile, Depends(get_user_by_id)]
