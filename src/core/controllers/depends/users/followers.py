@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 
 async def post_follow(
     followed_id: Annotated[str, Depends(get_user_id_by_token_access)],
-    user_id: str,
+    id: str,  # noqa
     session: Annotated["AsyncSession", Depends(get_session)],
     crud: Annotated["Crud", Depends(get_crud)],
 ) -> bool:
@@ -32,7 +32,7 @@ async def post_follow(
 
     Args:
         followed_id (str): owner's ID.
-        user_id (str): target user's ID.
+        id (str): target user's ID.
         session (AsyncSession): async connection to db.
         crud (Crud): crud-worker's interface.
     Returns:
@@ -41,7 +41,7 @@ async def post_follow(
         HTTPException: if db return None.
     """
     is_follow: Optional[bool] = await crud.users.post_user_follow(
-        followed_id=followed_id, follower_id=user_id, session=session
+        followed_id=followed_id, follower_id=id, session=session
     )
     raise_http_db_fail(is_follow)
 
@@ -50,7 +50,7 @@ async def post_follow(
 
 async def del_follow(
     followed_id: Annotated[str, Depends(get_user_id_by_token_access)],
-    user_id: str,
+    id: str,  # noqa
     session: Annotated["AsyncSession", Depends(get_session)],
     crud: Annotated["Crud", Depends(get_crud)],
 ) -> bool:
@@ -59,7 +59,7 @@ async def del_follow(
 
     Args:
         followed_id (str): owner's ID.
-        user_id (str): target user's ID.
+        id (str): target user's ID.
         session (AsyncSession): async connection to db.
         crud (Crud): crud-worker's interface.
     Returns:
@@ -68,7 +68,7 @@ async def del_follow(
         HTTPException: if db return None.
     """
     is_follow: Optional[bool] = await crud.users.delete_user_follow(
-        followed_id=followed_id, follower_id=user_id, session=session
+        followed_id=followed_id, follower_id=id, session=session
     )
     raise_http_db_fail(is_follow)
 

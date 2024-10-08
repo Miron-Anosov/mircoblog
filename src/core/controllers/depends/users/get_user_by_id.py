@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 async def get_user_by_id(
-    another_user_by_id: str,
+    id: str,  # noqa
     session: Annotated["AsyncSession", Depends(get_session)],
     crud: Annotated["Crud", Depends(get_crud)],
 ) -> "UserProfile":
@@ -31,7 +31,7 @@ async def get_user_by_id(
         - Return profile without a token.
     """
     user_profile = await crud.users.get_me(
-        id_user=another_user_by_id,
+        id_user=id,
         session=session,
     )
 
