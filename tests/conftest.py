@@ -9,8 +9,8 @@ from src.core.settings.settings import settings
 
 try:
     assert (
-        settings.env_params.MODE == "TEST"
-    ), f"Invalid mode: {settings.env_params.MODE}, miss TEST config."
+        settings.db.MODE == "TEST"
+    ), f"Invalid mode: {settings.db.MODE}, miss TEST config."
 except AssertionError:
     exit(0)
 

@@ -34,7 +34,7 @@ class CommonSettings(BaseSettings):
         raise NotImplementedError("Method must be overridden in subclasses.")
 
 
-class InfoSettingMix(BaseSettings):
+class InfoSetting(BaseSettings):
     """Class give common environments params.
 
     Environments params:
@@ -49,6 +49,12 @@ class InfoSettingMix(BaseSettings):
     CONTACT_URL: HttpUrl
     CONTACT_EMAIL: EmailStr
 
+    model_config = SettingsConfigDict(
+        # try to use first test-env if exist else use prod-env
+        env_file=env_test if os.path.exists(env_test) else env,
+        extra="ignore",
+    )
+
 
 class EnvironmentSettingMix(BaseSettings):
     """EnvironmentSettingMix uses type mode.
@@ -59,7 +65,7 @@ class EnvironmentSettingMix(BaseSettings):
     MODE: str = Field(min_length=2)
 
 
-class EnvConf(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
+class EnvConf(CommonSettings, EnvironmentSettingMix):
     """Configuration for production environments.
 
     Attributes:
@@ -77,6 +83,9 @@ class EnvConf(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
     POSTGRES_DB: str
     POSTGRES_PASSWORD: str
     ECHO: bool
+    POOL_TIMEOUT: int
+    POOL_SIZE_SQL_ALCHEMY_CONF: int
+    MAX_OVERFLOW: int
 
     @property
     def get_url_database(self) -> str:
@@ -152,10 +161,11 @@ class Settings:
     """Common settings for environments.
 
     Attributes:
-        env_params (EnvConf): Environment configuration parameters
+        db (EnvConf): Environment configuration parameters
             loaded from the `.env` or `.env.test` files.
         jwt_tokens (AuthJWT): JWT configuration including token paths
             and expiration settings.
+        open_api (InfoSetting): OpenApi docs
 
     Raises:
         EnvironmentFileNotFoundError: If neither the `.env` nor the
@@ -171,7 +181,7 @@ class Settings:
         raised indicating which files were missing.
         """
         try:
-            self.env_params = EnvConf()
+            self.db = EnvConf()
         except ValidationError:
             raise EnvironmentFileNotFoundError(
                 f"~/.env or ~/.env.test are not exist.\n"
@@ -181,6 +191,7 @@ class Settings:
                 f"{os.path.exists(env)}, path={env}\n"
             )
         self.jwt_tokens = AuthJWT()
+        self.open_api = InfoSetting()
 
 
 settings = Settings()
