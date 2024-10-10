@@ -17,7 +17,7 @@ class EnvironmentFileNotFoundError(ValueError):
     pass
 
 
-class CommonSettings(BaseSettings):
+class UrlDBSettings(BaseSettings):
     """Common config model for environments.
 
     Methods:
@@ -34,7 +34,7 @@ class CommonSettings(BaseSettings):
         raise NotImplementedError("Method must be overridden in subclasses.")
 
 
-class InfoSetting(BaseSettings):
+class InfoSettingEnv(BaseSettings):
     """Class give common environments params.
 
     Environments params:
@@ -65,7 +65,7 @@ class EnvironmentSettingMix(BaseSettings):
     MODE: str = Field(min_length=2)
 
 
-class EnvConf(CommonSettings, EnvironmentSettingMix):
+class DataBaseEnvConf(UrlDBSettings, EnvironmentSettingMix):
     """Configuration for production environments.
 
     Attributes:
@@ -110,7 +110,7 @@ class EnvConf(CommonSettings, EnvironmentSettingMix):
     )
 
 
-class AuthJWT(BaseSettings):
+class AuthJWTEnv(BaseSettings):
     """Class for handling JWT settings.
 
     Environment Variables:
@@ -157,15 +157,33 @@ class AuthJWT(BaseSettings):
     )
 
 
+class RedisEnv(BaseSettings):
+    """Class give common environments params.
+
+    Environments params:
+     - REDIS_URL: HttpUrl
+     - CONTACT_EMAIL: EmailStr
+    """
+
+    REDIS_URL: str
+    PREFIX: str = "fastapi-cache"
+
+    model_config = SettingsConfigDict(
+        # try to use first test-env if exist else use prod-env
+        env_file=env_test if os.path.exists(env_test) else env,
+        extra="ignore",
+    )
+
+
 class Settings:
     """Common settings for environments.
 
     Attributes:
-        db (EnvConf): Environment configuration parameters
+        db (DataBaseEnvConf): Environment configuration parameters
             loaded from the `.env` or `.env.test` files.
-        jwt_tokens (AuthJWT): JWT configuration including token paths
+        jwt_tokens (AuthJWTEnv): JWT configuration including token paths
             and expiration settings.
-        open_api (InfoSetting): OpenApi docs
+        open_api (InfoSettingEnv): OpenApi docs
 
     Raises:
         EnvironmentFileNotFoundError: If neither the `.env` nor the
@@ -181,7 +199,7 @@ class Settings:
         raised indicating which files were missing.
         """
         try:
-            self.db = EnvConf()
+            self.db = DataBaseEnvConf()
         except ValidationError:
             raise EnvironmentFileNotFoundError(
                 f"~/.env or ~/.env.test are not exist.\n"
@@ -190,8 +208,9 @@ class Settings:
                 f"Exist env: "
                 f"{os.path.exists(env)}, path={env}\n"
             )
-        self.jwt_tokens = AuthJWT()
-        self.open_api = InfoSetting()
+        self.jwt_tokens = AuthJWTEnv()
+        self.open_api = InfoSettingEnv()
+        self.redis = RedisEnv()
 
 
 settings = Settings()

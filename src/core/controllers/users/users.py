@@ -12,6 +12,7 @@ from typing import Annotated, Sequence
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer
+from fastapi_cache.decorator import cache
 
 from src.core.controllers.depends.auth.check_token import token_is_alive
 from src.core.controllers.depends.users.followers import (
@@ -20,7 +21,7 @@ from src.core.controllers.depends.users.followers import (
 )
 from src.core.controllers.depends.users.get_me import get_me
 from src.core.controllers.depends.users.get_user_by_id import get_user_by_id
-from src.core.settings.const import MimeTypes
+from src.core.settings.const import CacheExpirationTime, MimeTypes
 from src.core.settings.routes_path import UsersRoutes
 from src.core.validators import StatusResponse, UserProfile
 
@@ -85,6 +86,7 @@ async def follow_users_delete(
     return StatusResponse()
 
 
+@cache(expire=CacheExpirationTime.CACHE_EXPIRATION_TIME_GET_USER)
 @users.get(
     path=UsersRoutes.GET_ME,
     status_code=status.HTTP_200_OK,
@@ -114,6 +116,7 @@ async def get_user_me(
     response_model=UserProfile,
     dependencies=token_depend,
 )
+@cache(expire=CacheExpirationTime.CACHE_EXPIRATION_TIME_GET_USER)
 async def get_user_profile_by_id(
     user_profile: Annotated[UserProfile, Depends(get_user_by_id)]
 ):

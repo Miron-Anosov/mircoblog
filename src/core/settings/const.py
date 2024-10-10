@@ -94,3 +94,10 @@ class MimeTypes:
 
     APPLICATION_JSON = "application/json"
     MULTIPART_FORM_DATA = "multipart/form-data"
+
+
+class CacheExpirationTime:
+    """REDIS cache expiration times."""
+
+    CACHE_EXPIRATION_TIME_GET_TWEETS = 60
+    CACHE_EXPIRATION_TIME_GET_USER = 20
