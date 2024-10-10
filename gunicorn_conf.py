@@ -1,15 +1,16 @@
 """Конфигурация Gunicorn."""
 
+import os
 from multiprocessing import cpu_count
 
 # Количество рабочих процессов Gunicorn
-workers = cpu_count() * 2 + 1
+workers = cpu_count()
 
 # Привязка к адресу
 bind = "unix:/tmp/gunicorn.sock"
 
 # Уровень логирования
-loglevel = "info"
+loglevel = os.getenv("LOG_LEVEL")
 
 # Путь к приложению
 wsgi_app = "src.main:create_app()"
