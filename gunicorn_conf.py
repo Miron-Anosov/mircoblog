@@ -19,6 +19,6 @@ wsgi_app = "src.main:create_app()"
 worker_class = "uvicorn.workers.UvicornWorker"
 
 # Дополнительные параметры (если нужно)
-timeout = 60  # Таймаут для запросов
+timeout = os.getenv("TIMEOUT")  # Таймаут для запросов
 accesslog = "-"  # Логирование доступа в stdout
 errorlog = "-"  # Логирование ошибок в stdout
