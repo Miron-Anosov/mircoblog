@@ -20,6 +20,7 @@ from src.core.models_orm.models.media_orm import MediaORM  # noqa
 from src.core.models_orm.models.tweet_orm import TweetsORM  # noqa
 from src.core.models_orm.models.user_orm import UserORM  # noqa
 from src.core.models_orm.models.users_auth_ip import UsersAuthIPORM  # noqa
+from src.core.settings.settings import settings
 
 
 class EngineCreator(ABC):
@@ -104,9 +105,9 @@ class AsyncEngineCreator(EngineCreator):
             url=url,
             echo=echo,
             pool_pre_ping=True,
-            pool_size=30,
-            pool_timeout=30,
-            max_overflow=20,
+            pool_size=settings.db.POOL_SIZE_SQL_ALCHEMY_CONF,
+            pool_timeout=settings.db.POOL_TIMEOUT,
+            max_overflow=settings.db.MAX_OVERFLOW,
         )
 
 
