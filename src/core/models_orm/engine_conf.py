@@ -12,14 +12,14 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from src.core.models_orm.models.auth import UsersAuthORM
+from src.core.models_orm.models.auth import UsersAuthORM  # noqa
 from src.core.models_orm.models.base_model import BaseModel
-from src.core.models_orm.models.followers_orm import FollowersORM
-from src.core.models_orm.models.likes_models import LikesORM
-from src.core.models_orm.models.media_orm import MediaORM
-from src.core.models_orm.models.tweet_orm import TweetsORM
-from src.core.models_orm.models.user_orm import UserORM
-from src.core.models_orm.models.users_auth_ip import UsersAuthIPORM
+from src.core.models_orm.models.followers_orm import FollowersORM  # noqa
+from src.core.models_orm.models.likes_models import LikesORM  # noqa
+from src.core.models_orm.models.media_orm import MediaORM  # noqa
+from src.core.models_orm.models.tweet_orm import TweetsORM  # noqa
+from src.core.models_orm.models.user_orm import UserORM  # noqa
+from src.core.models_orm.models.users_auth_ip import UsersAuthIPORM  # noqa
 
 
 class EngineCreator(ABC):
@@ -100,7 +100,14 @@ class AsyncEngineCreator(EngineCreator):
     def create_async_engine(self, url: str, echo: bool) -> AsyncEngine:
         """Return AsyncEngine."""
         # TODO: add logger DEBUG
-        return create_async_engine(url=url, echo=echo, pool_pre_ping=True)
+        return create_async_engine(
+            url=url,
+            echo=echo,
+            pool_pre_ping=True,
+            pool_size=30,
+            pool_timeout=30,
+            max_overflow=20,
+        )
 
 
 class AsyncSessionCreator(SessionCreator):
