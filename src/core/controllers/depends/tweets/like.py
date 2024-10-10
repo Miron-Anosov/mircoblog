@@ -20,14 +20,14 @@ if TYPE_CHECKING:
 
 
 async def post_like(
-    tweet_id: str,
+    id: str,  # noqa
     id_user: Annotated[str, Depends(get_user_id_by_token_access)],
     session: Annotated["AsyncSession", Depends(get_session)],
     crud: Annotated["Crud", Depends(get_crud)],
 ) -> bool:
     """Create like for some tweets."""
     like_result = await crud.tweets.post_like(
-        session=session, id_user=id_user, id_tweet=tweet_id
+        session=session, id_user=id_user, id_tweet=id
     )
 
     raise_http_db_fail(is_none_result=like_result)
@@ -36,14 +36,14 @@ async def post_like(
 
 
 async def delete_like(
-    tweet_id: str,
+    id: str,  # noqa
     id_user: Annotated[str, Depends(get_user_id_by_token_access)],
     session: Annotated["AsyncSession", Depends(get_session)],
     crud: Annotated["Crud", Depends(get_crud)],
 ) -> bool:
     """Create like for some tweets."""
     like_result = await crud.tweets.delete_like(
-        session=session, id_user=id_user, id_tweet=tweet_id
+        session=session, id_user=id_user, id_tweet=id
     )
 
     raise_http_db_fail(is_none_result=like_result)
