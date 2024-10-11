@@ -23,9 +23,7 @@ class ValidTokenInfo(pydantic.BaseModel):
     )
     expires_refresh: datetime.datetime = pydantic.Field(
         default_factory=lambda: datetime.datetime.now(datetime.UTC)
-        + datetime.timedelta(
-            days=settings.jwt_tokens.refresh_token_expire_days
-        )
+        + datetime.timedelta(days=settings.jwt.refresh_token_expire_days)
     )
     token_type: str = JWT.DESCRIPTION_PYDANTIC_TOKEN_TYPE
     model_config = pydantic.ConfigDict(title=JWT.DESCRIPTION_PYDANTIC_TITLE)

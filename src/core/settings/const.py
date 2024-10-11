@@ -1,5 +1,7 @@
 """Constants Volumes."""
 
+from pathlib import Path
+
 
 class JWT:
     """STATIC JWT DATA."""
@@ -20,6 +22,18 @@ class JWT:
     TOKEN_TYPE_REFRESH = "refresh_token"
 
 
+class CommonConfSettings:
+    """Common configurate."""
+
+    ENV_FILE_NAME = ".env"
+    ENV_TEST_FILE_NAME = ".env.test"
+    EXTRA_IGNORE = "ignore"
+
+    ENV = Path(__file__).parent.parent.parent.parent / ENV_FILE_NAME
+
+    ENV_TEST = Path(__file__).parent.parent.parent.parent / ENV_TEST_FILE_NAME
+
+
 class MessageError:
     """STATIC ERROR DATA."""
 
@@ -30,12 +44,24 @@ class MessageError:
     TYPE_ERROR_INVALID_AUTH = "Invalid auth."
     TYPE_ERROR_INTERNAL_SERVER_ERROR = "Internal server error."
     MESSAGE_SERVER_ERROR = "An error occurred."
+    MESSAGE_ENV_FILE_INCORRECT_OR_NOT_EXIST = (
+        "~/.env or ~/.env.test incorrect or not exist"
+    )
 
 
 class TypeEncoding:
     """STATIC ENCODING DATA."""
 
     UTF8 = "utf-8"
+
+
+class JWTconf:
+    """Conf for settings."""
+
+    ALGORITHM = "RS256"
+    ENV_PREFIX = "JWT_"
+    ACCESS_EXPIRE_MINUTES = 15
+    REFRESH_EXPIRE_DAYS = 30
 
 
 class Headers:

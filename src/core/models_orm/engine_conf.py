@@ -1,5 +1,6 @@
 """SQLAlchemy engine."""
 
+import asyncio
 from abc import ABC, abstractmethod
 from asyncio import current_task
 from typing import Optional
@@ -211,8 +212,12 @@ class ManagerDB(ManagerDBInterface):
             await conn.run_sync(BaseModel.metadata.create_all)
 
 
+lock = asyncio.Lock()
+
+
 async def get_engine(url: str, echo: bool) -> "ManagerDB":
     """Create ORM session/engine manager."""
-    manager = ManagerDB(url=url, echo=echo)
-    await manager.initialize()
+    async with lock:
+        manager = ManagerDB(url=url, echo=echo)
+        await manager.initialize()
     return manager

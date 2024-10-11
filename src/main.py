@@ -24,6 +24,7 @@ from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
 
 from src.core.controllers.auth.auth import auth
+from src.core.controllers.depends.utils.connect_db import disconnect
 from src.core.controllers.media.media import media
 from src.core.controllers.tweets.main_tweets import tweets
 from src.core.controllers.users.users import users
@@ -43,9 +44,10 @@ async def lifespan(_: FastAPI):
     )
     FastAPICache.init(RedisBackend(redis), prefix=settings.redis.PREFIX)
     yield
+    await disconnect()
 
 
-async def create_app() -> FastAPI:
+def create_app() -> FastAPI:
     """Maker FastAPI."""
     app_ = FastAPI(
         title=swagger_info.TITLE,
@@ -68,9 +70,7 @@ async def create_app() -> FastAPI:
 
 
 if __name__ == "__main__":
-    import asyncio
-
-    app = asyncio.run(create_app())
+    app = create_app()
     uvicorn.run(
         app,
         host="0.0.0.0",
