@@ -20,8 +20,17 @@ def get_crud() -> "Crud":
 
 async def _init_engine() -> "ManagerDB":
     return await get_engine(
-        url=settings.env_params.get_url_database, echo=settings.env_params.ECHO
+        url=settings.db.get_url_database, echo=settings.db.ECHO
     )
+
+
+async def disconnect() -> None:
+    """Disconnect db."""
+    connect = await get_engine(
+        url=settings.db.get_url_database, echo=settings.db.ECHO
+    )
+    await connect.async_engine.dispose()
+    # TODO: add logger INFO disconnect successful
 
 
 async def get_session(engine: Annotated["ManagerDB", Depends(_init_engine)]):
@@ -31,4 +40,4 @@ async def get_session(engine: Annotated["ManagerDB", Depends(_init_engine)]):
         await session.close()
 
 
-__all__ = ["get_crud", "get_session"]
+__all__ = ["get_crud", "get_session", "disconnect"]

@@ -10,9 +10,9 @@ from src.core.settings.settings import settings
 
 def encode_jwt(
     payload: dict,
-    private_key: str = settings.jwt_tokens.private,
-    algorithm: str = settings.jwt_tokens.algorithm,
-    expire_minutes: int = settings.jwt_tokens.access_token_expire_minutes,
+    private_key: str = settings.jwt.jwt_private,
+    algorithm: str = settings.jwt.algorithm,
+    expire_minutes: int = settings.jwt.access_token_expire_minutes,
     expire_delta: datetime.timedelta | None = None,
 ) -> str:
     """Return encoded token."""
@@ -36,8 +36,8 @@ def encode_jwt(
 
 def decode_jwt(
     jwt_token: str | bytes,
-    public_key: str = settings.jwt_tokens.public,
-    algorithm: str = settings.jwt_tokens.algorithm,
+    public_key: str = settings.jwt.jwt_public,
+    algorithm: str = settings.jwt.algorithm,
 ) -> dict:
     """Return decoded token."""
     decoded = jwt.decode(
@@ -51,7 +51,7 @@ def decode_jwt(
 def create_token(
     payload: dict,
     type_token: str,
-    expire_minutes: int = settings.jwt_tokens.access_token_expire_minutes,
+    expire_minutes: int = settings.jwt.access_token_expire_minutes,
     expire_delta: datetime.timedelta | None = None,
 ) -> str:
     """Create new jwt token ot refresh token.
@@ -69,9 +69,7 @@ def create_token(
     set_expire_delta: datetime.timedelta | None = (
         expire_delta
         if type_token == JWT.TOKEN_TYPE_ACCESS
-        else datetime.timedelta(
-            days=settings.jwt_tokens.refresh_token_expire_days
-        )
+        else datetime.timedelta(days=settings.jwt.refresh_token_expire_days)
     )
 
     return encode_jwt(
