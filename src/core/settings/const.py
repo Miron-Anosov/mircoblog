@@ -101,3 +101,15 @@ class CacheExpirationTime:
 
     CACHE_EXPIRATION_TIME_GET_TWEETS = 60
     CACHE_EXPIRATION_TIME_GET_USER = 20
+
+
+class GunicornConf:
+    """Gunicorn conf data."""
+
+    BUILD = "unix:/tmp/gunicorn.sock"
+    WSGI_APP = "src.main:create_app()"
+    WORKER_CLASS = "uvicorn.workers.UvicornWorker"
+    LOG_LEVEL_DEFAULT = "warning"
+    ACCESSLOG = "-"
+    ERRORLOG = "-"
+    TIMEOUT_DEFAULT = 60
