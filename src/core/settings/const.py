@@ -139,3 +139,11 @@ class GunicornConf:
     ACCESSLOG = "-"
     ERRORLOG = "-"
     TIMEOUT_DEFAULT = 60
+    MIN_WORKERS = 1
+
+
+class RedisConf:
+    """Redis conf data."""
+
+    PREFIX = "microblog-api"
+    MIN_LENGTH_PREFIX = 3
