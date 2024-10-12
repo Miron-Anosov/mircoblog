@@ -12,6 +12,7 @@ from src.core.settings.const import (
     GunicornConf,
     JWTconf,
     MessageError,
+    RedisConf,
 )
 
 
@@ -163,13 +164,16 @@ class RedisEnv(EnvironmentSetting):
     """
 
     REDIS_URL: str
-    PREFIX: str = "fastapi-cache"
+    REDIS_PASSWORD: str
+    REDIS_PREFIX: str = Field(
+        default=RedisConf.PREFIX, min_length=RedisConf.MIN_LENGTH_PREFIX
+    )
 
 
 class GunicornENV(EnvironmentSetting):
     """Conf Gunicorn."""
 
-    WORKERS: int = Field(default=cpu_count())
+    WORKERS: int = Field(default=cpu_count(), ge=GunicornConf.MIN_WORKERS)
     BUILD: str = Field(default=GunicornConf.BUILD)
     LOG_LEVEL: str = Field(default=GunicornConf.LOG_LEVEL_DEFAULT)
     WSGI_APP: str = Field(default=GunicornConf.WSGI_APP)
@@ -215,3 +219,4 @@ class Settings:
 
 
 settings = Settings()
+print(settings.gunicorn.WORKERS)
