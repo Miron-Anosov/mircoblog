@@ -24,7 +24,7 @@ async def _init_engine() -> "ManagerDB":
     )
 
 
-async def disconnect() -> None:
+async def disconnect_db() -> None:
     """Disconnect db."""
     connect = await get_engine(
         url=settings.db.get_url_database, echo=settings.db.ECHO
@@ -40,4 +40,4 @@ async def get_session(engine: Annotated["ManagerDB", Depends(_init_engine)]):
         await session.close()
 
 
-__all__ = ["get_crud", "get_session", "disconnect"]
+__all__ = ["get_crud", "get_session", "disconnect_db"]

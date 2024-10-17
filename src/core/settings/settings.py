@@ -156,18 +156,34 @@ class AuthJWTEnv(EnvironmentSetting):
 
 
 class RedisEnv(EnvironmentSetting):
-    """Class give common environments params.
+    """Class give common environments params for Redis.
 
     Environments params:
-     - REDIS_URL: HttpUrl
-     - CONTACT_EMAIL: EmailStr
+     - REDIS_URL: str
+     - REDIS_PASSWORD: str
+     - REDIS_USER: str
+     - REDIS_PREFIX: str
+     - REDIS_HOST: str
+     - REDIS_PORT: int
+     - REDIS_DB: int
     """
 
-    REDIS_URL: str
+    REDIS_HOST: str
+    REDIS_DB: int = Field(default=RedisConf.DEFAULT_PORT)
+    REDIS_PORT: int = Field(default=RedisConf.DEFAULT_PORT)
     REDIS_PASSWORD: str
+    REDIS_USER: str = Field(default=RedisConf.REDIS_USER)
     REDIS_PREFIX: str = Field(
         default=RedisConf.PREFIX, min_length=RedisConf.MIN_LENGTH_PREFIX
     )
+
+    @property
+    def redis_url(self):
+        """Generate and return the Redis URL."""
+        return (
+            f"redis://{self.REDIS_USER}:{self.REDIS_PASSWORD}@"
+            f"{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
+        )
 
 
 class GunicornENV(EnvironmentSetting):
@@ -219,4 +235,3 @@ class Settings:
 
 
 settings = Settings()
-print(settings.gunicorn.WORKERS)
