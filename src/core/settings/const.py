@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+from src.core.settings.routes_path import TweetsRoutes
+
 
 class JWT:
     """STATIC JWT DATA."""
@@ -43,10 +45,13 @@ class MessageError:
     EMAIL_ALREADY_EXIST = "Email already exist."
     TYPE_ERROR_INVALID_AUTH = "Invalid auth."
     TYPE_ERROR_INTERNAL_SERVER_ERROR = "Internal server error."
+    TYPE_ERROR_404 = "HTTP_404_NOT_FOUND"
+    TYPE_ERROR_500 = "HTTP_500_INTERNAL_SERVER_ERROR"
     MESSAGE_SERVER_ERROR = "An error occurred."
     MESSAGE_ENV_FILE_INCORRECT_OR_NOT_EXIST = (
         "~/.env or ~/.env.test incorrect or not exist"
     )
+    MESSAGE_USER_NOT_FOUND = "User not found"
 
 
 class TypeEncoding:
@@ -73,6 +78,13 @@ class Headers:
     WWW_AUTH_BEARER_EXPIRED = {
         "WWW-Authenticate": 'Bearer realm="Refresh token expired"'
     }
+    CACHE_CONTROL = "Cache-Control"
+    CACHE_MAX_AGE = "max-age="
+    ETAG = "ETag"
+    X_CACHE = "X-Cache"
+    X_CACHE_MISS = "MISS"
+    X_CACHE_HIT = "HIT"
+    IF_NONE_MATCH = "if-none-match"
 
 
 class PydanticTweets:
@@ -122,11 +134,14 @@ class MimeTypes:
     MULTIPART_FORM_DATA = "multipart/form-data"
 
 
-class CacheExpirationTime:
+class CacheConf:
     """REDIS cache expiration times."""
 
     CACHE_EXPIRATION_TIME_GET_TWEETS = 60
     CACHE_EXPIRATION_TIME_GET_USER = 20
+    PREFIX_GET_TWEETS = f"GET {TweetsRoutes.PREFIX}{TweetsRoutes.TWEETS}"
+    PREFIX_USER_BY_ID = "GET api/user/id"
+    PREFIX_USER_ME = "GET api/user/me"
 
 
 class GunicornConf:
@@ -147,3 +162,14 @@ class RedisConf:
 
     PREFIX = "microblog-api"
     MIN_LENGTH_PREFIX = 3
+    DEFAULT_PORT = 6379
+    REDIS_DB = 0
+    REDIS_USER = "default"
+
+
+class Keys:
+    """KEYS."""
+
+    REQUEST = "request"
+    RESPONSE = "response"
+    GET = "GET"

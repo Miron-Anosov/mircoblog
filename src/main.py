@@ -19,32 +19,28 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.redis import RedisBackend
-from redis import asyncio as aioredis
 
 from src.core.controllers.auth.auth import auth
-from src.core.controllers.depends.utils.connect_db import disconnect
+from src.core.controllers.depends.utils.connect_db import disconnect_db
+from src.core.controllers.depends.utils.redis_chash import (
+    close_redis,
+    init_redis,
+)
 from src.core.controllers.media.media import media
 from src.core.controllers.tweets.main_tweets import tweets
 from src.core.controllers.users.users import users
 from src.core.settings import swagger_info
-from src.core.settings.const import TypeEncoding
 from src.core.settings.routes_path import AuthRoutes
-from src.core.settings.settings import settings
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    """Init cache."""
-    redis = await aioredis.from_url(
-        settings.redis.REDIS_URL,
-        encoding=TypeEncoding.UTF8,
-        decode_responses=True,
-    )
-    FastAPICache.init(RedisBackend(redis), prefix=settings.redis.PREFIX)
+    """Uu DB."""
+    redis = await init_redis()
+    # TODO: ADD INFO CONNECTION REDIS
     yield
-    await disconnect()
+    await disconnect_db()
+    await close_redis(client=redis)
 
 
 def create_app() -> FastAPI:

@@ -10,9 +10,7 @@ Routes:
 from typing import Annotated, Sequence
 
 from fastapi import APIRouter, Depends, status
-from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer
-from fastapi_cache.decorator import cache
 
 from src.core.controllers.depends.auth.check_token import token_is_alive
 from src.core.controllers.depends.users.followers import (
@@ -21,7 +19,6 @@ from src.core.controllers.depends.users.followers import (
 )
 from src.core.controllers.depends.users.get_me import get_me
 from src.core.controllers.depends.users.get_user_by_id import get_user_by_id
-from src.core.settings.const import CacheExpirationTime, MimeTypes
 from src.core.settings.routes_path import UsersRoutes
 from src.core.validators import StatusResponse, UserProfile
 
@@ -30,7 +27,7 @@ def create_user_route() -> APIRouter:
     """Create user's routes.
 
     Return:
-            APIRouter: tags ["Users"], prefix: "/api"
+        APIRouter: tags ["Users"], prefix: "/api"
     """
     return APIRouter(
         tags=[UsersRoutes.TAG],
@@ -86,7 +83,6 @@ async def follow_users_delete(
     return StatusResponse()
 
 
-@cache(expire=CacheExpirationTime.CACHE_EXPIRATION_TIME_GET_USER)
 @users.get(
     path=UsersRoutes.GET_ME,
     status_code=status.HTTP_200_OK,
@@ -95,19 +91,33 @@ async def follow_users_delete(
 )
 async def get_user_me(
     user_profile: Annotated[UserProfile, Depends(get_me)]
-) -> "JSONResponse":
+) -> "UserProfile":
     """
-    Get user profile.
+    **Headers**.
 
-    **Headers**:
-     - Authorization: Bearer `access_token` (str): User key authentication.
+    - Authorization: Bearer `access_token` (str): User key authentication.
+    - If-None-Match: (str) ETag value for cache validation.
 
+    **Response**:
+    - A JSON object containing the user's profile data.
+
+    **Response Fields**:
+    - `result (bool)`: Indicates if the request was successful.
+    - `user (dict)`: User profile object, containing the following fields:
+        - `id (str)`: Unique identifier of the user.
+        - `name (str)`: The user's name.
+        - `followers (List[dict])`: A list of users following this user:
+            - `id (str)`: Unique identifier of the follower.
+            - `name (str)`: The follower's name.
+        - `following (List[dict])`: A list of users this user is following:
+            - `id (str)`: Unique identifier of the followed user.
+            - `name (str)`: The followed user's name.
+
+    **Notes**:
+    - The `followers` field contains user data for those who follow the user.
+    - The `following` field contains user data for those the user follows.
     """
-    return JSONResponse(
-        content=user_profile.model_dump(),
-        status_code=status.HTTP_200_OK,
-        media_type=MimeTypes.APPLICATION_JSON,
-    )
+    return user_profile
 
 
 @users.get(
@@ -116,19 +126,33 @@ async def get_user_me(
     response_model=UserProfile,
     dependencies=token_depend,
 )
-@cache(expire=CacheExpirationTime.CACHE_EXPIRATION_TIME_GET_USER)
 async def get_user_profile_by_id(
     user_profile: Annotated[UserProfile, Depends(get_user_by_id)]
 ):
     """
-    Get user profile.
+    Get user profile by ID.
 
     **Headers**:
-     - Authorization: Bearer `access_token` (str): User key authentication.
+    - Authorization: Bearer `access_token` (str): User key authentication.
+    - If-None-Match: (str) ETag value for cache validation.
 
+    **Response**:
+    - A JSON object containing the user's profile data.
+
+    **Response Fields**:
+    - `result (bool)`: Indicates if the request was successful.
+    - `user (dict)`: User profile object, containing the following fields:
+        - `id (str)`: Unique identifier of the user.
+        - `name (str)`: The user's name.
+        - `followers (List[dict])`: A list of users following this user:
+            - `id (str)`: Unique identifier of the follower.
+            - `name (str)`: The follower's name.
+        - `following (List[dict])`: A list of users this user is following:
+            - `id (str)`: Unique identifier of the followed user.
+            - `name (str)`: The followed user's name.
+
+    **Notes**:
+    - The `followers` field contains user data for those who follow the user.
+    - The `following` field contains user data for those the user follows.
     """
-    return JSONResponse(
-        content=user_profile.model_dump(),
-        status_code=status.HTTP_200_OK,
-        media_type=MimeTypes.APPLICATION_JSON,
-    )
+    return user_profile
