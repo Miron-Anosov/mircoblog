@@ -5,7 +5,7 @@
 
 from typing import TYPE_CHECKING, Annotated
 
-from fastapi import Depends, status
+from fastapi import Depends
 
 from src.core.controllers.depends.auth.check_token import (
     get_user_id_by_token_access,
@@ -16,7 +16,6 @@ from src.core.controllers.depends.utils.return_error import (
     raise_http_500_if_none,
     valid_id_or_error_422,
 )
-from src.core.settings.const import MessageError
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
@@ -38,15 +37,7 @@ async def post_like(
     )
     raise_http_500_if_none(is_none_result=like_result)
 
-    return (
-        True
-        if like_result
-        else raise_http_404(
-            status_code=status.HTTP_404_NOT_FOUND,
-            error_type=MessageError.INVALID_ID_ERR,
-            error_message=MessageError.INVALID_ID_ERR_MESSAGE_404,
-        )
-    )
+    return True if like_result else raise_http_404()
 
 
 async def delete_like(
