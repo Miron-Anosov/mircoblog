@@ -1,0 +1,70 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+image: python:3.12.4
+
+cache:
+  paths:
+    - .cache/pip
+    - .cache/poetry
+
+before_script:
+  - pip install poetry==1.8
+  - poetry config virtualenvs.create false
+  - poetry install
+
+stages:
+  - preparation
+  - linting
+  - test
+
+preparation:
+  stage: preparation
+  script:
+    - python3 --version
+    - pip --version
+    - poetry --version
+    - poetry show --tree
+    - pytest --version
+
+linting:
+  stage: linting
+  parallel:
+    matrix:
+      - LINTER: [mypy, black, isort, flake8]
+  script:
+      - |
+        if [ "$LINTER" = "mypy" ]; then
+          mypy -p src
+        elif [ "$LINTER" = "black" ]; then
+          black --check ./src ./tests
+        elif [ "$LINTER" = "isort" ]; then
+          isort --profile "black" --filter-files ./src ./tests
+        elif [ "$LINTER" = "flake8" ]; then
+          flake8 ./src ./tests
+        else
+          echo "Unknown linter: $LINTER"
+          exit 1
+        fi
+
+test:
+  stage: test
+  script:
+    - pytest --cov=src --cov-report=term-missing --cov-report=xml:coverage.xml --junitxml=report.xml tests -m "not mock"
+    - pip install coverage-badge
+    - coverage-badge -o coverage.svg -f
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+      junit: report.xml
+    paths:
+      - coverage.svg
+    expire_in: 1 week
+  after_script:
+    - grep -oP "line-rate=\"\K[^\"]*" coverage.xml | awk '{print $1*100 "%"}'

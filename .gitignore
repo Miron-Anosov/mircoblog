@@ -107,6 +107,7 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.env.test
 env/
 venv/
 ENV/
@@ -139,3 +140,5 @@ dmypy.json
 .swp
 
 *.txt
+*.pem
+./certs
