@@ -20,7 +20,7 @@ from src.core.controllers.depends.auth.login_user import (
 )
 from src.core.controllers.depends.auth.post_user_form import user_form
 from src.core.controllers.depends.auth.post_user_json import user_json
-from src.core.settings.const import JWT, Headers, MimeTypes
+from src.core.settings.const import JWT, Headers, MimeTypes, ResponsesAuthUser
 from src.core.settings.routes_path import AuthRoutes
 from src.core.validators import StatusResponse, UserToken
 
@@ -110,6 +110,7 @@ async def login_json(
     path=AuthRoutes.POST_LOGIN_USER_FORM,
     status_code=status.HTTP_201_CREATED,
     response_model=UserToken,
+    responses=ResponsesAuthUser.responses,
 )
 async def login_form(
     users_tokens: Annotated["JSONResponse", Depends(login_user_form)],
