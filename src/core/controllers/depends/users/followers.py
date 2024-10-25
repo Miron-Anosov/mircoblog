@@ -7,13 +7,18 @@ POST/DELETE:
 
 from typing import TYPE_CHECKING, Annotated, Optional
 
-from fastapi import Depends
+from fastapi import Depends, status
 
 from src.core.controllers.depends.auth.check_token import (
     get_user_id_by_token_access,
 )
 from src.core.controllers.depends.utils.connect_db import get_crud, get_session
-from src.core.controllers.depends.utils.return_error import raise_http_db_fail
+from src.core.controllers.depends.utils.return_error import (
+    raise_http_404,
+    raise_http_500_if_none,
+    valid_id_or_error_422,
+)
+from src.core.settings.const import MessageError
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
@@ -40,12 +45,13 @@ async def post_follow(
     Raises:
         HTTPException: if db return None.
     """
+    valid_id_or_error_422(request_id=id)
     is_follow: Optional[bool] = await crud.users.post_user_follow(
         followed_id=followed_id, follower_id=id, session=session
     )
-    raise_http_db_fail(is_follow)
+    raise_http_500_if_none(is_follow)
 
-    return True
+    return True if is_follow else raise_http_404()
 
 
 async def del_follow(
@@ -67,9 +73,11 @@ async def del_follow(
     Raises:
         HTTPException: if db return None.
     """
+    valid_id_or_error_422(request_id=id)
+
     is_follow: Optional[bool] = await crud.users.delete_user_follow(
         followed_id=followed_id, follower_id=id, session=session
     )
-    raise_http_db_fail(is_follow)
+    raise_http_500_if_none(is_follow)
 
     return True
