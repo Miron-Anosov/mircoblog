@@ -9,7 +9,7 @@ from src.core.controllers.depends.utils.connect_db import get_crud, get_session
 from src.core.controllers.depends.utils.redis_chash import cache_get_response
 from src.core.controllers.depends.utils.return_error import (
     http_exception,
-    raise_http_db_fail,
+    raise_http_500_if_none,
 )
 from src.core.settings.const import CacheConf, MessageError
 from src.core.validators import GetAllTweets, Like, User
@@ -57,7 +57,7 @@ async def get_tweets_data(
     """  # noqa E501
 
     tweets = await crud.tweets.get_tweets(session=session)
-    raise_http_db_fail(is_none_result=tweets)
+    raise_http_500_if_none(is_none_result=tweets)
 
     if not tweets:
         # TODO LOGGER INFO {id} {request} {response} {if_none_match}
