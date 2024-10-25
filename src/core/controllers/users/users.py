@@ -19,6 +19,7 @@ from src.core.controllers.depends.users.followers import (
 )
 from src.core.controllers.depends.users.get_me import get_me
 from src.core.controllers.depends.users.get_user_by_id import get_user_by_id
+from src.core.settings.const import ResponseError
 from src.core.settings.routes_path import UsersRoutes
 from src.core.validators import StatusResponse, UserProfile
 
@@ -66,6 +67,7 @@ async def follow_users(
     path=UsersRoutes.USERS_FOLLOW_BY_ID,
     status_code=status.HTTP_200_OK,
     dependencies=token_depend,
+    responses=ResponseError.responses,
 )
 async def follow_users_delete(
     _: Annotated[bool, Depends(del_follow)]
@@ -88,6 +90,7 @@ async def follow_users_delete(
     status_code=status.HTTP_200_OK,
     response_model=UserProfile,
     dependencies=token_depend,
+    responses=ResponseError.responses,
 )
 async def get_user_me(
     user_profile: Annotated[UserProfile, Depends(get_me)]
@@ -125,6 +128,7 @@ async def get_user_me(
     status_code=status.HTTP_200_OK,
     response_model=UserProfile,
     dependencies=token_depend,
+    responses=ResponseError.responses,
 )
 async def get_user_profile_by_id(
     user_profile: Annotated[UserProfile, Depends(get_user_by_id)]
