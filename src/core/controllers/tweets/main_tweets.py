@@ -12,6 +12,7 @@ import http
 from typing import Sequence
 
 from fastapi import APIRouter, Depends, status
+from fastapi.security import HTTPBearer
 
 from src.core.controllers.depends.auth.check_token import token_is_alive
 from src.core.controllers.tweets.del_like import del_like
@@ -19,6 +20,7 @@ from src.core.controllers.tweets.del_tweet import del_tweet_by_id
 from src.core.controllers.tweets.get_tweets import get_tweets
 from src.core.controllers.tweets.post_like import post_like_by_id
 from src.core.controllers.tweets.post_new_tweet import post_new_tweet
+from src.core.settings.const import ResponseError, ResponsesGetTweets
 from src.core.settings.routes_path import TweetsRoutes
 from src.core.validators import GetAllTweets, ReturnNewTweet, StatusResponse
 
@@ -36,13 +38,15 @@ def create_tweets_route() -> APIRouter:
     """
     return APIRouter(
         tags=[TweetsRoutes.TAG],
-        prefix=TweetsRoutes.PREFIX,
     )
 
 
 tweets: APIRouter = create_tweets_route()
 
-common_depends: Sequence[Depends] = [Depends(token_is_alive)]
+common_depends: Sequence[Depends] = [
+    Depends(token_is_alive),
+    Depends(HTTPBearer(auto_error=False)),
+]
 
 tweets.add_api_route(
     endpoint=post_new_tweet,
@@ -51,6 +55,7 @@ tweets.add_api_route(
     path=TweetsRoutes.TWEETS,
     response_model=ReturnNewTweet,
     dependencies=common_depends,
+    responses=ResponseError.responses,
 )
 
 tweets.add_api_route(
@@ -60,14 +65,16 @@ tweets.add_api_route(
     path=TweetsRoutes.TWEETS_DEL_BY_ID,
     response_model=StatusResponse,
     dependencies=common_depends,
+    responses=ResponseError.responses,
 )
 
 tweets.add_api_route(
     endpoint=post_like_by_id,
     methods=[http.HTTPMethod.POST],
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_200_OK,
     path=TweetsRoutes.TWEETS_POST_DEL_ID_LIKE,
     response_model=StatusResponse,
+    responses=ResponseError.responses,
     dependencies=common_depends,
 )
 
@@ -77,6 +84,7 @@ tweets.add_api_route(
     status_code=status.HTTP_200_OK,
     path=TweetsRoutes.TWEETS,
     response_model=GetAllTweets,
+    responses=ResponsesGetTweets.responses,
 )
 
 tweets.add_api_route(
@@ -86,4 +94,5 @@ tweets.add_api_route(
     path=TweetsRoutes.TWEETS_POST_DEL_ID_LIKE,
     response_model=StatusResponse,
     dependencies=common_depends,
+    responses=ResponseError.responses,
 )

@@ -5,6 +5,8 @@ You can see route to /src/back_core/controllers/users.py
 
 import pydantic
 
+from src.core.settings.const import PydanticUser
+
 
 class ValidUserModel(pydantic.BaseModel):
     """**Model for tweet author details**.
@@ -14,13 +16,16 @@ class ValidUserModel(pydantic.BaseModel):
     """
 
     id: str = pydantic.Field(
-        description="Author's unique ID",
+        description=PydanticUser.DESCRIPTION_ID,
     )
     name: str = pydantic.Field(
-        ..., description="Author's name", min_length=2, max_length=15
+        ...,
+        description=PydanticUser.DESCRIPTION_NAME,
+        min_length=2,
+        max_length=15,
     )
 
-    model_config = pydantic.ConfigDict(title="User")
+    model_config = pydantic.ConfigDict(title=PydanticUser.TITLE_SWAGGER)
 
 
 class ValidModelGetMe(pydantic.BaseModel):
@@ -50,28 +55,8 @@ class ValidateUserProfile(pydantic.BaseModel):
     result: bool
     user: ValidModelGetMe
     model_config = pydantic.ConfigDict(
-        title="User's profile",
+        title=PydanticUser.TITLE,
         from_attributes=True,
         extra="ignore",
-        json_schema_extra={
-            "example": {
-                "result": True,
-                "user": {
-                    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                    "name": "Dick",
-                    "followers": [
-                        {
-                            "id": "3fa33364-5717-4562-b3fc-2c963f66afa6",
-                            "name": "Tom",
-                        }
-                    ],
-                    "following": [
-                        {
-                            "id": "3fa33364-5717-4562-b3fc-2c963f4563fa",
-                            "name": "Ramil",
-                        }
-                    ],
-                },
-            }
-        },
+        json_schema_extra=PydanticUser.JSON_SCHEMA_USER,
     )

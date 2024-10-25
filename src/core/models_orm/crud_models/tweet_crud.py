@@ -8,7 +8,9 @@ from sqlalchemy import Row, RowMapping, Select, delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from src.core.models_orm.crud_models.utils.catcher_errors import catch_orm_err
+from src.core.models_orm.crud_models.utils.catcher_errors import (
+    catch_orm_critical_err,
+)
 from src.core.models_orm.models.likes_models import LikesORM
 from src.core.models_orm.models.tweet_orm import TweetsORM
 
@@ -73,7 +75,7 @@ class Tweets(_TweetInterface):
     """Tweets CRUD methods."""
 
     @staticmethod
-    @catch_orm_err
+    @catch_orm_critical_err
     async def post_like(
         session: AsyncSession,
         id_tweet: str,
@@ -99,7 +101,7 @@ class Tweets(_TweetInterface):
         )
         conn = await session.begin()
 
-        if _ := await conn.session.scalar(like_exist) is None:
+        if _ := await conn.session.scalar(like_exist) is not None:
 
             like_post = like_table(tweet_id=id_tweet, user_id=id_user)
 
@@ -107,9 +109,12 @@ class Tweets(_TweetInterface):
 
             await conn.commit()
 
-        return True
+            return True
+
+        return False
 
     @staticmethod
+    @catch_orm_critical_err
     async def delete_like(
         session: AsyncSession,
         id_tweet: str,
@@ -140,7 +145,7 @@ class Tweets(_TweetInterface):
         return True
 
     @staticmethod
-    @catch_orm_err
+    @catch_orm_critical_err
     async def post_tweet(
         session: AsyncSession,
         user_id: str,
@@ -171,7 +176,7 @@ class Tweets(_TweetInterface):
         return new_tweet.id
 
     @staticmethod
-    @catch_orm_err
+    @catch_orm_critical_err
     async def delete_tweet(
         session: AsyncSession,
         id_tweet: str,
@@ -201,7 +206,7 @@ class Tweets(_TweetInterface):
         return True
 
     @staticmethod
-    @catch_orm_err
+    @catch_orm_critical_err
     async def get_tweets(
         session: AsyncSession,
         model_tweets: TweetsORM = TweetsORM,

@@ -2,13 +2,18 @@
 
 import os
 from abc import abstractmethod
-from pathlib import Path
+from multiprocessing import cpu_count
 
 from pydantic import EmailStr, Field, HttpUrl, ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-env = Path(__file__).parent.parent.parent.parent / ".env"
-env_test = Path(__file__).parent.parent.parent.parent / ".env.test"
+from src.core.settings.const import (
+    CommonConfSettings,
+    GunicornConf,
+    JWTconf,
+    MessageError,
+    RedisConf,
+)
 
 
 class EnvironmentFileNotFoundError(ValueError):
@@ -17,7 +22,24 @@ class EnvironmentFileNotFoundError(ValueError):
     pass
 
 
-class CommonSettings(BaseSettings):
+class EnvironmentSetting(BaseSettings):
+    """EnvironmentSettingMix uses type mode.
+
+    SettingsConfigDict: dict : TEST, PROD env.
+    """
+
+    model_config = SettingsConfigDict(
+        # try to use first test-env if exist else use prod-env
+        env_file=(
+            CommonConfSettings.ENV_TEST
+            if os.path.exists(CommonConfSettings.ENV_TEST)
+            else CommonConfSettings.ENV
+        ),
+        extra=CommonConfSettings.EXTRA_IGNORE,
+    )
+
+
+class UrlDBSettings(BaseSettings):
     """Common config model for environments.
 
     Methods:
@@ -34,7 +56,7 @@ class CommonSettings(BaseSettings):
         raise NotImplementedError("Method must be overridden in subclasses.")
 
 
-class InfoSettingMix(BaseSettings):
+class InfoSettingEnv(EnvironmentSetting):
     """Class give common environments params.
 
     Environments params:
@@ -50,16 +72,7 @@ class InfoSettingMix(BaseSettings):
     CONTACT_EMAIL: EmailStr
 
 
-class EnvironmentSettingMix(BaseSettings):
-    """EnvironmentSettingMix uses type mode.
-
-    MODE: str : TEST, PROD or something else.
-    """
-
-    MODE: str = Field(min_length=2)
-
-
-class EnvConf(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
+class DataBaseEnvConf(UrlDBSettings, EnvironmentSetting):
     """Configuration for production environments.
 
     Attributes:
@@ -77,6 +90,10 @@ class EnvConf(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
     POSTGRES_DB: str
     POSTGRES_PASSWORD: str
     ECHO: bool
+    POOL_TIMEOUT: int
+    POOL_SIZE_SQL_ALCHEMY_CONF: int
+    MAX_OVERFLOW: int
+    MODE: str = Field(min_length=2)
 
     @property
     def get_url_database(self) -> str:
@@ -94,14 +111,8 @@ class EnvConf(CommonSettings, InfoSettingMix, EnvironmentSettingMix):
             f"{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
         )
 
-    model_config = SettingsConfigDict(
-        # try to use first test-env if exist else use prod-env
-        env_file=env_test if os.path.exists(env_test) else env,
-        extra="ignore",
-    )
 
-
-class AuthJWT(BaseSettings):
+class AuthJWTEnv(EnvironmentSetting):
     """Class for handling JWT settings.
 
     Environment Variables:
@@ -109,8 +120,8 @@ class AuthJWT(BaseSettings):
         - JWT_PUBLIC (str): The public JWT key.
 
     Attributes:
-        private (str): The private JWT key.
-        public (str): The public JWT key.
+        jwt_private (str): The private JWT key.
+        jwt_public (str): The public JWT key.
         algorithm (str): The algorithm used for JWT encryption,
             default is 'RS256'.
         access_token_expire_minutes (int): The expiration time for the
@@ -135,27 +146,68 @@ class AuthJWT(BaseSettings):
             exists, otherwise from `.env`.
     """
 
-    private: str = Field()
-    public: str = Field()
-    algorithm: str = "RS256"
-    access_token_expire_minutes: int = Field(default=15)
-    refresh_token_expire_days: int = Field(default=30)
-
-    model_config = SettingsConfigDict(
-        env_prefix="JWT_",
-        extra="ignore",
-        env_file=env_test if os.path.exists(env_test) else env,
+    jwt_private: str = Field()
+    jwt_public: str = Field()
+    algorithm: str = JWTconf.ALGORITHM
+    access_token_expire_minutes: int = Field(
+        default=JWTconf.ACCESS_EXPIRE_MINUTES
     )
+    refresh_token_expire_days: int = Field(default=JWTconf.REFRESH_EXPIRE_DAYS)
+
+
+class RedisEnv(EnvironmentSetting):
+    """Class give common environments params for Redis.
+
+    Environments params:
+     - REDIS_URL: str
+     - REDIS_PASSWORD: str
+     - REDIS_USER: str
+     - REDIS_PREFIX: str
+     - REDIS_HOST: str
+     - REDIS_PORT: int
+     - REDIS_DB: int
+    """
+
+    REDIS_HOST: str
+    REDIS_DB: int = Field(default=RedisConf.DEFAULT_PORT)
+    REDIS_PORT: int = Field(default=RedisConf.DEFAULT_PORT)
+    REDIS_PASSWORD: str
+    REDIS_USER: str = Field(default=RedisConf.REDIS_USER)
+    REDIS_PREFIX: str = Field(
+        default=RedisConf.PREFIX, min_length=RedisConf.MIN_LENGTH_PREFIX
+    )
+
+    @property
+    def redis_url(self):
+        """Generate and return the Redis URL."""
+        return (
+            f"redis://{self.REDIS_USER}:{self.REDIS_PASSWORD}@"
+            f"{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
+        )
+
+
+class GunicornENV(EnvironmentSetting):
+    """Conf Gunicorn."""
+
+    WORKERS: int = Field(default=cpu_count(), ge=GunicornConf.MIN_WORKERS)
+    BUILD: str = Field(default=GunicornConf.BUILD)
+    LOG_LEVEL: str = Field(default=GunicornConf.LOG_LEVEL_DEFAULT)
+    WSGI_APP: str = Field(default=GunicornConf.WSGI_APP)
+    WORKER_CLASS: str = Field(default=GunicornConf.WORKER_CLASS)
+    TIMEOUT: int = Field(default=GunicornConf.TIMEOUT_DEFAULT)
+    ACCESSLOG: str = Field(default=GunicornConf.ACCESSLOG)
+    ERRORLOG: str = Field(default=GunicornConf.ERRORLOG)
 
 
 class Settings:
     """Common settings for environments.
 
     Attributes:
-        env_params (EnvConf): Environment configuration parameters
+        db (DataBaseEnvConf): Environment configuration parameters
             loaded from the `.env` or `.env.test` files.
-        jwt_tokens (AuthJWT): JWT configuration including token paths
+        jwt (AuthJWTEnv): JWT configuration including token paths
             and expiration settings.
+        open_api (InfoSettingEnv): OpenApi docs
 
     Raises:
         EnvironmentFileNotFoundError: If neither the `.env` nor the
@@ -171,16 +223,15 @@ class Settings:
         raised indicating which files were missing.
         """
         try:
-            self.env_params = EnvConf()
+            self.db = DataBaseEnvConf()
         except ValidationError:
             raise EnvironmentFileNotFoundError(
-                f"~/.env or ~/.env.test are not exist.\n"
-                f"Exist env_test: "
-                f"{os.path.exists(env_test)}, path={env_test}\n"
-                f"Exist env: "
-                f"{os.path.exists(env)}, path={env}\n"
+                MessageError.MESSAGE_ENV_FILE_INCORRECT_OR_NOT_EXIST
             )
-        self.jwt_tokens = AuthJWT()
+        self.jwt = AuthJWTEnv()
+        self.open_api = InfoSettingEnv()
+        self.redis = RedisEnv()
+        self.gunicorn = GunicornENV()
 
 
 settings = Settings()

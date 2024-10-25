@@ -23,9 +23,9 @@ TAGS_METADATA = [
 ]
 
 CONTACT = {
-    "name": settings.env_params.CONTACT_NAME,
-    "url": settings.env_params.CONTACT_URL,
-    "email": settings.env_params.CONTACT_EMAIL,
+    "name": settings.open_api.CONTACT_NAME,
+    "url": settings.open_api.CONTACT_URL,
+    "email": settings.open_api.CONTACT_EMAIL,
 }
 
 SERVERS = [
@@ -33,7 +33,7 @@ SERVERS = [
     {"url": "http://localhost:8001"},
 ]
 
-VERSION_API = settings.env_params.VERSION_API
+VERSION_API = settings.open_api.VERSION_API
 
 TITLE = "MicroBlog API"
 

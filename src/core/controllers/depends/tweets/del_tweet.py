@@ -21,14 +21,14 @@ if TYPE_CHECKING:
 
 
 async def del_tweet(
-    tweet_id: str,
+    id: str,  # noqa
     id_user: Annotated[str, Depends(get_user_id_by_token_access)],
     session: Annotated["AsyncSession", Depends(get_session)],
     crud: Annotated["Crud", Depends(get_crud)],
 ) -> bool:
     """Delete tweet and likes from db."""
     result = await crud.tweets.delete_tweet(
-        session=session, id_tweet=tweet_id, id_user=id_user
+        session=session, id_tweet=id, id_user=id_user
     )
     if result is None:
         raise http_exception(

@@ -12,7 +12,7 @@ from src.core.validators import StatusResponse
 
 
 async def post_like_by_id(
-    _: Annotated[bool, Depends(post_like)]
+    like: Annotated[bool, Depends(post_like)]
 ) -> "StatusResponse":
     """
     Like a tweet by ID.
@@ -23,4 +23,4 @@ async def post_like_by_id(
     **Path Parameters**:
     - `tweet_id (str)`: The ID of the tweet to like.
     """
-    return StatusResponse()
+    return StatusResponse(result=like)

@@ -1,23 +1,23 @@
 """Конфигурация Gunicorn."""
 
-from multiprocessing import cpu_count
+from src.core.settings.settings import settings
 
 # Количество рабочих процессов Gunicorn
-workers = cpu_count() * 2 + 1
+workers = settings.gunicorn.WORKERS
 
 # Привязка к адресу
-bind = "unix:/tmp/gunicorn.sock"
+bind = settings.gunicorn.BUILD
 
 # Уровень логирования
-loglevel = "info"
+loglevel = settings.gunicorn.LOG_LEVEL
 
 # Путь к приложению
-wsgi_app = "src.main:create_app()"
+wsgi_app = settings.gunicorn.WSGI_APP
 
 # Класс рабочего процесса
-worker_class = "uvicorn.workers.UvicornWorker"
+worker_class = settings.gunicorn.WORKER_CLASS
 
 # Дополнительные параметры (если нужно)
-timeout = 60  # Таймаут для запросов
-accesslog = "-"  # Логирование доступа в stdout
-errorlog = "-"  # Логирование ошибок в stdout
+timeout = settings.gunicorn.TIMEOUT  # Таймаут для запросов
+accesslog = settings.gunicorn.ACCESSLOG  # Логирование доступа в stdout
+errorlog = settings.gunicorn.ERRORLOG  # Логирование ошибок в stdout

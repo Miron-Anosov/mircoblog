@@ -20,7 +20,15 @@ from src.core.controllers.depends.auth.login_user import (
 )
 from src.core.controllers.depends.auth.post_user_form import user_form
 from src.core.controllers.depends.auth.post_user_json import user_json
-from src.core.settings.const import JWT, Headers, MimeTypes
+from src.core.settings.const import (
+    JWT,
+    Headers,
+    MimeTypes,
+    Response500,
+    ResponseError,
+    ResponsesAuthNewUser,
+    ResponsesAuthUser,
+)
 from src.core.settings.routes_path import AuthRoutes
 from src.core.validators import StatusResponse, UserToken
 
@@ -33,7 +41,6 @@ def create_auth_route() -> APIRouter:
     """
     return APIRouter(
         tags=[AuthRoutes.TAG],
-        prefix=AuthRoutes.PREFIX,
     )
 
 
@@ -44,6 +51,7 @@ auth: APIRouter = create_auth_route()
     path=AuthRoutes.POST_CREATE_USER_FORM,
     status_code=status.HTTP_201_CREATED,
     response_model=StatusResponse,
+    responses=ResponsesAuthNewUser.responses,
 )
 async def new_user_form(
     _: Annotated[bool, Depends(user_form)]
@@ -68,6 +76,7 @@ async def new_user_form(
     path=AuthRoutes.POST_CREATE_USER_JSON,
     status_code=status.HTTP_201_CREATED,
     response_model=StatusResponse,
+    responses=ResponsesAuthNewUser.responses,
 )
 async def new_user_json(
     _: Annotated[bool, Depends(user_json)]
@@ -92,6 +101,7 @@ async def new_user_json(
     path=AuthRoutes.POST_LOGIN_USER_JSON,
     status_code=status.HTTP_201_CREATED,
     response_model=UserToken,
+    responses=ResponsesAuthUser.responses,
 )
 async def login_json(
     user_token: Annotated["JSONResponse", Depends(login_user_json)],
@@ -111,6 +121,7 @@ async def login_json(
     path=AuthRoutes.POST_LOGIN_USER_FORM,
     status_code=status.HTTP_201_CREATED,
     response_model=UserToken,
+    responses=ResponsesAuthUser.responses,
 )
 async def login_form(
     users_tokens: Annotated["JSONResponse", Depends(login_user_form)],
@@ -130,6 +141,7 @@ async def login_form(
     path=AuthRoutes.PATCH_TOKENS,
     status_code=status.HTTP_201_CREATED,
     response_model=UserToken,
+    responses=ResponseError.responses,
 )
 async def patch_access_token(
     refresh_token: Annotated["JSONResponse", Depends(up_tokens_by_refresh)]
@@ -146,6 +158,7 @@ async def patch_access_token(
     path=AuthRoutes.DEL_LOGOUT_USER,
     status_code=status.HTTP_200_OK,
     response_model=StatusResponse,
+    responses=Response500.responses,
     dependencies=[
         Depends(HTTPBearer()),
         Depends(APIKeyCookie(name=JWT.TOKEN_TYPE_REFRESH)),
