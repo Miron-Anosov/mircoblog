@@ -4,10 +4,13 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from sqlalchemy import delete, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, selectinload
 
-from src.core.models_orm.crud_models.utils.catcher_errors import catch_orm_err
+from src.core.models_orm.crud_models.utils.catcher_errors import (
+    catch_orm_critical_err,
+)
 from src.core.models_orm.models.followers_orm import FollowersORM
 from src.core.models_orm.models.user_orm import UserORM
 
@@ -62,7 +65,7 @@ class Users(_UserInterface):
     """
 
     @staticmethod
-    @catch_orm_err
+    # @catch_orm_err
     async def post_user_follow(
         followed_id: str,
         follower_id: str,
@@ -98,13 +101,16 @@ class Users(_UserInterface):
 
         if _ := await conn.session.scalar(statement=follow_exist) is not None:
             return True
-
-        conn.session.add(follow)
-        await conn.commit()
-        return True
+        try:
+            conn.session.add(follow)
+            await conn.commit()
+            return True
+        except IntegrityError:
+            # TODO: ADD LOGER WARNING WITH exc
+            return False
 
     @staticmethod
-    @catch_orm_err
+    @catch_orm_critical_err
     async def delete_user_follow(
         followed_id: str,
         follower_id: str,
@@ -138,7 +144,7 @@ class Users(_UserInterface):
         return True
 
     @staticmethod
-    @catch_orm_err
+    @catch_orm_critical_err
     async def get_me(
         id_user: str, session: AsyncSession, user_table=UserORM
     ) -> Optional["UserORM"]:
@@ -171,7 +177,7 @@ class Users(_UserInterface):
         return await session.scalar(query)
 
     @staticmethod
-    @catch_orm_err
+    @catch_orm_critical_err
     async def get_user(
         id_user: str, session: AsyncSession, user_table=UserORM
     ) -> Optional["UserORM"]:
