@@ -46,6 +46,7 @@ token_depend: Sequence[Depends] = [
     path=UsersRoutes.USERS_FOLLOW_BY_ID,
     status_code=status.HTTP_201_CREATED,
     dependencies=token_depend,
+    responses=ResponseError.responses,
 )
 async def follow_users(
     _: Annotated[bool, Depends(post_follow)]
