@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Annotated
 
 from fastapi import Depends
 
-from src.core.models_orm.crud import create_crud_halper
+from src.core.models_orm.crud import create_crud_helper
 from src.core.models_orm.engine_conf import get_engine
 from src.core.settings.settings import settings
 
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 def get_crud() -> "Crud":
     """Return CRUD worker."""
-    return create_crud_halper()
+    return create_crud_helper()
 
 
 async def _init_engine() -> "ManagerDB":
