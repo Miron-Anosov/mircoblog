@@ -205,8 +205,9 @@ class ResponsesGetTweets:
     """Swagger Docs Get Tweets."""
 
     responses_304 = {
-        304: {"description": "Not Modified", "content": DetailError.content},
+        304: {"description": "Not Modified", "content": {}},
     }
+
     copy_resp = ResponseError.responses.copy()
     copy_resp.update(responses_304)
     copy_resp.pop(401)
@@ -219,6 +220,22 @@ class ResponsesAuthUser:
 
     responses = dict()
     responses[401] = ResponseError.responses.get(401)
+    responses[500] = ResponseError.responses.get(500)
+
+
+class Response500:
+    """Swagger Docs."""
+
+    responses = dict()
+    responses[500] = ResponseError.responses.get(500)
+
+
+class ResponsesAuthNewUser:
+    """Swagger Docs."""
+
+    responses = dict()
+    responses[500] = ResponseError.responses.get(500)
+    responses[422] = ResponseError.responses.get(422)
 
 
 class MimeTypes:
