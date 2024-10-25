@@ -41,6 +41,9 @@ class MessageError:
 
     INVALID_EMAIL_OR_PWD = "Invalid email or password"
     INVALID_TOKEN_ERR = "Invalid token."
+    INVALID_ID_ERR = "Invalid ID."
+    INVALID_ID_ERR_MESSAGE = "Type ID is not correct."
+    INVALID_ID_ERR_MESSAGE_404 = "ID is not exist."
     INVALID_TOKEN_ERR_MESSAGE = "Please repeat authentication."
     EMAIL_ALREADY_EXIST = "Email already exist."
     TYPE_ERROR_INVALID_AUTH = "Invalid auth."
@@ -125,6 +128,97 @@ class PydanticTweets:
             ],
         }
     }
+
+
+class PydanticUser:
+    """Swagger Docs User model."""
+
+    TITLE_SWAGGER = "User"
+    DESCRIPTION_ID = "Author's unique ID"
+    DESCRIPTION_NAME = "Author's name"
+    TITLE = "User's profile"
+    JSON_SCHEMA_USER = {
+        "example": {
+            "result": True,
+            "user": {
+                "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                "name": "Dick",
+                "followers": [
+                    {
+                        "id": "3fa33364-5717-4562-b3fc-2c963f66afa6",
+                        "name": "Tom",
+                    }
+                ],
+                "following": [
+                    {
+                        "id": "3fa33364-5717-4562-b3fc-2c963f4563fa",
+                        "name": "Ramil",
+                    }
+                ],
+            },
+        }
+    }
+
+
+class DetailError:
+    """Default Error model to response."""
+
+    content = {
+        "application/json": {
+            "example": {
+                "detail": {
+                    "result": False,
+                    "error_type": "String",
+                    "error_message": "String",
+                }
+            }
+        }
+    }
+
+
+class ResponseError:
+    """Swagger Docs Errors."""
+
+    responses = {
+        401: {
+            "description": "Invalid credentials",
+            "content": DetailError.content,
+        },
+        403: {"description": "Forbidden", "content": DetailError.content},
+        404: {"description": "Not Found", "content": DetailError.content},
+        422: {
+            "description": "Validation Error",
+            "content": DetailError.content,
+        },
+        500: {
+            "description": "Invalid credentials",
+            "content": DetailError.content,
+        },
+    }
+
+
+class ResponsesUsersError:
+    """Swagger Docs Get Tweets."""
+
+
+class ResponsesGetTweets:
+    """Swagger Docs Get Tweets."""
+
+    responses_304 = {
+        304: {"description": "Not Modified", "content": DetailError.content},
+    }
+    copy_resp = ResponseError.responses.copy()
+    copy_resp.update(responses_304)
+    copy_resp.pop(401)
+    copy_resp.pop(403)
+    responses = copy_resp
+
+
+class ResponsesAuthUser:
+    """Swagger Docs."""
+
+    responses = dict()
+    responses[401] = ResponseError.responses.get(401)
 
 
 class MimeTypes:
