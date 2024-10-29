@@ -33,12 +33,6 @@ class _AuthInterface(abc.ABC):
 
     @staticmethod
     @abc.abstractmethod
-    async def logout_user(session: AsyncSession, user_id: dict) -> bool:
-        """Logout."""
-        pass
-
-    @staticmethod
-    @abc.abstractmethod
     async def post_new_user(
         session: AsyncSession,
         new_user: dict,
@@ -140,11 +134,3 @@ class AuthUsers(_AuthInterface):
             return user.hashed_password, user.user_id
 
         return None, None
-
-    @staticmethod
-    async def logout_user(
-        session: AsyncSession,
-        user_id: dict,
-    ) -> bool:
-        """Logout."""
-        return True  # TODO: Implement logic
